@@ -31,22 +31,8 @@ function HomeInterface() {
   return (
     <>
       <div className="w-full max-w-[1400px] flex flex-col items-center ">
-        <div className="flex flex-col lg:flex-row w-full sm:max-w-[400px] lg:max-w-[1250px] lg:h-[374px] bg-gray-500 rounded-[15px] border-[3px] sm:h-auto">
-          <div className="flex flex-col items-center justify-center p-4 sm:p-8 lg:-mt-7 w-full lg:w-auto">
-            <div className="flex flex-1 items-center justify-center sm:flex-col lg:flex-row lg:ml-11 w-full">
-              <video
-                src="/public/video.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-[100px] h-[100px] sm:w-[140px] sm:h-[140px] rounded-full object-cover mb-4  "
-              />
-              <div className="bg-[url('/BemVindo.svg')] bg-no-repeat bg-contain bg-center w-[180px] h-[120px] sm:w-[220px] sm:h-[140px] lg:w-70 lg:h-70 rounded-2xl" />
-            </div>
-            <button className="bg-white p-2 rounded-md">Agende já</button>
-          </div>
-
+        <div className="flex flex-col md:justify-between lg:flex-row w-full sm:max-w-[400px] lg:max-w-[1250px] lg:h-[374px] bg-gray-500 rounded-[15px] border-[3px] sm:h-auto">
+          <div className="flex px-3 items-center justify-center"></div>
           <div className="hidden lg:flex flex-1 justify-end items-center p-12">
             <ImageCarousel />
           </div>
@@ -57,8 +43,6 @@ function HomeInterface() {
         </div>
 
         <div className="w-full max-w-[1250px] mt-6 flex flex-col lg:flex-row justify-center lg:justify-between items-center lg:items-start gap-6 sm:gap-8">
-          <div className="bg-[url('/estilo.svg')] bg-no-repeat bg-contain bg-center w-full max-w-[280px] sm:max-w-[320px] lg:w-70 h-28 sm:h-36 lg:h-70 rounded-2xl flex-shrink-0 hidden sm:block lg:block" />
-
           <div className="w-full max-w-[350px] sm:max-w-[380px] lg:w-96 min-h bg-gray-500 rounded-2xl border-[3px] p-4 sm:p-6">
             <div className="flex flex-row items-center justify-center gap-2">
               <div className="text-white text-lg sm:text-xl font-extrabold font-['Inter'] text-center mb-4">
