@@ -13,14 +13,20 @@ export default function useLogin() {
       email: string;
       password: string;
     }) => {
-      const res = await api.post("/login/loginUser", { email, password });
-      const data = res.data;
+      try {
+        const res = await api.post("/login/loginUser", { email, password });
+        const data = res.data;
 
-      if (!data.user?.userId) {
-        throw new Error("User not found");
+        if (!data.user?.userId) {
+          throw new Error("User not found");
+        }
+
+        return data;
+      } catch (err: any) {
+        const serverMsg = err?.response?.data?.message;
+        const msg = serverMsg || err?.message || "Erro ao fazer login.";
+        throw new Error(msg);
       }
-
-      return data;
     },
     onSuccess: (data) => {
       login({
@@ -35,12 +41,19 @@ export default function useLogin() {
 
   const loginWithGoogleMutation = useMutation({
     mutationFn: async ({ token }: { token: string }) => {
-      const res = await api.post("/login/authWithGoogle", { token });
-      const data = res.data;
+      try {
+        const res = await api.post("/login/authWithGoogle", { token });
+        const data = res.data;
 
-      if (!data.id) throw new Error(data?.message || "Error on google auth");
+        if (!data.id) throw new Error(data?.message || "Error on google auth");
 
-      return data;
+        return data;
+      } catch (err: any) {
+        const serverMsg = err?.response?.data?.message;
+        const msg =
+          serverMsg || err?.message || "Erro ao autenticar com Google.";
+        throw new Error(msg);
+      }
     },
     onSuccess: (data) => {
       login({

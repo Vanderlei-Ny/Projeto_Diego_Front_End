@@ -40,7 +40,7 @@ function Main() {
   );
 }
 
-const clientId = import.meta.env.CLIENT_ID;
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
 createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={clientId}>

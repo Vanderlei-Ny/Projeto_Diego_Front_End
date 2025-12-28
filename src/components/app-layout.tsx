@@ -1,15 +1,24 @@
 import React from "react";
 import { AppSidebar } from "./app-sidebar";
-import { SidebarProvider } from "./ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="w-full bg-center bg-neutral-800 flex justify-center min-h-screen">
       <div className="w-full flex items-start gap-2 sm:gap-3 md:gap-4 lg:gap-6 ">
         <SidebarProvider>
+          {/* Sidebar component (Sheet on mobile, fixed on desktop) */}
           <AppSidebar />
 
+          {/* Main content */}
           <div className="flex-1 flex flex-col items-center w-full">
+            {/* Mobile top bar with a trigger to open the sidebar */}
+            <div className="w-full px-3 py-2 md:hidden flex items-center justify-start">
+              {/* Place the trigger outside of the Sidebar so it can open the mobile Sheet */}
+              <div className="inline-flex">
+                <SidebarTrigger />
+              </div>
+            </div>
             {children}
           </div>
         </SidebarProvider>

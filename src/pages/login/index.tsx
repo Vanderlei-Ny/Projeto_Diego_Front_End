@@ -16,14 +16,14 @@ function Login() {
     setError(null);
 
     try {
-      const { data } = await loginWithEmail(email, password);
+      const result = await loginWithEmail(email, password);
 
-      if (!data.user?.userId) {
+      if (!result?.user?.userId) {
         navigate("/cadastro");
         return;
       }
 
-      if (data.user.name !== null && data.user.telefone !== null) {
+      if (result.user.name !== null && result.user.telefone !== null) {
         navigate("/home");
       } else {
         navigate("/insertEmailAndPhoneNumber");
@@ -118,7 +118,7 @@ function Login() {
             <GoogleLogin
               onSuccess={handleGoogleLoginSuccess}
               onError={() => setError("Erro ao autenticar com Google.")}
-              useOneTap
+              useOneTap={false}
               theme="filled_black"
               text="continue_with"
               shape="rectangular"
