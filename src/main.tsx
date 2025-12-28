@@ -7,8 +7,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import InsertEmailAndPhoneNumber from "./pages/emailAndPhoneNumber.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AuthProvider from "./contexts/AuthContext";
-import HomeInterface from "./pages/home/index.tsx";
+import HomeInterface from "./pages/home-page.tsx";
 import AppLayout from "./components/app-layout";
+import RequireAuth from "./components/RequireAuth";
 
 function Main() {
   return (
@@ -23,9 +24,11 @@ function Main() {
         <Route
           path="/home"
           element={
-            <AppLayout>
-              <HomeInterface />
-            </AppLayout>
+            <RequireAuth>
+              <AppLayout>
+                <HomeInterface />
+              </AppLayout>
+            </RequireAuth>
           }
         />
       </Routes>

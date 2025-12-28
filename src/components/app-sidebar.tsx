@@ -12,14 +12,14 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
+import useAuth from "@/hooks/useAuth";
 
 // This is sample data.
 const data = {
   user: {
     name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
   },
   teams: [
     {
@@ -72,16 +72,23 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth();
+
+  const userApplication = {
+    name: user?.name ?? "Usuário",
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="flex items-center relative">
         <TeamSwitcher teams={data.teams} />
+        <SidebarTrigger className="absolute top-2 -right-8 group-data-[side=right]:-left-8 z-20" />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userApplication} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
