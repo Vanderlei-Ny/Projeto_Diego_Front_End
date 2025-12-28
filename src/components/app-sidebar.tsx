@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Bot, GalleryVerticalEnd, SquareTerminal } from "lucide-react";
+import { Bot, GalleryVerticalEnd, House, SquareTerminal } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -23,48 +23,28 @@ const data = {
   },
   teams: [
     {
-      name: "Barberia Style",
+      name: "Barberia Diego Bueno",
       logo: GalleryVerticalEnd,
       plan: "Barbearia",
     },
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Home",
+      url: "/home",
+      icon: House,
       isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Admin",
+      url: "/admin",
+      icon: SquareTerminal,
+      allowedRoles: ["admin"],
       items: [
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
+          title: "Dashboard",
+          url: "/admin/dashboard",
+          allowedRoles: ["admin"],
         },
       ],
     },
@@ -73,6 +53,8 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
+
+  console.log("user", user);
 
   const userApplication = {
     name: user?.name ?? "Usuário",
@@ -85,7 +67,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarTrigger className="absolute top-2 -right-8 group-data-[side=right]:-left-8 z-20" />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={data.navMain} userRoles={user?.roles} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={userApplication} />

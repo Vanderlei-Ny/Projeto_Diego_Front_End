@@ -10,6 +10,10 @@ import AuthProvider from "./contexts/AuthContext";
 import HomeInterface from "./pages/home-page.tsx";
 import AppLayout from "./components/app-layout";
 import RequireAuth from "./components/RequireAuth";
+import { Toaster } from "sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function Main() {
   return (
@@ -36,15 +40,17 @@ function Main() {
   );
 }
 
-const clientId =
-  "540965651267-o2t36mag85s94nkv6ajmkmka54gg132p.apps.googleusercontent.com";
+const clientId = import.meta.env.CLIENT_ID;
 
 createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={clientId}>
-    <AuthProvider>
-      <StrictMode>
-        <Main />
-      </StrictMode>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <StrictMode>
+          <Main />
+          <Toaster position="bottom-right" />
+        </StrictMode>
+      </AuthProvider>
+    </QueryClientProvider>
   </GoogleOAuthProvider>
 );

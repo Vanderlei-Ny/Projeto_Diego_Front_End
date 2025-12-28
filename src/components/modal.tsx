@@ -16,24 +16,26 @@ export default function ConfirmModal({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4"
       onClick={onCancel}
     >
       <div
-        className="bg-black/50 rounded-2xl p-6 w-80 max-w-full shadow-lg"
+        className="bg-black/80 rounded-2xl p-4 sm:p-6 w-full sm:w-80 max-w-sm shadow-lg border border-neutral-700"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="mb-6 text-center text-white">{message}</p>
-        <div className="flex justify-around">
+        <p className="mb-4 sm:mb-6 text-center text-white text-sm sm:text-base">
+          {message}
+        </p>
+        <div className="flex gap-3 sm:gap-4 justify-center">
           <button
             onClick={onCancel}
-            className="px-4 py-2 bg-white rounded hover:bg-gray-400 transition cursor-pointer"
+            className="flex-1 sm:flex-auto px-4 sm:px-6 py-2 sm:py-2.5 bg-white text-black rounded hover:bg-gray-200 transition cursor-pointer text-sm sm:text-base font-medium"
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition cursor-pointer"
+            className="flex-1 sm:flex-auto px-4 sm:px-6 py-2 sm:py-2.5 bg-[#B8952E] text-white rounded hover:bg-yellow-400 transition cursor-pointer text-sm sm:text-base font-medium"
           >
             Confirmar
           </button>

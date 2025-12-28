@@ -9,4 +9,8 @@ export default defineConfig({
     alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
   },
   plugins: [react(), tailwindcss()],
+  server: {
+    host: true,
+    port: 5174,
+  },
 });

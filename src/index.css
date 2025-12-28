@@ -121,3 +121,37 @@
     @apply bg-background text-foreground;
   }
 }
+/* Responsividade Mobile */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+/* Garantir que scroll funcione bem em mobile */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* Melhorar touch targets para mobile */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  [role="button"] {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
+
+/* Otimizar scrolling em mobile */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}

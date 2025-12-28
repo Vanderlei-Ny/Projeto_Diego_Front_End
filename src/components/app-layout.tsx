@@ -4,14 +4,14 @@ import { SidebarProvider } from "./ui/sidebar";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full bg-center  bg-neutral-800 flex justify-center">
-      <div className="w-full flex items-start gap-6 ">
+    <div className="w-full bg-center bg-neutral-800 flex justify-center min-h-screen">
+      <div className="w-full flex items-start gap-2 sm:gap-3 md:gap-4 lg:gap-6 ">
         <SidebarProvider>
-          <div className="hidden lg:flex">
-            <AppSidebar />
-          </div>
+          <AppSidebar />
 
-          <div className="flex-1 flex flex-col items-center">{children}</div>
+          <div className="flex-1 flex flex-col items-center w-full">
+            {children}
+          </div>
         </SidebarProvider>
       </div>
     </div>

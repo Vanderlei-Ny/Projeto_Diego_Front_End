@@ -54,8 +54,8 @@ function InsertEmailAndPhoneNumber() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-cover bg-center bg-no-repeat bg-fixed bg-[url('public/teste2.png')] flex items-center justify-center px-4 py-10 flex-col">
-      <div className="flex flex-col justify-center items-center bg-white/10 border-1 border-black gap-4 p-5 rounded-3xl h-120 backdrop-blur-xl w-70 md:w-80">
+    <div className="w-full min-h-screen bg-cover bg-center bg-no-repeat bg-fixed bg-[url('public/teste2.png')] flex items-center justify-center px-2 sm:px-4 py-6 sm:py-10 flex-col">
+      <div className="flex flex-col justify-center items-center bg-white/10 border-1 border-white gap-3 sm:gap-4 p-3 sm:p-5 md:p-6 rounded-2xl sm:rounded-3xl h-auto w-full sm:w-80 md:w-96 backdrop-blur-xl">
         <div className="flex justify-center">
           <video
             src="/public/video.mp4"
@@ -63,12 +63,7 @@ function InsertEmailAndPhoneNumber() {
             loop
             muted
             playsInline
-            style={{
-              width: "190px",
-              height: "190px",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
+            className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full object-cover"
           />
         </div>
 
@@ -77,7 +72,7 @@ function InsertEmailAndPhoneNumber() {
           placeholder="Nome completo"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="border-white border-1 rounded-sm text-center text-white w-60 h-12 bg-black/70 backdrop-blur-sm placeholder-white/100 md:w-60 md:h-12"
+          className="border-white border-1 rounded-sm text-center text-white w-full sm:w-72 h-10 sm:h-12 bg-black/70 backdrop-blur-sm placeholder-white/100 text-sm sm:text-base px-2"
         />
 
         <input
@@ -85,17 +80,21 @@ function InsertEmailAndPhoneNumber() {
           placeholder="Número de telefone"
           value={telefone}
           onChange={handleTelefoneChange}
-          className="border-white border-1 rounded-sm text-center text-white w-60 h-12 bg-black/70 backdrop-blur-sm placeholder-white/100 md:w-60 md:h-12"
+          className="border-white border-1 rounded-sm text-center text-white w-full sm:w-72 h-10 sm:h-12 bg-black/70 backdrop-blur-sm placeholder-white/100 text-sm sm:text-base px-2"
         />
 
         <button
           onClick={handleSubmit}
-          className="border-sm w-60 h-12 rounded-md bg-white text-black hover:bg-black hover:text-white transition-colors duration-300 cursor-pointer md:w-60 md:h-12"
+          className="border-sm w-full sm:w-72 h-10 sm:h-12 rounded-md bg-white text-black hover:bg-black hover:text-white transition-colors duration-300 cursor-pointer text-sm sm:text-base font-medium"
         >
           Prossiga
         </button>
 
-        {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-400 mt-2 text-xs sm:text-sm text-center">
+            {error}
+          </p>
+        )}
       </div>
     </div>
   );
