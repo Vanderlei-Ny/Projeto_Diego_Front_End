@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
 
 export default function useInsertEmailAndPhoneNumber() {
   const { user, setUser } = useAuth();
-  const [loading, setLoading] = useState(false);
 
-  async function updateInfo(name: string, telefone: string) {
-    setLoading(true);
-    try {
+  const updateInfoMutation = useMutation({
+    mutationFn: async ({
+      name,
+      telefone,
+    }: {
+      name: string;
+      telefone: string;
+    }) => {
       const userId = user?.userId;
       if (!userId) throw new Error("User id is missing");
       const res = await api.put(`/user/createEmailandPhoneNumber/${userId}`, {
@@ -16,21 +20,21 @@ export default function useInsertEmailAndPhoneNumber() {
         telefone,
       });
 
-      // Update context
-      const data = res.data;
+      return res.data;
+    },
+    onSuccess: (data) => {
       setUser({
         ...(user ?? {}),
-        name: data.name ?? name,
-        telefone: data.telefone ?? telefone,
+        name: data.name ?? data.name,
+        telefone: data.telefone ?? data.telefone,
       });
+    },
+  });
 
-      return { data };
-    } catch (err) {
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return { loading, updateInfo };
+  return {
+    updateInfo: (name: string, telefone: string) =>
+      updateInfoMutation.mutateAsync({ name, telefone }),
+    isLoading: updateInfoMutation.isPending,
+    error: updateInfoMutation.error,
+  };
 }

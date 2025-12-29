@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
 
@@ -11,54 +11,69 @@ interface Agendamento {
 
 export default function useHome() {
   const { user } = useAuth();
-  const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  async function fetchAgendamentos(userId?: number | null) {
-    if (!userId) return;
-    setLoading(true);
-    try {
-      const res = await api.get(`/agendamento/listAgendamentoOfUser/${userId}`);
-      const data = res.data;
+  console.log("📊 useHome - user:", user?.userId);
 
-      setAgendamentos(
-        Array.isArray(data)
+  const {
+    data: agendamentos = [],
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["agendamentos", user?.userId],
+    queryFn: async () => {
+      console.log("📥 Buscando agendamentos para usuário:", user?.userId);
+
+      if (!user?.userId) {
+        console.log("⚠️ Sem userId ainda");
+        return [];
+      }
+
+      try {
+        const res = await api.get(
+          `/agendamento/listAgendamentoOfUser/${user.userId}`
+        );
+        const data = res.data;
+
+        console.log("✅ Agendamentos recebidos:", data);
+
+        return Array.isArray(data)
           ? data.map((item: any, index: number) => ({
               id: item.id ?? index,
               dataAgendamento: item.dataAgendamento,
               hour: item.hour.hourDisponible,
               nameServices: item.service.map((s: any) => s.nameService),
             }))
-          : []
-      );
-    } catch (err: any) {
-      setError(err?.message ?? "Erro ao buscar agendamentos");
-    } finally {
-      setLoading(false);
-    }
-  }
+          : [];
+      } catch (err) {
+        console.error("❌ Erro ao buscar agendamentos:", err);
+        return [];
+      }
+    },
+    enabled: !!user?.userId,
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
 
-  useEffect(() => {
-    fetchAgendamentos(user?.userId ?? null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.userId]);
-
-  async function deleteAgendamento(agendamentoId: number) {
-    try {
+  const deleteAgendamentoMutation = useMutation({
+    mutationFn: async (agendamentoId: number) => {
+      console.log("🗑️ Deletando agendamento:", agendamentoId);
       await api.delete(`/agendamento/deleteAgendamento/${agendamentoId}`);
-      setAgendamentos((prev) => prev.filter((a) => a.id !== agendamentoId));
-    } catch (err: any) {
-      setError(err?.message ?? "Erro ao deletar agendamento");
-      throw err;
-    }
-  }
+    },
+    onSuccess: () => {
+      console.log("✅ Agendamento deletado, invalidando cache");
+      queryClient.invalidateQueries({ queryKey: ["agendamentos"] });
+    },
+  });
 
   return {
     agendamentos,
     loading,
-    error,
-    fetchAgendamentos,
-    deleteAgendamento,
+    error: error?.message ?? null,
+    fetchAgendamentos: () =>
+      queryClient.invalidateQueries({ queryKey: ["agendamentos"] }),
+    deleteAgendamento: (agendamentoId: number) =>
+      deleteAgendamentoMutation.mutateAsync(agendamentoId),
+    isDeleting: deleteAgendamentoMutation.isPending,
   };
 }
