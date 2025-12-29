@@ -13,55 +13,73 @@ export default function useLogin() {
       email: string;
       password: string;
     }) => {
-      try {
-        const res = await api.post("/login/loginUser", { email, password });
-        const data = res.data;
+      const res = await api.post("/login/loginUser", { email, password });
+      const data = res.data;
 
-        if (!data.user?.userId) {
-          throw new Error("User not found");
-        }
-
-        return data;
-      } catch (err: any) {
-        const serverMsg = err?.response?.data?.message;
-        const msg = serverMsg || err?.message || "Erro ao fazer login.";
-        throw new Error(msg);
+      if (!data?.user?.id) {
+        throw new Error("Usuário não encontrado");
       }
+
+      return data;
     },
     onSuccess: (data) => {
       login({
-        userId: data.user.userId,
+        userId: data.user.id,
         token: data.token,
         name: data.user.name ?? null,
         telefone: data.user.telefone ?? null,
-        roles: data.user.roles ?? data.roles ?? data.user.role ?? null,
+        roles:
+          data.user.Hierarchy ??
+          data.user.roles ??
+          data.roles ??
+          data.user.role ??
+          null,
       });
     },
   });
 
   const loginWithGoogleMutation = useMutation({
     mutationFn: async ({ token }: { token: string }) => {
-      try {
-        const res = await api.post("/login/authWithGoogle", { token });
-        const data = res.data;
+      console.log(
+        "📤 Enviando token para backend...",
+        token ? "OK (tamanho: " + token.length + ")" : "VAZIO"
+      );
+      console.log("📤 Token primeiros 50 caracteres:", token.substring(0, 50));
 
-        if (!data.id) throw new Error(data?.message || "Error on google auth");
+      const payload = { token };
+      console.log("📤 Payload que será enviado:", {
+        hasToken: !!payload.token,
+        tokenLength: payload.token?.length,
+      });
 
-        return data;
-      } catch (err: any) {
-        const serverMsg = err?.response?.data?.message;
-        const msg =
-          serverMsg || err?.message || "Erro ao autenticar com Google.";
-        throw new Error(msg);
+      const res = await api.post("/login/authWithGoogle", payload);
+      const raw = res.data;
+
+      console.log("✅ Resposta recebida:", raw);
+
+      if (!raw?.user?.id) {
+        throw new Error("Erro ao autenticar com Google.");
       }
+
+      const normalized = {
+        id: raw.user.id,
+        name: raw.user.name ?? null,
+        telefone: raw.user.telefone ?? null,
+        token: raw.token ?? null,
+        roles: Array.isArray(raw.user.Hierarchy) ? raw.user.Hierarchy : null,
+        existingUser: raw.existingUser ?? false,
+      };
+
+      return normalized;
     },
     onSuccess: (data) => {
+      console.log("🎉 Login com sucesso:", data.id);
       login({
         userId: data.id,
         name: data.name ?? null,
         telefone: data.telefone ?? null,
         token: data.token ?? null,
-        roles: data.roles ?? data.role ?? null,
+        roles: data.roles ?? null,
       });
     },
   });

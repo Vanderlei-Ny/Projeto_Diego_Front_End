@@ -43,34 +43,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const res = await api.post("/login/validateToken");
         const data = res.data;
 
-        console.log("is here", data);
-
         if (data) {
-          // Support multiple response shapes:
-          // - { userId, token, name, telefone }
-          // - { user: { userId, name, telefone }, token }
           const userPayload = data.user ?? data;
-          if (userPayload && (userPayload.userId || userPayload.id)) {
+          if (userPayload && userPayload.id) {
             const parsed = {
               token: data.token ?? userPayload.token ?? null,
-              userId: userPayload.userId ?? userPayload.id,
+              userId: userPayload.id,
               name: userPayload.name ?? null,
               telefone: userPayload.telefone ?? null,
-              // Normalize roles from multiple possible fields and formats
-              roles: (() => {
-                const rolesRaw =
-                  userPayload.roles ??
-                  data.roles ??
-                  userPayload.role ??
-                  userPayload.Hierarchy ??
-                  null;
-                if (!rolesRaw) return null;
-                if (Array.isArray(rolesRaw))
-                  return rolesRaw.map((r) => String(r));
-                if (typeof rolesRaw === "string")
-                  return rolesRaw.split(",").map((r) => r.trim());
-                return null;
-              })(),
+              roles: Array.isArray(userPayload.roles)
+                ? userPayload.roles
+                : Array.isArray(data.roles)
+                ? data.roles
+                : null,
             } as User;
             setUser(parsed);
             if (parsed.token) {
@@ -92,26 +77,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (userInfo: User) => {
-    // Normalize roles to an array and set user
-    const normalizeRoles = (r?: string[] | string | null) => {
-      if (!r) return null;
-      if (Array.isArray(r)) return r.map((x) => String(x));
-      if (typeof r === "string") return r.split(",").map((s) => s.trim());
-      return null;
-    };
-
-    const normalized: User = {
-      ...userInfo,
-      roles: normalizeRoles(
-        (userInfo as any).roles ?? (userInfo as any).role ?? null
-      ),
-    };
-
-    setUser(normalized);
-
-    if (normalized.token) {
-      setAuthToken(normalized.token);
-      persistAuthToken(normalized.token);
+    // Persist only the token in localStorage for session restore; do not store
+    // other user properties in localStorage for security.
+    setUser(userInfo);
+    if (userInfo.token) {
+      setAuthToken(userInfo.token);
+      persistAuthToken(userInfo.token);
     }
   };
 

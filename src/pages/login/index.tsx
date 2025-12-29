@@ -3,33 +3,39 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import type { CredentialResponse } from "@react-oauth/google";
 import useLogin from "../../hooks/useLogin";
+import LoadingSpinner from "../../components/loading-spinner";
+import { toast } from "sonner";
 
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const { loginWithEmail, loginWithGoogle } = useLogin();
+  const [isLoading, setIsLoading] = useState(false); // for email/password only
+  const { loginWithEmail, loginWithGoogle, isLoadingEmail, isLoadingGoogle } =
+    useLogin();
+  const isBusy = isLoading || isLoadingEmail || isLoadingGoogle;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setIsLoading(true);
 
     try {
-      const result = await loginWithEmail(email, password);
+      const data = await loginWithEmail(email, password);
 
-      if (!result?.user?.userId) {
-        navigate("/cadastro");
-        return;
-      }
-
-      if (result.user.name !== null && result.user.telefone !== null) {
-        navigate("/home");
+      if (data.user.name && data.user.telefone) {
+        toast.success("Login realizado com sucesso!");
+        setTimeout(() => {
+          navigate("/home");
+        }, 100);
       } else {
-        navigate("/insertEmailAndPhoneNumber");
+        setTimeout(() => {
+          navigate("/insertEmailAndPhoneNumber");
+        }, 100);
       }
     } catch (err: any) {
-      setError(err?.message || "Erro na conexão com o servidor!");
+      console.error("Erro no login:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -37,102 +43,135 @@ function Login() {
     credentialResponse: CredentialResponse
   ) => {
     const token = credentialResponse.credential;
+    console.log(
+      "🔑 Token recebido do Google:",
+      token ? "SIM (tamanho: " + token.length + ")" : "NÃO"
+    );
+
     if (!token) {
-      setError("Token do Google inválido.");
+      console.error("❌ Token vazio ou undefined");
+      toast.error("Token do Google inválido.");
       return;
     }
 
     try {
-      const { data } = await loginWithGoogle(token as string);
-      if (!data.id) throw new Error("Erro ao autenticar com Google.");
+      console.log("📡 Iniciando login com Google...");
+      const result = await loginWithGoogle(token as string);
 
-      if (data.existingUser && data.name !== null && data.telefone !== null) {
+      if (result.name && result.telefone) {
+        toast.success("Login realizado com sucesso!");
         navigate("/home");
       } else {
+        toast.success("Login realizado! Complete seu perfil.");
         navigate("/insertEmailAndPhoneNumber");
       }
     } catch (err: any) {
-      console.error(err);
-      setError(err?.message ?? "Erro ao conectar com o servidor.");
+      console.error("❌ Erro no login:", err);
+      console.error("❌ Erro response:", err?.response?.data);
+      console.error("❌ Erro message:", err?.message);
+      toast.error("Erro ao fazer login com Google.");
     }
   };
 
   return (
-    <div className="w-full min-h-screen bg-cover bg-center bg-no-repeat bg-fixed bg-[url('public/teste2.png')] flex items-center justify-center px-2 sm:px-4 py-6 sm:py-10">
-      <div className="flex flex-col w-full sm:w-96 md:flex-row gap-4 sm:gap-6 md:gap-10 p-3 sm:p-4 md:p-6 max-w-screen-lg md:w-full md:max-w-3xl md:h-auto rounded-2xl sm:rounded-3xl md:rounded-4xl backdrop-blur-xl bg-white/10 border-2 border-white/30">
-        <div className="flex items-center justify-center flex-col p-2 sm:p-3 w-full md:w-auto md:min-w-[200px] lg:min-w-[280px]">
-          <div className="bg-[url('public/logo2.png')] bg-no-repeat bg-contain bg-center rounded-xl sm:rounded-2xl w-48 sm:w-60 md:w-64 h-48 sm:h-60 md:h-64" />
-        </div>
-
-        <form
-          onSubmit={handleSubmit}
-          className="w-full md:w-auto md:flex-1 flex flex-col justify-center items-center gap-2 sm:gap-3 text-white py-2 sm:py-4"
-        >
-          <input
-            type="text"
-            placeholder="Email"
-            className="border rounded-sm text-center w-full sm:w-72 md:w-64 h-10 sm:h-12 bg-black/70 backdrop-blur-sm placeholder-white/100 text-sm sm:text-base px-2"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Senha"
-            className="border rounded-sm text-center w-full sm:w-72 md:w-64 h-10 sm:h-12 bg-black/70 backdrop-blur-sm placeholder-white/70 text-sm sm:text-base px-2"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded text-xs sm:text-sm w-full">
-              <p>{error}</p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="border-sm w-full sm:w-72 md:w-64 h-10 sm:h-12 rounded-md bg-white text-black hover:bg-black hover:text-white transition-colors duration-300 cursor-pointer text-sm sm:text-base font-medium"
-          >
-            Login
-          </button>
-
-          <a
-            href="#"
-            className="mt-1 sm:mt-2 text-xs sm:text-sm text-blue-400/90 hover:text-white underline transition-colors duration-200"
-          >
-            Esqueceu sua senha? Clique para alterar
-          </a>
-
-          <div className="flex items-center my-2 sm:my-3 w-full md:w-64">
-            <div className="flex-grow h-px bg-white"></div>
-            <span className="px-2 sm:px-3 text-white text-xs sm:text-sm">
-              ou
-            </span>
-            <div className="flex-grow h-px bg-white"></div>
+    <div className="flex w-full min-h-screen items-center justify-center bg-black bg-cover bg-center bg-no-repeat bg-fixed px-2 sm:px-4 md:px-8 py-6 sm:py-10">
+      {isBusy && <LoadingSpinner fullScreen message="Entrando..." />}
+      <div className="flex w-full h-2/3 flex-col md:flex-row items-stretch justify-center gap-4 sm:gap-6 lg:gap-8 bg-black/90 rounded-[15px] p-4 sm:p-6 md:p-8 max-w-4xl mx-auto border border-white/10">
+        {/* Lado esquerdo - branding */}
+        <div className="flex flex-col justify-between gap-4 w-full md:w-5/12 bg-neutral-900 rounded-[15px] p-4 sm:p-5">
+          <div className="flex items-center justify-center bg-neutral-800 text-[#B8952E] rounded-[12px] p-3 text-sm sm:text-base gap-2">
+            <p>Barbearia Diego Bueno</p>
+            <img
+              src="/scissors.svg"
+              className="w-4 h-4 sm:w-5 sm:h-5"
+              alt="Tesoura"
+            />
           </div>
 
-          <div className="w-full flex justify-center">
-            <GoogleLogin
-              onSuccess={handleGoogleLoginSuccess}
-              onError={() => setError("Erro ao autenticar com Google.")}
-              useOneTap={false}
-              theme="filled_black"
-              text="continue_with"
-              shape="rectangular"
-              width="100%"
+          <div className="bg-[url('/logo2.png')] bg-no-repeat bg-contain bg-center rounded-[12px] w-full h-48 sm:h-64 md:h-72" />
+
+          <div className="flex flex-col gap-3">
+            <p className="text-gray-100 font-medium text-sm sm:text-sm">
+              Não tem nenhuma conta? Acesse para criar:
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate("/cadastro")}
+              disabled={isBusy}
+              className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-[#B8952E] rounded-[10px] font-medium hover:bg-yellow-400 transition-colors text-sm sm:text-base"
+            >
+              Criar conta
+            </button>
+          </div>
+        </div>
+
+        {/* Lado direito - formulário */}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full md:w-7/12 bg-neutral-800 rounded-[15px] p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 text-white"
+        >
+          <div className="flex flex-col gap-2 w-full max-w-md">
+            <label className="text-sm text-white/80">Email</label>
+            <input
+              type="text"
+              placeholder="Seu email"
+              className="border border-white/10 rounded-md w-full h-12 bg-black/70 backdrop-blur-sm placeholder-white/70 text-base px-3 focus:border-[#B8952E] focus:outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isBusy}
+              required
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 w-full max-w-md">
+            <label className="text-sm text-white/80">Senha</label>
+            <input
+              type="password"
+              placeholder="Sua senha"
+              className="border border-white/10 rounded-md w-full h-12 bg-black/70 backdrop-blur-sm placeholder-white/70 text-base px-3 focus:border-[#B8952E] focus:outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              required
             />
           </div>
 
           <button
-            type="button"
-            className="bg-black/30 w-full sm:w-44 md:w-64 mt-3 sm:mt-4 text-white rounded-sm py-2 sm:py-2.5 text-sm sm:text-base hover:bg-black/50 transition-colors"
-            onClick={() => navigate("/cadastro")}
+            type="submit"
+            disabled={isBusy}
+            className="w-full max-w-md h-12 rounded-md bg-[#B8952E] text-black font-semibold hover:bg-yellow-400 transition-colors duration-200"
           >
-            Cadastre-se
+            Entrar
           </button>
+
+          <div className="flex items-center gap-3 w-full max-w-md">
+            <span className="text-xs text-white/70">Esqueceu sua senha?</span>
+            <a
+              href="#"
+              className="text-xs text-[#B8952E] hover:text-yellow-300 underline"
+            >
+              Recuperar
+            </a>
+          </div>
+
+          <div className="flex items-center gap-3 w-full max-w-md">
+            <div className="flex-1 h-px bg-white/20" />
+            <span className="text-white text-xs sm:text-sm">ou</span>
+            <div className="flex-1 h-px bg-white/20" />
+          </div>
+
+          <div className="w-full max-w-md flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={() => toast.error("Erro ao autenticar com Google.")}
+              useOneTap={false}
+              theme="filled_black"
+              text="continue_with"
+              shape="rectangular"
+              locale="pt-BR"
+              width={320}
+            />
+          </div>
         </form>
       </div>
     </div>

@@ -40,15 +40,24 @@ export function NavMain({
   // - allowedRoles === undefined -> visible to all
   // - allowedRoles === [] -> visible to none
   function hasAccess(allowedRoles?: string[] | undefined) {
+    // Se não há roles permitidas especificadas, todos têm acesso
     if (allowedRoles === undefined) return true; // public
-    if (allowedRoles.length === 0) return false; // restricted to nobody
-    if (!userRoles || userRoles.length === 0) return false;
 
-    const lowerUserRoles = userRoles.map((r) => r.toLowerCase());
-    return allowedRoles.some((r) => lowerUserRoles.includes(r.toLowerCase()));
+    // Se a lista de roles permitidas está vazia, ninguém tem acesso
+    if (Array.isArray(allowedRoles) && allowedRoles.length === 0) return false; // restricted to nobody
+
+    // Se o usuário não tem roles, sem acesso
+    if (!userRoles || !Array.isArray(userRoles) || userRoles.length === 0)
+      return false;
+
+    const lowerUserRoles = userRoles.map((r) => r?.toLowerCase() ?? "");
+    return allowedRoles.some((r) =>
+      lowerUserRoles.includes(r?.toLowerCase() ?? "")
+    );
   }
 
-  const visibleItems = items.filter((item) => hasAccess(item.allowedRoles));
+  const visibleItems =
+    items?.filter((item) => hasAccess(item.allowedRoles)) ?? [];
 
   return (
     <SidebarGroup>

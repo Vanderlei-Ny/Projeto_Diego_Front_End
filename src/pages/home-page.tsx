@@ -2,14 +2,37 @@ import { useState } from "react";
 import ImageCarousel from "../components/components";
 import ConfirmModal from "../components/modal";
 import useHome from "../hooks/useHome";
+import useAuth from "../hooks/useAuth";
+import LoadingSpinner from "../components/loading-spinner";
 import { Trash2, Instagram, MessageCircle, Facebook } from "lucide-react";
 import { toast } from "sonner";
 
 function HomeInterface() {
-  const { agendamentos, deleteAgendamento } = useHome();
+  const { user, loading: authLoading } = useAuth();
+  const { agendamentos, deleteAgendamento, loading } = useHome();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
+
+  // Show loading state while auth context is loading
+  if (authLoading) {
+    return (
+      <div className="flex w-full h-screen items-center justify-center bg-black">
+        <LoadingSpinner message="Carregando..." size="lg" />
+      </div>
+    );
+  }
+
+  // Ensure user exists
+  if (!user) {
+    return (
+      <div className="flex w-full h-screen items-center justify-center bg-black">
+        <div className="text-white text-center">
+          <p>Erro: Usuário não encontrado</p>
+        </div>
+      </div>
+    );
+  }
 
   const openDeleteModal = (id: number) => {
     setIdToDelete(id);
@@ -21,13 +44,13 @@ function HomeInterface() {
 
     try {
       await deleteAgendamento(idToDelete);
+      toast.success("Agendamento deletado com sucesso!");
     } catch (error) {
       console.error(error);
-      alert("Erro ao deletar agendamento.");
+      toast.error("Erro ao deletar agendamento.");
     } finally {
       setModalOpen(false);
       setIdToDelete(null);
-      toast.success("Agendamento deletado com sucesso!");
     }
   };
 
@@ -51,8 +74,9 @@ function HomeInterface() {
               >
                 <p>Barbearia Diego Bueno</p>
                 <img
-                  src="public/scissors.svg"
+                  src="/scissors.svg"
                   className="w-4 h-4 sm:w-5 sm:h-5"
+                  alt="Tesoura"
                 />
               </div>
               {/* aqui eu vou colocar o icon da empresa */}
@@ -126,7 +150,14 @@ function HomeInterface() {
                 Seus agendamentos
               </p>
               <div className="w-full overflow-y-auto max-h-[300px] sm:max-h-[350px] lg:max-h-full space-y-2 sm:space-y-3 pt-2">
-                {agendamentos.length === 0 ? (
+                {loading ? (
+                  <div className="flex items-center justify-center w-full py-8">
+                    <LoadingSpinner
+                      message="Carregando agendamentos..."
+                      size="sm"
+                    />
+                  </div>
+                ) : agendamentos.length === 0 ? (
                   <p className="text-white text-center text-xs sm:text-sm">
                     Nenhum agendamento encontrado.
                   </p>
