@@ -1,71 +1,19 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import type { CredentialResponse } from "@react-oauth/google";
-import useCadastro from "../../hooks/useCadastro";
+import useCadastroPage from "../../hooks/page/useCadastroPage";
 import LoadingSpinner from "../../components/loading-spinner";
 import { toast } from "sonner";
 
 function Cadastro() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // for email/password only
-  const { createUser, googleAuth, isLoadingCreate, isLoadingGoogle } =
-    useCadastro();
-  const isBusy = isLoading || isLoadingCreate || isLoadingGoogle;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const { data } = await createUser(email, password);
-      if (!data.id) throw new Error(data.message || "Erro ao cadastrar");
-      // Give a small delay to ensure auth context is updated
-      setTimeout(() => {
-        navigate("/insertEmailAndPhoneNumber");
-      }, 100);
-    } catch (err: any) {
-      console.error("Erro no cadastro:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleGoogleLoginSuccess = async (
-    credentialResponse: CredentialResponse
-  ) => {
-    const token = credentialResponse.credential;
-    console.log(
-      "🔑 Token recebido do Google:",
-      token ? "SIM (tamanho: " + token.length + ")" : "NÃO"
-    );
-
-    if (!token) {
-      console.error("❌ Token vazio ou undefined");
-      toast.error("Token do Google inválido.");
-      return;
-    }
-
-    try {
-      console.log("📡 Iniciando autenticação com Google...");
-      const data = await googleAuth(token as string);
-
-      if (data.name && data.telefone) {
-        toast.success("Autenticado com sucesso!");
-        navigate("/home");
-      } else {
-        toast.success("Autenticado! Complete seu perfil.");
-        navigate("/insertEmailAndPhoneNumber");
-      }
-    } catch (err: any) {
-      console.error("❌ Erro na autenticação:", err);
-      console.error("❌ Erro response:", err?.response?.data);
-      console.error("❌ Erro message:", err?.message);
-      toast.error("Erro ao autenticar com Google.");
-    }
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isBusy,
+    handleSubmit,
+    handleGoogleLoginSuccess,
+    goToLogin,
+  } = useCadastroPage();
 
   return (
     <div className="flex w-full min-h-screen items-center justify-center bg-black bg-cover bg-center bg-no-repeat bg-fixed px-2 sm:px-4 md:px-8 py-6 sm:py-10">
@@ -86,7 +34,7 @@ function Cadastro() {
             </p>
             <button
               type="button"
-              onClick={() => navigate("/login")}
+              onClick={goToLogin}
               className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-[#B8952E] rounded-[10px] font-medium hover:bg-yellow-400 transition-colors text-sm sm:text-base"
             >
               Já tenho conta
@@ -99,6 +47,9 @@ function Cadastro() {
           onSubmit={handleSubmit}
           className="w-full md:w-7/12 bg-neutral-800 rounded-[15px] p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 text-white"
         >
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#B8952E] mb-2">
+            Cadastro
+          </h2>
           <div className="flex flex-col gap-2 w-full max-w-md">
             <label className="text-sm text-white/80">Email</label>
             <input

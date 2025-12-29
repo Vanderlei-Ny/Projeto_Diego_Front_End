@@ -20,14 +20,36 @@ export default function useCadastro() {
 
       return data;
     },
-    onSuccess: (data) => {
-      login({
-        userId: data.id,
-        name: null,
-        telefone: null,
-        token: null,
-        roles: data.roles ?? data.role ?? null,
-      });
+    // After creating the user, automatically log them in with the same credentials
+    onSuccess: async (_data, variables) => {
+      try {
+        const loginRes = await api.post("/login/loginUser", {
+          email: variables.email,
+          password: variables.password,
+        });
+        const loginData = loginRes.data;
+
+        if (!loginData?.user?.id || !loginData?.token) {
+          throw new Error("Falha ao autenticar após cadastro");
+        }
+
+        login({
+          userId: loginData.user.id,
+          name: loginData.user.name ?? null,
+          telefone: loginData.user.telefone ?? null,
+          token: loginData.token ?? null,
+          roles:
+            loginData.user.Hierarchy ??
+            loginData.user.roles ??
+            loginData.roles ??
+            loginData.user.role ??
+            null,
+        });
+      } catch (err) {
+        console.error("Erro ao logar automaticamente após cadastro:", err);
+        // Fallback: keep minimal user so insert page can proceed
+        login({ userId: _data.id, name: null, telefone: null, token: null });
+      }
     },
   });
 

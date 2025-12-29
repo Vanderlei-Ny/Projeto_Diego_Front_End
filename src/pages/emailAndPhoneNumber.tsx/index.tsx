@@ -1,57 +1,16 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import useInsertEmailAndPhoneNumber from "../../hooks/useInsertEmailAndPhoneNumber";
-import useAuth from "../../hooks/useAuth";
+import useInsertEmailPhonePage from "../../hooks/page/useInsertEmailPhonePage";
+import LoadingSpinner from "../../components/loading-spinner";
 
 function InsertEmailAndPhoneNumber() {
-  const navigation = useNavigate();
-  const [name, setName] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  const { user } = useAuth();
-  const { updateInfo } = useInsertEmailAndPhoneNumber();
-
-  useEffect(() => {
-    if (!user?.userId) {
-      navigation("/cadastro");
-    }
-  }, [navigation, user]);
-
-  const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let input = e.target.value.replace(/\D/g, "");
-
-    if (input.length > 11) input = input.slice(0, 11);
-
-    let formatted = input;
-
-    if (input.length > 0) {
-      formatted = `(${input.slice(0, 2)}`;
-    }
-    if (input.length >= 3) {
-      formatted += `) ${input.slice(2, 7)}`;
-    }
-    if (input.length >= 8) {
-      formatted += `-${input.slice(7)}`;
-    }
-
-    setTelefone(formatted);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      try {
-        await updateInfo(name, telefone);
-        // Optionally clear temp data
-        navigation("/home");
-      } catch (err) {
-        setError("Erro ao atualizar informações");
-      }
-    } catch (error) {
-      setError("Erro na conexão com o servidor!");
-    }
-  };
+  const {
+    name,
+    setName,
+    telefone,
+    error,
+    isLoading,
+    handleTelefoneChange,
+    handleSubmit,
+  } = useInsertEmailPhonePage();
 
   return (
     <div className="flex w-full min-h-screen bg-black bg-cover bg-center bg-no-repeat bg-fixed px-2 sm:px-4 md:px-8 py-6 sm:py-10">
@@ -92,6 +51,7 @@ function InsertEmailAndPhoneNumber() {
               placeholder="Seu nome completo"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              disabled={isLoading}
               className="border border-white/10 rounded-md w-full h-12 bg-black/70 backdrop-blur-sm placeholder-white/70 text-base px-3 focus:border-[#B8952E] focus:outline-none"
               required
             />
@@ -104,6 +64,7 @@ function InsertEmailAndPhoneNumber() {
               placeholder="(00) 00000-0000"
               value={telefone}
               onChange={handleTelefoneChange}
+              disabled={isLoading}
               className="border border-white/10 rounded-md w-full h-12 bg-black/70 backdrop-blur-sm placeholder-white/70 text-base px-3 focus:border-[#B8952E] focus:outline-none"
               required
             />
@@ -117,11 +78,13 @@ function InsertEmailAndPhoneNumber() {
 
           <button
             type="submit"
+            disabled={isLoading}
             className="w-full max-w-md h-12 rounded-md bg-[#B8952E] text-black font-semibold hover:bg-yellow-400 transition-colors duration-200"
           >
             Continuar
           </button>
         </form>
+        {isLoading && <LoadingSpinner fullScreen message="Salvando..." />}
       </div>
     </div>
   );

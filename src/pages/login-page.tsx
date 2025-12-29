@@ -1,77 +1,19 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import type { CredentialResponse } from "@react-oauth/google";
-import useLogin from "../../hooks/useLogin";
-import LoadingSpinner from "../../components/loading-spinner";
+import useLoginPage from "../hooks/page/useLoginPage";
+import LoadingSpinner from "../components/loading-spinner";
 import { toast } from "sonner";
 
 function Login() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // for email/password only
-  const { loginWithEmail, loginWithGoogle, isLoadingEmail, isLoadingGoogle } =
-    useLogin();
-  const isBusy = isLoading || isLoadingEmail || isLoadingGoogle;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const data = await loginWithEmail(email, password);
-
-      if (data.user.name && data.user.telefone) {
-        toast.success("Login realizado com sucesso!");
-        setTimeout(() => {
-          navigate("/home");
-        }, 100);
-      } else {
-        setTimeout(() => {
-          navigate("/insertEmailAndPhoneNumber");
-        }, 100);
-      }
-    } catch (err: any) {
-      console.error("Erro no login:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleGoogleLoginSuccess = async (
-    credentialResponse: CredentialResponse
-  ) => {
-    const token = credentialResponse.credential;
-    console.log(
-      "🔑 Token recebido do Google:",
-      token ? "SIM (tamanho: " + token.length + ")" : "NÃO"
-    );
-
-    if (!token) {
-      console.error("❌ Token vazio ou undefined");
-      toast.error("Token do Google inválido.");
-      return;
-    }
-
-    try {
-      console.log("📡 Iniciando login com Google...");
-      const result = await loginWithGoogle(token as string);
-
-      if (result.name && result.telefone) {
-        toast.success("Login realizado com sucesso!");
-        navigate("/home");
-      } else {
-        toast.success("Login realizado! Complete seu perfil.");
-        navigate("/insertEmailAndPhoneNumber");
-      }
-    } catch (err: any) {
-      console.error("❌ Erro no login:", err);
-      console.error("❌ Erro response:", err?.response?.data);
-      console.error("❌ Erro message:", err?.message);
-      toast.error("Erro ao fazer login com Google.");
-    }
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isBusy,
+    handleSubmit,
+    handleGoogleLoginSuccess,
+    goToCadastro,
+  } = useLoginPage();
 
   return (
     <div className="flex w-full min-h-screen items-center justify-center bg-black bg-cover bg-center bg-no-repeat bg-fixed px-2 sm:px-4 md:px-8 py-6 sm:py-10">
@@ -96,7 +38,7 @@ function Login() {
             </p>
             <button
               type="button"
-              onClick={() => navigate("/cadastro")}
+              onClick={goToCadastro}
               disabled={isBusy}
               className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-[#B8952E] rounded-[10px] font-medium hover:bg-yellow-400 transition-colors text-sm sm:text-base"
             >
@@ -110,6 +52,9 @@ function Login() {
           onSubmit={handleSubmit}
           className="w-full md:w-7/12 bg-neutral-800 rounded-[15px] p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 text-white"
         >
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#B8952E] mb-2">
+            Login
+          </h2>
           <div className="flex flex-col gap-2 w-full max-w-md">
             <label className="text-sm text-white/80">Email</label>
             <input
@@ -131,7 +76,7 @@ function Login() {
               className="border border-white/10 rounded-md w-full h-12 bg-black/70 backdrop-blur-sm placeholder-white/70 text-base px-3 focus:border-[#B8952E] focus:outline-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
+              disabled={isBusy}
               required
             />
           </div>

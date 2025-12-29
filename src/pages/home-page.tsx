@@ -1,18 +1,21 @@
-import { useState } from "react";
 import ImageCarousel from "../components/components";
 import ConfirmModal from "../components/modal";
-import useHome from "../hooks/useHome";
-import useAuth from "../hooks/useAuth";
+import useHomePage from "../hooks/page/useHomePage";
 import LoadingSpinner from "../components/loading-spinner";
 import { Trash2, Instagram, MessageCircle, Facebook } from "lucide-react";
 import { toast } from "sonner";
 
 function HomeInterface() {
-  const { user, loading: authLoading } = useAuth();
-  const { agendamentos, deleteAgendamento, loading } = useHome();
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [idToDelete, setIdToDelete] = useState<number | null>(null);
+  const {
+    user,
+    authLoading,
+    agendamentos,
+    loading,
+    modalOpen,
+    openDeleteModal,
+    confirmDelete,
+    closeModal,
+  } = useHomePage();
 
   // Show loading state while auth context is loading
   if (authLoading) {
@@ -34,25 +37,7 @@ function HomeInterface() {
     );
   }
 
-  const openDeleteModal = (id: number) => {
-    setIdToDelete(id);
-    setModalOpen(true);
-  };
-
-  const confirmDelete = async () => {
-    if (idToDelete === null) return;
-
-    try {
-      await deleteAgendamento(idToDelete);
-      toast.success("Agendamento deletado com sucesso!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Erro ao deletar agendamento.");
-    } finally {
-      setModalOpen(false);
-      setIdToDelete(null);
-    }
-  };
+  // Handlers moved into useHomePage hook
 
   return (
     <>
@@ -213,7 +198,7 @@ function HomeInterface() {
       <ConfirmModal
         isOpen={modalOpen}
         onConfirm={confirmDelete}
-        onCancel={() => setModalOpen(false)}
+        onCancel={closeModal}
         message="Tem certeza que deseja deletar este agendamento?"
       />
     </>

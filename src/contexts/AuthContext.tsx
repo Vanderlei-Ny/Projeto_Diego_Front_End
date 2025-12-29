@@ -38,7 +38,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Apply any token persisted from previous sessions so the validate endpoint
         // receives the Authorization header automatically.
         const storedToken = getPersistedAuthToken();
-        if (storedToken) setAuthToken(storedToken);
+        if (!storedToken) {
+          // No token persisted — skip validation call to avoid noisy toasts
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+        setAuthToken(storedToken);
 
         const res = await api.post("/login/validateToken");
         const data = res.data;

@@ -11,7 +11,7 @@ import AppLayout from "./components/app-layout";
 import RequireAuth from "./components/RequireAuth";
 import { Toaster } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Login from "./pages/login/index.tsx";
+import Login from "./pages/login-page.tsx";
 
 const queryClient = new QueryClient();
 
