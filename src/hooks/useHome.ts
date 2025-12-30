@@ -42,7 +42,9 @@ export default function useHome() {
               id: item.id ?? index,
               dataAgendamento: item.dataAgendamento,
               hour: item.hour.hourDisponible,
-              nameServices: item.service.map((s: any) => s.nameService),
+              nameServices: Array.isArray(item.service)
+                ? item.service.map((s: any) => s.nameService)
+                : [],
             }))
           : [];
       } catch (err) {

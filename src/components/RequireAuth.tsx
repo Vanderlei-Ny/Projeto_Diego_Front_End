@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { getPersistedAuthToken } from "@/http/api";
+import LoadingSpinner from "./loading-spinner";
 
 export default function RequireAuth({
   children,
@@ -34,20 +35,12 @@ export default function RequireAuth({
 
   // Show loading state while validating token
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
-        <div className="text-[#B8952E] text-lg">Carregando...</div>
-      </div>
-    );
+    return <LoadingSpinner fullScreen message="Carregando..." />;
   }
 
   // If not loading but no user or shouldn't render, don't render children
   if (!user || !shouldRender) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
-        <div className="text-[#B8952E] text-lg">Redirecionando...</div>
-      </div>
-    );
+    return <LoadingSpinner fullScreen message="Redirecionando..." />;
   }
 
   return <>{children}</>;

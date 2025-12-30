@@ -76,7 +76,10 @@ function HomeInterface() {
                 <p className="text-gray-100 font-medium text-sm sm:text-base">
                   Agende já
                 </p>
-                <button className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-[#B8952E] rounded-[10px] font-medium hover:bg-yellow-400 transition-colors text-sm sm:text-base">
+                <button
+                  onClick={() => (window.location.href = "/agendamento")}
+                  className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-[#B8952E] rounded-[10px] font-medium hover:bg-yellow-400 transition-colors text-sm sm:text-base"
+                >
                   Agendar
                 </button>
               </div>

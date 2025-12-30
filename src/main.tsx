@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import Cadastro from "./pages/cadastro";
@@ -7,6 +6,7 @@ import InsertEmailAndPhoneNumber from "./pages/emailAndPhoneNumber.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AuthProvider from "./contexts/AuthContext";
 import HomeInterface from "./pages/home-page.tsx";
+import Agendamento from "./pages/agendamento/index.tsx";
 import AppLayout from "./components/app-layout";
 import RequireAuth from "./components/RequireAuth";
 import { Toaster } from "sonner";
@@ -26,11 +26,14 @@ function Main() {
           element={<InsertEmailAndPhoneNumber />}
         />
         <Route
-          path="/home"
+          path="*"
           element={
             <RequireAuth>
               <AppLayout>
-                <HomeInterface />
+                <Routes>
+                  <Route path="/home" element={<HomeInterface />} />
+                  <Route path="/agendamento" element={<Agendamento />} />
+                </Routes>
               </AppLayout>
             </RequireAuth>
           }
@@ -46,10 +49,8 @@ createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId={clientId}>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <StrictMode>
-          <Main />
-          <Toaster position="bottom-right" />
-        </StrictMode>
+        <Main />
+        <Toaster position="bottom-right" />
       </AuthProvider>
     </QueryClientProvider>
   </GoogleOAuthProvider>
