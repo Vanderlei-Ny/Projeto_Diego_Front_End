@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Bot, GalleryVerticalEnd, House, SquareTerminal } from "lucide-react";
+import { GalleryVerticalEnd, House, SquareTerminal } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -51,25 +51,22 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export const AppSidebar = React.memo(function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
 
-  console.log("👤 AppSidebar - user:", user);
-  console.log(
-    "👤 AppSidebar - user?.roles:",
-    user?.roles,
-    "tipo:",
-    typeof user?.roles,
-    "array?:",
-    Array.isArray(user?.roles)
+  const userApplication = React.useMemo(
+    () => ({
+      name: user?.name ?? "Usuário",
+    }),
+    [user?.name]
   );
 
-  const userApplication = {
-    name: user?.name ?? "Usuário",
-  };
-
-  const safeRoles = Array.isArray(user?.roles) ? user?.roles : null;
-  console.log("👤 AppSidebar - safeRoles após validação:", safeRoles);
+  const safeRoles = React.useMemo(
+    () => (Array.isArray(user?.roles) ? user?.roles : null),
+    [user?.roles]
+  );
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -86,4 +83,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarRail />
     </Sidebar>
   );
-}
+});

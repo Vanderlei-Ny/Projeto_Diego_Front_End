@@ -1,14 +1,16 @@
 import ImageCarousel from "../components/components";
+import MobileCarousel from "../components/MobileCarousel";
+import SocialIcons from "../components/SocialIcons";
+import BarbershopLogo from "../components/BarbershopLogo";
 import ConfirmModal from "../components/modal";
 import useHomePage from "../hooks/page/useHomePage";
 import LoadingSpinner from "../components/loading-spinner";
-import { Trash2, Instagram, MessageCircle, Facebook } from "lucide-react";
-import { toast } from "sonner";
+import { Separator } from "../components/ui/separator";
+import { Trash2 } from "lucide-react";
 
 function HomeInterface() {
   const {
     user,
-    authLoading,
     agendamentos,
     loading,
     modalOpen,
@@ -17,24 +19,9 @@ function HomeInterface() {
     closeModal,
   } = useHomePage();
 
-  // Show loading state while auth context is loading
-  if (authLoading) {
-    return (
-      <div className="flex w-full h-screen items-center justify-center bg-black">
-        <LoadingSpinner message="Carregando..." size="lg" />
-      </div>
-    );
-  }
-
-  // Ensure user exists
+  // Ensure user exists (já validado pelo RequireAuth)
   if (!user) {
-    return (
-      <div className="flex w-full h-screen items-center justify-center bg-black">
-        <div className="text-white text-center">
-          <p>Erro: Usuário não encontrado</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   // Handlers moved into useHomePage hook
@@ -43,27 +30,24 @@ function HomeInterface() {
     <>
       <div className="flex w-full px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-10 min-h-screen md:h-screen ">
         <div className="flex w-full h-full flex-col items-center p-3 sm:p-6 md:p-10 bg-black rounded-[15px] gap-3 sm:gap-4">
-          <div className="flex flex-col md:justify-between lg:flex-row w-full bg-neutral-800 rounded-[15px] gap-3 sm:gap-4 md:gap-0">
+          <div className="flex flex-col justify-between lg:flex-row w-full bg-neutral-800 rounded-[15px] gap-3 sm:gap-4 md:gap-0">
+            {/* Nome da barbearia - Mobile (topo) */}
+            <BarbershopLogo variant="mobile" className="lg:hidden mx-3 mt-3" />
+
+            {/* Mobile Carousel - visível apenas em mobile */}
+            <div className="lg:hidden w-full">
+              <MobileCarousel />
+            </div>
+
+            {/* Separator visível apenas no mobile */}
+            <div className="lg:hidden w-full px-4">
+              <Separator className="bg-neutral-700" />
+            </div>
+
+            {/* Conteúdo Desktop - Nome + Botão à esquerda */}
             <div className="flex h-full flex-col justify-between gap-3 sm:gap-4 px-3 sm:px-4 py-3 sm:py-4 md:py-0 md:px-0">
-              <div
-                className="
-                  flex items-center 
-                  justify-center 
-                  bg-neutral-900 
-                  text-[#B8952E] 
-                  rounded-[15px] 
-                  p-2
-                  text-xs sm:text-sm md:text-base
-                  gap-2
-                  "
-              >
-                <p>Barbearia Diego Bueno</p>
-                <img
-                  src="/scissors.svg"
-                  className="w-4 h-4 sm:w-5 sm:h-5"
-                  alt="Tesoura"
-                />
-              </div>
+              {/* Nome da barbearia - Desktop */}
+              <BarbershopLogo variant="desktop" className="hidden lg:flex" />
               {/* aqui eu vou colocar o icon da empresa */}
               <div
                 className="
@@ -84,60 +68,20 @@ function HomeInterface() {
                 </button>
               </div>
             </div>
-            <div
-              className="
-                  flex items-center 
-                  px-2 sm:px-4 py-3 sm:py-4
-                  justify-center 
-                  w-full md:w-auto
-                  "
-            >
-              <div className="max-w-[300px] sm:max-w-[350px] md:max-w-[400px] w-full mx-auto">
-                <ImageCarousel />
-              </div>
+
+            {/* Desktop Carousel - visível apenas em desktop */}
+            <div className="hidden lg:flex items-center justify-center w-auto px-4 py-4">
+              <ImageCarousel />
             </div>
           </div>
-          <div className="flex flex-col lg:flex-row w-full h-full justify-between items-stretch gap-3 sm:gap-4 min-h-0 bg-neutral-800 rounded-[15px] p-3 sm:p-4">
-            <div className="relative group flex items-center cursor-pointer lg:flex">
-              <div className="rounded-md w-5 h-full bg-[#B8952E] hover:bg-yellow-400 transition-colors duration-200" />
-              <div className="absolute hidden flex-col left-full ml-3 top-1/2 -translate-y-1/2 z-10 group-hover:flex bg-neutral-900/95 rounded-md shadow-lg p-2 gap-2 animate-in fade-in slide-in-from-left-2 duration-200">
-                <a
-                  href="https://wa.me/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="WhatsApp"
-                  aria-label="WhatsApp"
-                  className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-neutral-800"
-                >
-                  <MessageCircle className="text-[#B8952E]" />
-                </a>
-                <a
-                  href="https://instagram.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Instagram"
-                  aria-label="Instagram"
-                  className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-neutral-800"
-                >
-                  <Instagram className="text-[#B8952E]" />
-                </a>
-                <a
-                  href="https://facebook.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Facebook"
-                  aria-label="Facebook"
-                  className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-neutral-800"
-                >
-                  <Facebook className="text-[#B8952E]" />
-                </a>
-              </div>
-            </div>
+          <div className="flex flex-col lg:flex-row w-full h-auto lg:h-full justify-between items-stretch gap-3 sm:gap-4 min-h-0 bg-neutral-800 rounded-[15px] p-3 sm:p-4">
+            {/* Barra lateral de redes sociais - Desktop */}
+            <SocialIcons variant="desktop" />
             <div className="flex flex-col w-full lg:w-75 bg-neutral-900 items-start justify-start px-2 sm:px-4 py-3 sm:py-4 rounded-md max-h-screen lg:max-h-full min-w-0 overflow-hidden">
               <p className="text-[#B8952E] font-semibold text-sm sm:text-base mb-2 sm:mb-3">
                 Seus agendamentos
               </p>
-              <div className="w-full overflow-y-auto max-h-[300px] sm:max-h-[350px] lg:max-h-full space-y-2 sm:space-y-3 pt-2">
+              <div className="w-full overflow-y-auto sm:max-h-[350px] lg:max-h-full space-y-2 sm:space-y-3 pt-2">
                 {loading ? (
                   <div className="flex items-center justify-center w-full py-8">
                     <LoadingSpinner
@@ -184,10 +128,10 @@ function HomeInterface() {
                       </div>
                       <button
                         onClick={() => openDeleteModal(item.id)}
-                        className="w-5 h-5 sm:w-6 sm:h-6 bg-contain bg-no-repeat bg-center cursor-pointer flex-shrink-0 hover:text-yellow-400 transition-colors p-1"
+                        className="flex-shrink-0 cursor-pointer hover:text-yellow-400 transition-colors"
                         title="Deletar agendamento"
                       >
-                        <Trash2 className="text-[#B8952E] w-full h-full" />
+                        <Trash2 className="text-[#B8952E] w-5 h-5 sm:w-5 sm:h-5" />
                       </button>
                     </div>
                   ))
@@ -195,6 +139,8 @@ function HomeInterface() {
               </div>
             </div>
           </div>
+
+          <SocialIcons variant="mobile" />
         </div>
       </div>
 

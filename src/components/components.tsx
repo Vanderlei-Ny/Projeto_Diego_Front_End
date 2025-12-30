@@ -14,7 +14,7 @@ export default function ImageCarousel() {
   }, [index]);
 
   return (
-    <div className="relative w-[300px] h-[300px] overflow-hidden rounded-xl ">
+    <div className="relative w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] md:w-[300px] md:h-[300px] overflow-hidden rounded-xl">
       <img
         src={images[index]}
         alt="Slide"

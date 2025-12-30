@@ -1,8 +1,11 @@
 import axios from "axios";
 import { toast } from "sonner";
 
+// Usa variável de ambiente ou localhost como fallback
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
 const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
