@@ -37,13 +37,20 @@ export default function useHome() {
 
         console.log("✅ Agendamentos recebidos:", data);
 
+        interface AgendamentoResponse {
+          id?: number;
+          dataAgendamento: string;
+          hour: { hourDisponible: string };
+          service?: Array<{ nameService: string }>;
+        }
+
         return Array.isArray(data)
-          ? data.map((item: any, index: number) => ({
+          ? data.map((item: AgendamentoResponse, index: number) => ({
               id: item.id ?? index,
               dataAgendamento: item.dataAgendamento,
               hour: item.hour.hourDisponible,
               nameServices: Array.isArray(item.service)
-                ? item.service.map((s: any) => s.nameService)
+                ? item.service.map((s) => s.nameService)
                 : [],
             }))
           : [];

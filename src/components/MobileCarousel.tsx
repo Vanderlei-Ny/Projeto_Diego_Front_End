@@ -3,7 +3,6 @@ import { useEffect, useState, useRef } from "react";
 const images = ["/BemVindo.svg", "/teste2.png", "/testeteste.png"];
 
 export default function MobileCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -45,12 +44,7 @@ export default function MobileCarousel() {
         setSlideIndex(slides.length - 2);
       }, 300);
     }
-    // Atualiza o índice real
-    const realIndex = slideIndex - 1;
-    if (realIndex >= 0 && realIndex < images.length) {
-      setCurrentIndex(realIndex);
-    }
-  }, [slideIndex]);
+  }, [slideIndex, slides.length]);
 
   // Touch handlers
   const handleTouchStart = (e: React.TouchEvent) => {

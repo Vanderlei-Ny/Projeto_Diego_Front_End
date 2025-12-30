@@ -28,6 +28,7 @@ export default function useLogin() {
         token: data.token,
         name: data.user.name ?? null,
         telefone: data.user.telefone ?? null,
+        hierarchy: data.user.Hierarchy ?? null,
         roles:
           data.user.Hierarchy ??
           data.user.roles ??
@@ -67,6 +68,7 @@ export default function useLogin() {
         telefone: raw.user.telefone ?? null,
         token: raw.token ?? null,
         roles: Array.isArray(raw.user.Hierarchy) ? raw.user.Hierarchy : null,
+        hierarchy: raw.user.Hierarchy ?? null,
         existingUser: raw.existingUser ?? false,
       };
 
@@ -80,6 +82,7 @@ export default function useLogin() {
         telefone: data.telefone ?? null,
         token: data.token ?? null,
         roles: data.roles ?? null,
+        hierarchy: data.hierarchy ?? null,
       });
     },
   });

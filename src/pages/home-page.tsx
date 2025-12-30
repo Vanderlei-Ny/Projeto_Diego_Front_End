@@ -6,13 +6,14 @@ import ConfirmModal from "../components/modal";
 import useHomePage from "../hooks/page/useHomePage";
 import LoadingSpinner from "../components/loading-spinner";
 import { Separator } from "../components/ui/separator";
-import { Trash2 } from "lucide-react";
+import { Trash2, Shield } from "lucide-react";
 
 function HomeInterface() {
   const {
     user,
     agendamentos,
     loading,
+    isAdmin,
     modalOpen,
     openDeleteModal,
     confirmDelete,
@@ -66,6 +67,16 @@ function HomeInterface() {
                 >
                   Agendar
                 </button>
+                {/* Botão de Admin - visível apenas para admins */}
+                {isAdmin && (
+                  <button
+                    onClick={() => (window.location.href = "/admin")}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-neutral-700 border border-[#B8952E] rounded-[10px] font-medium hover:bg-neutral-600 transition-colors text-sm sm:text-base text-[#B8952E]"
+                  >
+                    <Shield className="w-4 h-4" />
+                    Painel Admin
+                  </button>
+                )}
               </div>
             </div>
 

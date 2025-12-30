@@ -24,7 +24,7 @@ export default function useLoginPage() {
       } else {
         navigate("/insertEmailAndPhoneNumber");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Erro no login:", err);
     }
   };
@@ -54,10 +54,14 @@ export default function useLoginPage() {
         toast.success("Login realizado! Complete seu perfil.");
         navigate("/insertEmailAndPhoneNumber");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("❌ Erro no login:", err);
-      console.error("❌ Erro response:", err?.response?.data);
-      console.error("❌ Erro message:", err?.message);
+      const axiosError = err as {
+        response?: { data?: unknown };
+        message?: string;
+      };
+      console.error("❌ Erro response:", axiosError?.response?.data);
+      console.error("❌ Erro message:", axiosError?.message);
       toast.error("Erro ao fazer login com Google.");
     }
   };

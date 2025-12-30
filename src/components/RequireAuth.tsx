@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { getPersistedAuthToken } from "@/http/api";
@@ -10,12 +10,10 @@ export default function RequireAuth({
 }) {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
     // Wait for loading to finish before making decisions
     if (loading) {
-      setShouldRender(false);
       return;
     }
 
@@ -24,12 +22,10 @@ export default function RequireAuth({
     // If no token or no user after validation, redirect to login
     if (!token || !user) {
       navigate("/login", { replace: true });
-      setShouldRender(false);
       return;
     }
 
     // All checks passed, allow rendering
-    setShouldRender(true);
   }, [loading, user, navigate]);
 
   // Show loading state while validating token

@@ -23,7 +23,7 @@ export default function useCadastroPage() {
         throw new Error(created?.message || "Erro ao cadastrar");
       // After auth context sets userId, go to extra info page
       navigate("/insertEmailAndPhoneNumber");
-    } catch (err: any) {
+    } catch (err) {
       console.error("Erro no cadastro:", err);
     }
   };
@@ -54,10 +54,14 @@ export default function useCadastroPage() {
         toast.success("Autenticado! Complete seu perfil.");
         navigate("/insertEmailAndPhoneNumber");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("❌ Erro na autenticação:", err);
-      console.error("❌ Erro response:", err?.response?.data);
-      console.error("❌ Erro message:", err?.message);
+      const axiosError = err as {
+        response?: { data?: unknown };
+        message?: string;
+      };
+      console.error("❌ Erro response:", axiosError?.response?.data);
+      console.error("❌ Erro message:", axiosError?.message);
       toast.error("Erro ao autenticar com Google.");
     }
   };

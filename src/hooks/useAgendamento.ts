@@ -72,7 +72,9 @@ export default function useAgendamento() {
       // Invalida a query de listagem para atualizar a home
       queryClient.invalidateQueries({ queryKey: ["agendamentos"] });
     },
-    onError: (error: any) => {
+    onError: (
+      error: Error & { response?: { data?: { message?: string } } }
+    ) => {
       const message =
         error?.response?.data?.message || "Erro ao criar agendamento";
       toast.error(message);

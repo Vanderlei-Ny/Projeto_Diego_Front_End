@@ -4,7 +4,7 @@ import useHome from "../useHome";
 import useAuth from "../useAuth";
 
 export default function useHomePage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin } = useAuth();
   const { agendamentos, deleteAgendamento, loading, isDeleting } = useHome();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -36,6 +36,7 @@ export default function useHomePage() {
     agendamentos,
     loading,
     isDeleting,
+    isAdmin,
     modalOpen,
     idToDelete,
     openDeleteModal,

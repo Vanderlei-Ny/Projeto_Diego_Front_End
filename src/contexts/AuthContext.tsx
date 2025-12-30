@@ -6,12 +6,15 @@ import {
 } from "../http/api";
 import api from "../http/api";
 
+type Hierarchy = "CLIENT" | "ADMIN";
+
 interface User {
   userId: number | null;
   name?: string | null;
   telefone?: string | null;
   token?: string | null;
   roles?: string[] | null;
+  hierarchy?: Hierarchy | null;
 }
 
 interface AuthContextValue {
@@ -20,6 +23,7 @@ interface AuthContextValue {
   login: (user: User) => void;
   logout: () => void;
   loading: boolean;
+  isAdmin: boolean;
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
@@ -62,6 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 : Array.isArray(data.roles)
                 ? data.roles
                 : null,
+              hierarchy: userPayload.Hierarchy ?? null,
             } as User;
             setUser(parsed);
             if (parsed.token) {
@@ -98,9 +103,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     persistAuthToken(null);
   };
 
+  const isAdmin = user?.hierarchy === "ADMIN";
+
   const value = useMemo(
-    () => ({ user, setUser, login, logout, loading }),
-    [user, loading]
+    () => ({ user, setUser, login, logout, loading, isAdmin }),
+    [user, loading, isAdmin]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
