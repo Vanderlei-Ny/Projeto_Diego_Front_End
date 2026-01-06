@@ -91,7 +91,6 @@ export default function useAgendamentoPage() {
         await verifyDay(dateString);
       } catch (error) {
         console.error("Erro ao verificar dia:", error);
-        toast.error("Erro ao carregar horários para este dia.");
       }
     },
     [resetDayData, verifyDay]

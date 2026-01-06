@@ -55,7 +55,7 @@ function ServicosPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors"
             >
               <Plus className="w-5 h-5" />
               <span className="hidden sm:inline">Novo Serviço</span>
@@ -120,7 +120,7 @@ function ServicosPage() {
                 <button
                   onClick={handleCreateService}
                   disabled={!newServiceName.trim() || !newServiceValue.trim()}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Criar
                 </button>
@@ -166,10 +166,10 @@ function ServicosPage() {
                     onClick={() =>
                       handleDeleteService(service.id, service.name)
                     }
-                    className="p-2 hover:bg-red-900/30 rounded-lg transition-colors opacity-50 group-hover:opacity-100"
+                    className="p-2 hover:bg-red-600/20 rounded-lg transition-colors opacity-60 group-hover:opacity-100"
                     title="Deletar serviço"
                   >
-                    <Trash2 className="w-5 h-5 text-red-500" />
+                    <Trash2 className="w-5 h-5 text-white/70 group-hover:text-red-400" />
                   </button>
                 </div>
               ))}

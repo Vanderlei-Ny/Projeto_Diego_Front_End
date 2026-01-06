@@ -49,7 +49,7 @@ export default function AgendamentoCalendar({
   );
 
   return (
-    <div className="bg-neutral-800 rounded-[15px] ">
+    <div className="bg-neutral-800 rounded-[15px] p-4">
       <h2 className="text-lg font-semibold text-[#B8952E] mb-4">Data</h2>
 
       <Popover open={isOpen} onOpenChange={setIsOpen}>

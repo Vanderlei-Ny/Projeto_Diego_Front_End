@@ -106,11 +106,25 @@ export default function useServicosPage() {
     setPendingDeleteId(null);
   };
 
-  // Formatar valor enquanto digita
+  // Formatar valor enquanto digita em formato de moeda brasileira
   const handleValueChange = (value: string) => {
-    // Remove tudo que não é número ou vírgula/ponto
-    const cleaned = value.replace(/[^\d.,]/g, "");
-    setNewServiceValue(cleaned);
+    // Remove tudo que não é número
+    const numbers = value.replace(/\D/g, "");
+
+    // Se não tem números, limpa o campo
+    if (!numbers) {
+      setNewServiceValue("");
+      return;
+    }
+
+    // Converte para número e formata como moeda
+    const numberValue = parseInt(numbers) / 100;
+    const formatted = numberValue.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    setNewServiceValue(formatted);
   };
 
   return {

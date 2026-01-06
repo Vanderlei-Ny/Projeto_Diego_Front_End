@@ -85,7 +85,7 @@ function HorariosPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowAddDayForm(!showAddDayForm)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors"
             >
               <Plus className="w-5 h-5" />
               <span className="hidden sm:inline">Adicionar Dia</span>
@@ -145,7 +145,7 @@ function HorariosPage() {
                   <button
                     onClick={handleCreateDay}
                     disabled={!newDayName}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Criar Dia
                   </button>
@@ -212,10 +212,10 @@ function HorariosPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleRemoveDay(day.id)}
-                        className="p-2 rounded-lg hover:bg-red-900/30 transition-colors"
+                        className="p-2 rounded-lg hover:bg-red-600/20 transition-colors"
                         title="Remover dia"
                       >
-                        <Trash2 className="w-5 h-5 text-red-500" />
+                        <Trash2 className="w-5 h-5 text-white/70 hover:text-red-400" />
                       </button>
                     </div>
                   </div>
@@ -237,7 +237,7 @@ function HorariosPage() {
                               {hour.availableHour}
                               <button
                                 onClick={() => handleRemoveHour(hour.id)}
-                                className="text-red-400 hover:text-red-300"
+                                className="text-white/70 hover:text-red-400"
                                 title="Remover horário"
                               >
                                 <X className="w-4 h-4" />
@@ -266,7 +266,7 @@ function HorariosPage() {
                               handleAddHour();
                             }}
                             disabled={!newHourInput.trim()}
-                            className="px-4 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-4 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             Adicionar Horário
                           </button>

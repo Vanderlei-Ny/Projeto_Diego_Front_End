@@ -7,6 +7,7 @@ import AdminPage from "./pages/admin";
 import HorariosPage from "./pages/admin-horarios";
 import ServicosPage from "./pages/admin-servicos";
 import FolgasPage from "./pages/admin-folgas";
+import CarouselPage from "./pages/admin/carousel";
 import Login from "./pages/login-page.tsx";
 import ProtectedLayout from "./components/ProtectedLayout.tsx";
 import RequireAdmin from "./components/RequireAdmin";
@@ -57,6 +58,14 @@ export default function App() {
             element={
               <RequireAdmin>
                 <FolgasPage />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/carousel"
+            element={
+              <RequireAdmin>
+                <CarouselPage />
               </RequireAdmin>
             }
           />

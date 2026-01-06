@@ -6,6 +6,7 @@ import {
   User,
   Trash2,
   CalendarDays,
+  Image,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
@@ -65,7 +66,6 @@ function AdminPage() {
   } = useAdminPage();
 
   const handleGoHome = () => navigate("/home");
-  const handleGoToHorarios = () => navigate("/admin/horarios");
 
   // Agrupar agendamentos por data
   const agendamentosPorData = agendamentos.reduce<
@@ -97,13 +97,6 @@ function AdminPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={handleGoToHorarios}
-              className="flex items-center gap-2 px-4 py-2 bg-neutral-700 text-white rounded-lg font-medium hover:bg-neutral-600 transition-colors"
-            >
-              <CalendarDays className="w-5 h-5" />
-              <span className="hidden sm:inline">Horários</span>
-            </button>
             <button
               onClick={() => setShowForm(!showForm)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
