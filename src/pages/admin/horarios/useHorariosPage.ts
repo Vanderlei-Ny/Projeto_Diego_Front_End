@@ -83,7 +83,6 @@ export default function useHorariosPage() {
     queryKey: ["allDaysAndHours"],
     queryFn: async () => {
       const res = await api.get("/dayAndHours/listAll");
-      console.log("🔍 Dados recebidos do backend:", res.data);
       return res.data as DayWithHours[];
     },
     enabled: isAdmin,
@@ -103,8 +102,6 @@ export default function useHorariosPage() {
   const allDaysAndHours = [...allDaysAndHoursRaw].sort(
     (a, b) => dayOrder[a.weekday] - dayOrder[b.weekday]
   );
-
-  console.log("📅 Dias após ordenação:", allDaysAndHours);
 
   // Mutation para adicionar horário
   const addHourMutation = useMutation({

@@ -6,8 +6,6 @@ export default function useHome() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  console.log("📊 useHome - user:", user?.userId);
-
   const {
     data: agendamentos = [],
     isLoading: loading,
@@ -15,10 +13,7 @@ export default function useHome() {
   } = useQuery({
     queryKey: ["agendamentos", user?.userId],
     queryFn: async () => {
-      console.log("📥 Buscando agendamentos para usuário:", user?.userId);
-
       if (!user?.userId) {
-        console.log("⚠️ Sem userId ainda");
         return [];
       }
 
@@ -27,8 +22,6 @@ export default function useHome() {
           `/agendamento/listAgendamentoOfUser/${user.userId}`
         );
         const data = res.data;
-
-        console.log("✅ Agendamentos recebidos:", data);
 
         interface AgendamentoResponse {
           id?: number;
@@ -48,7 +41,6 @@ export default function useHome() {
             }))
           : [];
       } catch (err) {
-        console.error("❌ Erro ao buscar agendamentos:", err);
         return [];
       }
     },
@@ -59,11 +51,9 @@ export default function useHome() {
 
   const deleteAgendamentoMutation = useMutation({
     mutationFn: async (agendamentoId: number) => {
-      console.log("🗑️ Deletando agendamento:", agendamentoId);
       await api.delete(`/agendamento/deleteAgendamento/${agendamentoId}`);
     },
     onSuccess: () => {
-      console.log("✅ Agendamento deletado, invalidando cache");
       queryClient.invalidateQueries({ queryKey: ["agendamentos"] });
     },
   });

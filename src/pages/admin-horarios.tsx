@@ -4,7 +4,6 @@ import {
   Clock,
   Trash2,
   X,
-  Power,
   ChevronDown,
   CalendarDays,
 } from "lucide-react";
@@ -12,18 +11,6 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
 import useHorariosPage from "./admin/horarios/useHorariosPage";
-
-interface Hour {
-  id: number;
-  hourDisponible: string;
-}
-
-interface DayWithHours {
-  id: number;
-  diaDaSemana: string;
-  falseOrTrue: boolean;
-  hours: Hour[];
-}
 
 type DiaDaSemana =
   | "DOMINGO"
@@ -61,12 +48,10 @@ function HorariosPage() {
     availableDaysToAdd,
     isAddingHour,
     isRemovingHour,
-    isTogglingDay,
     isCreatingDay,
     isRemovingDay,
     handleAddHour,
     handleRemoveHour,
-    handleToggleDay,
     handleCreateDay,
     handleRemoveDay,
     // Modal de confirmação
@@ -79,11 +64,7 @@ function HorariosPage() {
   const handleGoBack = () => navigate("/admin");
 
   const isProcessing =
-    isAddingHour ||
-    isRemovingHour ||
-    isTogglingDay ||
-    isCreatingDay ||
-    isRemovingDay;
+    isAddingHour || isRemovingHour || isCreatingDay || isRemovingDay;
 
   return (
     <div className="flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 bg-black flex-col">
@@ -194,7 +175,7 @@ function HorariosPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {allDaysAndHours.map((day: DayWithHours) => (
+              {allDaysAndHours.map((day) => (
                 <div
                   key={day.id}
                   className={`bg-black border rounded-xl overflow-hidden transition-all ${
@@ -223,36 +204,12 @@ function HorariosPage() {
                       </button>
                       <div className="flex flex-col">
                         <span className="font-semibold">
-                          {dayNameMap[day.diaDaSemana]}
-                        </span>
-                        <span className="text-white/60 text-sm">
-                          {day.diaDaSemana}
+                          {dayNameMap[day.weekday]}
                         </span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <button
-                        onClick={() =>
-                          handleToggleDay(day.id, !day.falseOrTrue)
-                        }
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          day.falseOrTrue
-                            ? "bg-red-600 text-white hover:bg-red-700"
-                            : "bg-green-600 text-white hover:bg-green-700"
-                        }`}
-                      >
-                        {day.falseOrTrue ? (
-                          <>
-                            <Power className="w-4 h-4" /> Desativar
-                          </>
-                        ) : (
-                          <>
-                            <Power className="w-4 h-4" /> Ativar
-                          </>
-                        )}
-                      </button>
-
                       <button
                         onClick={() => handleRemoveDay(day.id)}
                         className="p-2 rounded-lg hover:bg-red-900/30 transition-colors"
@@ -277,11 +234,9 @@ function HorariosPage() {
                               key={hour.id}
                               className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg"
                             >
-                              {hour.hourDisponible}
+                              {hour.availableHour}
                               <button
-                                onClick={() =>
-                                  handleRemoveHour(day.id, hour.id)
-                                }
+                                onClick={() => handleRemoveHour(hour.id)}
                                 className="text-red-400 hover:text-red-300"
                                 title="Remover horário"
                               >
@@ -304,7 +259,12 @@ function HorariosPage() {
                         />
                         <div className="flex gap-2">
                           <button
-                            onClick={() => handleAddHour(day.id)}
+                            onClick={() => {
+                              if (selectedDayToManage !== day.id) {
+                                setSelectedDayToManage(day.id);
+                              }
+                              handleAddHour();
+                            }}
                             disabled={!newHourInput.trim()}
                             className="px-4 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >

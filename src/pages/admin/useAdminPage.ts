@@ -10,8 +10,8 @@ dayjs.locale("pt-br");
 
 interface Service {
   id: number;
-  nameService: string;
-  valueService: string;
+  name: string;
+  value: string;
 }
 
 interface AgendamentoService {
@@ -36,7 +36,7 @@ interface Agendamento {
 
 interface Hour {
   id: number;
-  hourDisponible: string;
+  availableHour: string;
 }
 
 interface DayData {

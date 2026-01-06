@@ -33,17 +33,6 @@ interface Agendamento {
   services: AgendamentoService[];
 }
 
-interface Hour {
-  id: number;
-  availableHour: string;
-}
-
-interface Service {
-  id: number;
-  name: string;
-  value: string;
-}
-
 function AdminPage() {
   const navigate = useNavigate();
   const {
@@ -193,7 +182,7 @@ function AdminPage() {
                           Nenhum horário disponível.
                         </p>
                       )}
-                    {hoursDisponible.map((hour: Hour) => (
+                    {hoursDisponible.map((hour) => (
                       <button
                         key={hour.id}
                         onClick={() => handleHourSelect(hour.id)}
@@ -206,7 +195,7 @@ function AdminPage() {
                         {hour.availableHour}
                       </button>
                     ))}
-                    {hoursAgendados.map((hour: Hour) => (
+                    {hoursAgendados.map((hour) => (
                       <button
                         key={hour.id}
                         disabled
@@ -225,7 +214,7 @@ function AdminPage() {
                   <User className="w-4 h-4" /> Serviços
                 </h3>
                 <div className="space-y-2">
-                  {services.map((service: Service) => (
+                  {services.map((service) => (
                     <button
                       key={service.id}
                       onClick={() => handleServiceToggle(service.id)}

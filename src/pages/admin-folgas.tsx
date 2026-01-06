@@ -86,10 +86,7 @@ function FolgasPage() {
 
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Calendário */}
-            <div className="lg:w-1/2">
-              <label className="block text-white/80 text-sm mb-2">
-                Selecione a Data
-              </label>
+            <div className="lg:w-1/2 ">
               <AgendamentoCalendar
                 selectedDate={selectedDate}
                 onSelect={handleDateSelect}
@@ -106,7 +103,7 @@ function FolgasPage() {
             </div>
 
             {/* Motivo e ações */}
-            <div className="lg:w-1/2 flex flex-col gap-4">
+            <div className="lg:w-1/2 flex flex-col gap-4 ">
               <div>
                 <label className="block text-white/80 text-sm mb-2">
                   Motivo (opcional)

@@ -51,7 +51,7 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "Dashboard",
+          title: "Agendamentos",
           url: "/admin",
           icon: LayoutDashboard,
           allowedRoles: ["ADMIN"],

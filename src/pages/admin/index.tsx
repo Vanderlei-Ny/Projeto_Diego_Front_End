@@ -35,7 +35,7 @@ interface Agendamento {
 
 interface Hour {
   id: number;
-  hourDisponible: string;
+  availableHour: string;
 }
 
 interface Service {
@@ -203,7 +203,7 @@ function AdminPage() {
                             : "bg-black border-white/10 text-white hover:border-white/30"
                         }`}
                       >
-                        {hour.hourDisponible}
+                        {hour.availableHour}
                       </button>
                     ))}
                     {hoursAgendados.map((hour: Hour) => (
@@ -212,7 +212,7 @@ function AdminPage() {
                         disabled
                         className="py-2 rounded-lg text-sm font-medium border bg-red-900/30 border-red-900/50 text-red-500 cursor-not-allowed"
                       >
-                        {hour.hourDisponible}
+                        {hour.availableHour}
                       </button>
                     ))}
                   </div>
