@@ -224,7 +224,10 @@ function HorariosPage() {
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg font-medium text-white">
-                        DEBUG: {JSON.stringify(day.weekday)} - {day.weekday ? (dayNameMap[day.weekday] || day.weekday) : "Sem nome"}
+                        DEBUG: {JSON.stringify(day.weekday)} -{" "}
+                        {day.weekday
+                          ? dayNameMap[day.weekday] || day.weekday
+                          : "Sem nome"}
                       </span>
                       <span className="px-2 py-0.5 bg-neutral-800 rounded-full text-white/60 text-xs">
                         {day.hours?.length || 0} horário
@@ -284,22 +287,24 @@ function HorariosPage() {
                             {day.hours.map((hour: Hour) => {
                               console.log("⏰ Horário:", hour);
                               return (
-                              <div
-                                key={hour.id}
-                                className="inline-flex items-center gap-2 px-3 py-2 bg-black border border-white/10 rounded-lg group hover:border-[#B8952E]/50 transition-colors"
-                              >
-                                <Clock className="w-4 h-4 text-[#B8952E]" />
-                                <span className="text-white font-medium">
-                                  DEBUG: {JSON.stringify(hour.availableHour)} - {hour.availableHour || "Sem horário"}
-                                </span>
-                                <button
-                                  onClick={() => handleRemoveHour(hour.id)}
-                                  className="p-1 hover:bg-red-900/30 rounded transition-colors opacity-50 group-hover:opacity-100"
+                                <div
+                                  key={hour.id}
+                                  className="inline-flex items-center gap-2 px-3 py-2 bg-black border border-white/10 rounded-lg group hover:border-[#B8952E]/50 transition-colors"
                                 >
-                                  <X className="w-4 h-4 text-red-500" />
-                                </button>
-                              </div>
-                            )})}
+                                  <Clock className="w-4 h-4 text-[#B8952E]" />
+                                  <span className="text-white font-medium">
+                                    DEBUG: {JSON.stringify(hour.availableHour)}{" "}
+                                    - {hour.availableHour || "Sem horário"}
+                                  </span>
+                                  <button
+                                    onClick={() => handleRemoveHour(hour.id)}
+                                    className="p-1 hover:bg-red-900/30 rounded transition-colors opacity-50 group-hover:opacity-100"
+                                  >
+                                    <X className="w-4 h-4 text-red-500" />
+                                  </button>
+                                </div>
+                              );
+                            })}
                           </div>
                         )}
                       </div>
