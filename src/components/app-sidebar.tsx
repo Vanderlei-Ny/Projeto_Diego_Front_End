@@ -1,7 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { GalleryVerticalEnd, House, SquareTerminal } from "lucide-react";
+import {
+  GalleryVerticalEnd,
+  House,
+  SquareTerminal,
+  Clock,
+  LayoutDashboard,
+  Scissors,
+  CalendarOff,
+} from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -39,12 +47,32 @@ const data = {
       title: "Admin",
       url: "/admin",
       icon: SquareTerminal,
-      allowedRoles: ["admin"],
+      allowedRoles: ["ADMIN"],
+      isActive: true,
       items: [
         {
           title: "Dashboard",
-          url: "/admin/dashboard",
-          allowedRoles: ["admin"],
+          url: "/admin",
+          icon: LayoutDashboard,
+          allowedRoles: ["ADMIN"],
+        },
+        {
+          title: "Horários",
+          url: "/admin/horarios",
+          icon: Clock,
+          allowedRoles: ["ADMIN"],
+        },
+        {
+          title: "Serviços",
+          url: "/admin/servicos",
+          icon: Scissors,
+          allowedRoles: ["ADMIN"],
+        },
+        {
+          title: "Folgas",
+          url: "/admin/folgas",
+          icon: CalendarOff,
+          allowedRoles: ["ADMIN"],
         },
       ],
     },
@@ -63,10 +91,18 @@ export const AppSidebar = React.memo(function AppSidebar({
     [user?.name]
   );
 
-  const safeRoles = React.useMemo(
-    () => (Array.isArray(user?.roles) ? user?.roles : null),
-    [user?.roles]
-  );
+  // Combinar roles do array + hierarchy para garantir que admin seja reconhecido
+  const safeRoles = React.useMemo(() => {
+    const roles: string[] = [];
+    if (Array.isArray(user?.roles)) {
+      roles.push(...user.roles);
+    }
+    // Adiciona hierarchy como role também (ADMIN, CLIENT, etc)
+    if (user?.hierarchy) {
+      roles.push(user.hierarchy);
+    }
+    return roles.length > 0 ? roles : null;
+  }, [user?.roles, user?.hierarchy]);
 
   return (
     <Sidebar collapsible="icon" {...props}>

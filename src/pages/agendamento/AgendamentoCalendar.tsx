@@ -6,17 +6,20 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useCallback, useState } from "react";
+import dayjs from "dayjs";
 
 interface AgendamentoCalendarProps {
   selectedDate: Date | undefined;
   onSelect: (date: Date | undefined) => void;
   activeWeekdays: string[];
+  diasBloqueados?: string[]; // Array de datas bloqueadas no formato "YYYY-MM-DD"
 }
 
 export default function AgendamentoCalendar({
   selectedDate,
   onSelect,
   activeWeekdays,
+  diasBloqueados = [],
 }: AgendamentoCalendarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -68,6 +71,12 @@ export default function AgendamentoCalendar({
               const isPast = date < today;
 
               if (isPast) return true;
+
+              // Verificar se o dia está bloqueado
+              const dateStr = dayjs(date).format("YYYY-MM-DD");
+              if (diasBloqueados.includes(dateStr)) {
+                return true;
+              }
 
               if (activeWeekdays && activeWeekdays.length > 0) {
                 const weekdayIndex = date.getDay();

@@ -13,6 +13,27 @@ const api = axios.create({
   withCredentials: true,
 });
 
+let refreshPromise: Promise<string | null> | null = null;
+
+export async function refreshAccessToken(): Promise<string | null> {
+  try {
+    const res = await api.post("/login/refresh");
+    const token = res.data?.token as string | undefined;
+    if (token) {
+      setAuthToken(token);
+      persistAuthToken(token);
+      return token;
+    }
+    return null;
+  } catch (err) {
+    setAuthToken(null);
+    persistAuthToken(null);
+    return null;
+  } finally {
+    refreshPromise = null;
+  }
+}
+
 // Helper to set token in default headers
 export function setAuthToken(token?: string | null) {
   if (token) api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -36,7 +57,29 @@ api.interceptors.request.use(
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const status = error?.response?.status;
+    const originalRequest = error.config;
+
+    const isAuthEndpoint = originalRequest?.url?.includes("/login/");
+    const isRefreshCall = originalRequest?.url?.includes("/login/refresh");
+
+    // Tenta renovar apenas quando 401 e não é a própria rota de refresh
+    if (status === 401 && !isAuthEndpoint && !isRefreshCall) {
+      if (!refreshPromise) {
+        refreshPromise = refreshAccessToken();
+      }
+      const newToken = await refreshPromise;
+      if (newToken) {
+        (originalRequest as any).headers = originalRequest.headers || {};
+        (originalRequest as any).headers[
+          "Authorization"
+        ] = `Bearer ${newToken}`;
+        (originalRequest as any).__isRetryRequest = true;
+        return api(originalRequest);
+      }
+    }
+
     const message =
       error?.response?.data?.message ||
       error?.message ||

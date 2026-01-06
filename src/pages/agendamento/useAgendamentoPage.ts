@@ -15,6 +15,7 @@ export default function useAgendamentoPage() {
     isCreatingAgendamento,
     dayData,
     resetDayData,
+    diasBloqueados,
   } = useAgendamento();
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
@@ -164,6 +165,7 @@ export default function useAgendamentoPage() {
     isBusy,
     isVerifyingDay,
     activeWeekdays,
+    diasBloqueados,
 
     // state
     selectedDate,

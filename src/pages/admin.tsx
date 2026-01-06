@@ -8,10 +8,10 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "../../components/loading-spinner";
-import ConfirmModal from "../../components/modal";
-import AgendamentoCalendar from "../agendamento/AgendamentoCalendar";
-import useAdminPage from "./useAdminPage";
+import LoadingSpinner from "../components/loading-spinner";
+import ConfirmModal from "../components/modal";
+import AgendamentoCalendar from "./agendamento/AgendamentoCalendar";
+import useAdminPage from "./admin/useAdminPage";
 
 interface AgendamentoService {
   id: number;
@@ -35,13 +35,13 @@ interface Agendamento {
 
 interface Hour {
   id: number;
-  hourDisponible: string;
+  availableHour: string;
 }
 
 interface Service {
   id: number;
-  nameService: string;
-  valueService: string;
+  name: string;
+  value: string;
 }
 
 function AdminPage() {
@@ -200,19 +200,19 @@ function AdminPage() {
                         className={`py-2 rounded-lg text-sm font-medium border transition-all ${
                           selectedHour === hour.id
                             ? "bg-[#B8952E] border-[#B8952E] text-black"
-                            : "bg-black border-white/10 text-white hover:border-white/30"
+                            : "bg-black border-white/10 text-white"
                         }`}
                       >
-                        {hour.hourDisponible}
+                        {hour.availableHour}
                       </button>
                     ))}
                     {hoursAgendados.map((hour: Hour) => (
                       <button
                         key={hour.id}
                         disabled
-                        className="py-2 rounded-lg text-sm font-medium border bg-red-900/30 border-red-900/50 text-red-500 cursor-not-allowed"
+                        className="py-2 rounded-lg text-sm bg-black border-white/5 text-white/20 cursor-not-allowed"
                       >
-                        {hour.hourDisponible}
+                        {hour.availableHour}
                       </button>
                     ))}
                   </div>
@@ -221,39 +221,54 @@ function AdminPage() {
 
               {/* Serviços */}
               <div className="lg:w-1/3">
-                <h3 className="text-white font-medium mb-3">Serviços *</h3>
-                <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto">
+                <h3 className="text-white font-medium mb-3 flex items-center gap-2">
+                  <User className="w-4 h-4" /> Serviços
+                </h3>
+                <div className="space-y-2">
                   {services.map((service: Service) => (
                     <button
                       key={service.id}
                       onClick={() => handleServiceToggle(service.id)}
-                      className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border text-sm font-medium transition-all ${
                         selectedServices.includes(service.id)
-                          ? "bg-[#B8952E]/20 border-[#B8952E] text-[#B8952E]"
-                          : "bg-black border-white/10 text-white hover:border-white/30"
+                          ? "bg-[#B8952E] border-[#B8952E] text-black"
+                          : "bg-black border-white/10 text-white"
                       }`}
                     >
-                      <span className="text-sm">{service.nameService}</span>
-                      <span className="text-sm font-medium">
-                        R$ {service.valueService}
-                      </span>
+                      <div className="flex flex-col text-left">
+                        <span className="font-semibold">{service.name}</span>
+                        <span
+                          className={
+                            selectedServices.includes(service.id)
+                              ? "text-black/60"
+                              : "text-white/60"
+                          }
+                        >
+                          R$ {service.value}
+                        </span>
+                      </div>
+                      {selectedServices.includes(service.id) && <CheckIcon />}
                     </button>
                   ))}
+                  {services.length === 0 && (
+                    <p className="text-white/60 text-sm">
+                      Nenhum serviço cadastrado.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Botão de Criar */}
-            <div className="mt-6 flex justify-end">
+            {/* Footer de ações */}
+            <div className="flex flex-col md:flex-row gap-3 mt-6">
               <button
                 onClick={handleCreateAgendamento}
                 disabled={
-                  !nomeCliente.trim() ||
                   !selectedDate ||
                   !selectedHour ||
                   selectedServices.length === 0
                 }
-                className="px-6 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-[#a38427] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-3 bg-[#B8952E] text-black font-semibold rounded-lg hover:bg-[#d4af37] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 Criar Agendamento
               </button>
@@ -264,87 +279,58 @@ function AdminPage() {
         {/* Lista de Agendamentos */}
         <div className="bg-neutral-800 rounded-[15px] p-4 md:p-6">
           <h2 className="text-lg font-semibold text-[#B8952E] mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5" /> Todos os Agendamentos
+            <Calendar className="w-5 h-5" /> Agendamentos
           </h2>
 
-          {agendamentos.length === 0 ? (
-            <p className="text-white/60 text-center py-8">
-              Nenhum agendamento encontrado.
-            </p>
+          {Object.keys(agendamentosPorData).length === 0 ? (
+            <p className="text-white/60">Nenhum agendamento cadastrado.</p>
           ) : (
-            <div className="space-y-6">
-              {Object.entries(agendamentosPorData)
-                .sort((a, b) => {
-                  const dateA = new Date(
-                    agendamentos.find(
-                      (ag: Agendamento) => ag.dataAgendamento === a[0]
-                    )?.dataOriginal || 0
-                  );
-                  const dateB = new Date(
-                    agendamentos.find(
-                      (ag: Agendamento) => ag.dataAgendamento === b[0]
-                    )?.dataOriginal || 0
-                  );
-                  return dateA.getTime() - dateB.getTime();
-                })
-                .map(([data, agendamentosDoDia]: [string, Agendamento[]]) => (
-                  <div key={data}>
-                    <h3 className="text-white font-medium mb-3 flex items-center gap-2">
+            <div className="space-y-4">
+              {Object.entries(agendamentosPorData).map(
+                ([data, listaAgendamentos]) => (
+                  <div
+                    key={data}
+                    className="bg-black rounded-xl p-4 border border-white/10"
+                  >
+                    <div className="flex items-center gap-2 mb-3">
                       <Calendar className="w-4 h-4 text-[#B8952E]" />
-                      {data}
-                    </h3>
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {agendamentosDoDia.map((agendamento) => (
+                      <span className="text-white font-semibold">{data}</span>
+                    </div>
+                    <div className="space-y-2">
+                      {listaAgendamentos.map((agendamento) => (
                         <div
                           key={agendamento.id}
-                          className="bg-black border border-white/10 rounded-lg p-4 flex flex-col gap-3"
+                          className="flex items-center justify-between bg-neutral-900 rounded-lg p-3 border border-white/5"
                         >
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-2">
-                              <User className="w-4 h-4 text-[#B8952E]" />
-                              <span className="text-white font-medium">
-                                {agendamento.nomeCliente}
-                              </span>
-                            </div>
-                            <button
-                              onClick={() =>
-                                handleDeleteAgendamento(agendamento.id)
-                              }
-                              className="p-1.5 hover:bg-red-900/30 rounded transition-colors"
-                              title="Cancelar agendamento"
-                            >
-                              <Trash2 className="w-4 h-4 text-red-500" />
-                            </button>
+                          <div className="flex flex-col text-sm text-white gap-1">
+                            <span className="font-semibold">
+                              {agendamento.nomeCliente}
+                            </span>
+                            <span className="text-white/70">
+                              {agendamento.horario} - {agendamento.diaDaSemana}
+                            </span>
+                            <span className="text-white/60">
+                              Serviços:{" "}
+                              {agendamento.services
+                                .map((s) => s.nome)
+                                .join(", ")}
+                            </span>
                           </div>
-
-                          <div className="flex items-center gap-2 text-white/60 text-sm">
-                            <Clock className="w-4 h-4" />
-                            <span>{agendamento.horario}</span>
-                          </div>
-
-                          <div className="flex flex-wrap gap-1">
-                            {agendamento.services.map(
-                              (service: AgendamentoService) => (
-                                <span
-                                  key={service.id}
-                                  className="px-2 py-1 bg-[#B8952E]/20 text-[#B8952E] text-xs rounded"
-                                >
-                                  {service.nome}
-                                </span>
-                              )
-                            )}
-                          </div>
-
-                          {agendamento.telefone && (
-                            <p className="text-white/40 text-xs">
-                              📞 {agendamento.telefone}
-                            </p>
-                          )}
+                          <button
+                            onClick={() =>
+                              handleDeleteAgendamento(agendamento.id)
+                            }
+                            className="p-2 rounded-lg hover:bg-red-900/30 transition-colors"
+                            title="Cancelar agendamento"
+                          >
+                            <Trash2 className="w-5 h-5 text-red-400" />
+                          </button>
                         </div>
                       ))}
                     </div>
                   </div>
-                ))}
+                )
+              )}
             </div>
           )}
         </div>
@@ -358,6 +344,25 @@ function AdminPage() {
         onCancel={closeDeleteModal}
       />
     </div>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      className="w-4 h-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5 13l4 4L19 7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 

@@ -58,6 +58,11 @@ export default function useAdminPage() {
   const [dayData, setDayData] = useState<DayData | null>(null);
   const [isVerifyingDay, setIsVerifyingDay] = useState(false);
 
+  // Estados do modal de confirmação
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteModalMessage, setDeleteModalMessage] = useState("");
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+
   // Buscar todos os agendamentos (admin)
   const { data: agendamentos = [], isLoading } = useQuery({
     queryKey: ["admin-agendamentos"],
@@ -188,9 +193,23 @@ export default function useAdminPage() {
   };
 
   const handleDeleteAgendamento = (id: number) => {
-    if (confirm("Tem certeza que deseja cancelar este agendamento?")) {
-      deleteMutation.mutate(id);
+    setDeleteModalMessage("Tem certeza que deseja cancelar este agendamento?");
+    setPendingDeleteId(id);
+    setDeleteModalOpen(true);
+  };
+
+  // Funções do modal de confirmação
+  const confirmDelete = () => {
+    if (pendingDeleteId !== null) {
+      deleteMutation.mutate(pendingDeleteId);
     }
+    closeDeleteModal();
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setDeleteModalMessage("");
+    setPendingDeleteId(null);
   };
 
   return {
@@ -215,5 +234,10 @@ export default function useAdminPage() {
     handleServiceToggle,
     handleCreateAgendamento,
     handleDeleteAgendamento,
+    // Modal de confirmação
+    deleteModalOpen,
+    deleteModalMessage,
+    confirmDelete,
+    closeDeleteModal,
   };
 }

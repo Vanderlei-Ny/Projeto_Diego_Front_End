@@ -6,13 +6,13 @@ import useAuth from "../../../hooks/useAuth";
 
 interface Hour {
   id: number;
-  hourDisponible: string;
+  availableHour: string;
 }
 
 interface DayWithHours {
   id: number;
-  diaDaSemana: string;
-  falseOrTrue: boolean;
+  weekday: string;
+  isActive: boolean;
   hours: Hour[];
 }
 
@@ -71,11 +71,19 @@ export default function useHorariosPage() {
   const [showAddDayForm, setShowAddDayForm] = useState(false);
   const [newDayName, setNewDayName] = useState<DiaDaSemana | "">("");
 
+  // Estados do modal de confirmação
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteModalMessage, setDeleteModalMessage] = useState("");
+  const [pendingDeleteAction, setPendingDeleteAction] = useState<
+    (() => void) | null
+  >(null);
+
   // Buscar todos os dias e horários
   const { data: allDaysAndHoursRaw = [], isLoading: isLoadingDays } = useQuery({
     queryKey: ["allDaysAndHours"],
     queryFn: async () => {
       const res = await api.get("/dayAndHours/listAll");
+      console.log("🔍 Dados recebidos do backend:", res.data);
       return res.data as DayWithHours[];
     },
     enabled: isAdmin,
@@ -93,8 +101,10 @@ export default function useHorariosPage() {
   };
 
   const allDaysAndHours = [...allDaysAndHoursRaw].sort(
-    (a, b) => dayOrder[a.diaDaSemana] - dayOrder[b.diaDaSemana]
+    (a, b) => dayOrder[a.weekday] - dayOrder[b.weekday]
   );
+
+  console.log("📅 Dias após ordenação:", allDaysAndHours);
 
   // Mutation para adicionar horário
   const addHourMutation = useMutation({
@@ -188,9 +198,9 @@ export default function useHorariosPage() {
   };
 
   const handleRemoveHour = (hourId: number) => {
-    if (confirm("Tem certeza que deseja remover este horário?")) {
-      removeHourMutation.mutate(hourId);
-    }
+    setDeleteModalMessage("Tem certeza que deseja remover este horário?");
+    setPendingDeleteAction(() => () => removeHourMutation.mutate(hourId));
+    setDeleteModalOpen(true);
   };
 
   const handleToggleDay = (dayId: number) => {
@@ -209,17 +219,29 @@ export default function useHorariosPage() {
   };
 
   const handleRemoveDay = (dayId: number) => {
-    if (
-      confirm(
-        "Tem certeza que deseja remover este dia e todos os seus horários?"
-      )
-    ) {
-      removeDayMutation.mutate(dayId);
+    setDeleteModalMessage(
+      "Tem certeza que deseja remover este dia e todos os seus horários?"
+    );
+    setPendingDeleteAction(() => () => removeDayMutation.mutate(dayId));
+    setDeleteModalOpen(true);
+  };
+
+  // Funções do modal de confirmação
+  const confirmDelete = () => {
+    if (pendingDeleteAction) {
+      pendingDeleteAction();
     }
+    closeDeleteModal();
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setDeleteModalMessage("");
+    setPendingDeleteAction(null);
   };
 
   // Dias da semana disponíveis para adicionar
-  const existingDays = allDaysAndHours.map((d) => d.diaDaSemana);
+  const existingDays = allDaysAndHours.map((d) => d.weekday);
   const availableDaysToAdd: DiaDaSemana[] = (
     [
       "DOMINGO",
@@ -254,5 +276,10 @@ export default function useHorariosPage() {
     handleToggleDay,
     handleCreateDay,
     handleRemoveDay,
+    // Modal de confirmação
+    deleteModalOpen,
+    deleteModalMessage,
+    confirmDelete,
+    closeDeleteModal,
   };
 }

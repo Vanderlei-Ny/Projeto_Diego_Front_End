@@ -1,10 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Cadastro from "./pages/cadastro";
-import InsertEmailAndPhoneNumber from "./pages/emailAndPhoneNumber.tsx";
+import InsertEmailAndPhoneNumber from "./pages/insert-email-and-phone-number";
 import HomeInterface from "./pages/home-page.tsx";
-import Agendamento from "./pages/agendamento/index.tsx";
-import AdminPage from "./pages/admin/index.tsx";
-import HorariosPage from "./pages/admin/horarios/index.tsx";
+import Agendamento from "./pages/agendamento";
+import AdminPage from "./pages/admin";
+import HorariosPage from "./pages/admin-horarios";
+import ServicosPage from "./pages/admin-servicos";
+import FolgasPage from "./pages/admin-folgas";
 import Login from "./pages/login-page.tsx";
 import ProtectedLayout from "./components/ProtectedLayout.tsx";
 import RequireAdmin from "./components/RequireAdmin";
@@ -39,6 +41,22 @@ export default function App() {
             element={
               <RequireAdmin>
                 <HorariosPage />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/servicos"
+            element={
+              <RequireAdmin>
+                <ServicosPage />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/folgas"
+            element={
+              <RequireAdmin>
+                <FolgasPage />
               </RequireAdmin>
             }
           />

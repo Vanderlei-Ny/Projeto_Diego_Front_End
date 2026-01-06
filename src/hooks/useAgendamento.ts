@@ -5,13 +5,13 @@ import { toast } from "sonner";
 
 interface Service {
   id: number;
-  nameService: string;
-  valueService: string;
+  name: string;
+  value: string;
 }
 
 interface HourDisponible {
   id: number;
-  hourDisponible: string;
+  availableHour: string;
 }
 
 interface VerifyDayResponse {
@@ -38,6 +38,18 @@ export default function useAgendamento() {
     },
     retry: 2,
   });
+
+  // Busca dias bloqueados (folgas, feriados, etc)
+  const { data: diasBloqueadosData } = useQuery({
+    queryKey: ["diasBloqueadosDatas"],
+    queryFn: async () => {
+      const res = await api.get("/diaBloqueado/datas");
+      return res.data.diasBloqueados as string[];
+    },
+    retry: 2,
+  });
+
+  const diasBloqueados = diasBloqueadosData || [];
 
   // Verifica disponibilidade de um dia específico
   const verifyDayMutation = useMutation({
@@ -85,6 +97,7 @@ export default function useAgendamento() {
     services,
     loadingServices,
     servicesError,
+    diasBloqueados,
     verifyDay: (date: string) => verifyDayMutation.mutateAsync(date),
     createAgendamento: (data: {
       data: string;

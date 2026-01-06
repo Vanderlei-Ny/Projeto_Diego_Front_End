@@ -3,6 +3,7 @@ import {
   setAuthToken,
   persistAuthToken,
   getPersistedAuthToken,
+  refreshAccessToken,
 } from "../http/api";
 import api from "../http/api";
 
@@ -66,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 : Array.isArray(data.roles)
                 ? data.roles
                 : null,
-              hierarchy: userPayload.Hierarchy ?? null,
+              hierarchy: userPayload.hierarchy ?? null,
             } as User;
             setUser(parsed);
             if (parsed.token) {
@@ -75,7 +76,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           }
         }
-      } catch (err) {
+      } catch (err: any) {
+        // If token validation failed with 401, try to refresh
+        if (err?.response?.status === 401) {
+          try {
+            const newToken = await refreshAccessToken();
+            if (newToken) {
+              // Retry validation with the new token
+              const res = await api.post("/login/validateToken");
+              const data = res.data;
+
+              if (data) {
+                const userPayload = data.user ?? data;
+                if (userPayload && userPayload.id) {
+                  const parsed = {
+                    token: newToken,
+                    userId: userPayload.id,
+                    name: userPayload.name ?? null,
+                    telefone: userPayload.telefone ?? null,
+                    roles: Array.isArray(userPayload.roles)
+                      ? userPayload.roles
+                      : Array.isArray(data.roles)
+                      ? data.roles
+                      : null,
+                    hierarchy: userPayload.hierarchy ?? null,
+                  } as User;
+                  setUser(parsed);
+                  setAuthToken(newToken);
+                  persistAuthToken(newToken);
+                  setLoading(false);
+                  return;
+                }
+              }
+            }
+          } catch (_refreshErr) {
+            // Refresh also failed, clear session
+          }
+        }
         // token invalid or validation failed — ensure we don't keep a stale user
         setUser(null);
         setAuthToken(null);
