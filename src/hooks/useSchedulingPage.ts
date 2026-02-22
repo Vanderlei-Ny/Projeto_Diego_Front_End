@@ -36,13 +36,7 @@ export default function useAgendamentoPage() {
           ? res.data.activeDays
           : [];
         setActiveWeekdays(days);
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar dias ativos", err);
       });
-    return () => {
-      mounted = false;
-    };
   }, []);
 
   const normalizedServices = useMemo(() => {
@@ -90,7 +84,7 @@ export default function useAgendamentoPage() {
         const dateString = `${year}-${month}-${day}`;
         await verifyDay(dateString);
       } catch (error) {
-        console.error("Erro ao verificar dia:", error);
+        // Error handled silently
       }
     },
     [resetDayData, verifyDay],
@@ -139,7 +133,7 @@ export default function useAgendamentoPage() {
       toast.success("Agendamento realizado com sucesso!");
       navigate("/home");
     } catch (error) {
-      console.error("Erro ao criar agendamento:", error);
+      // Error handled silently
     }
   }, [
     createAgendamento,

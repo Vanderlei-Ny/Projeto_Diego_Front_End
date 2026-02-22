@@ -26,7 +26,6 @@ export default function ImageCarousel() {
       );
       setImages(sorted);
     } catch (error) {
-      console.error("Erro ao buscar imagens do carousel:", error);
       setImages([]);
     } finally {
       setLoading(false);
@@ -73,18 +72,6 @@ export default function ImageCarousel() {
         src={images[index].imageUrl}
         alt={`Slide ${index}`}
         className="w-full h-full object-cover transition duration-500"
-        onLoad={() =>
-          console.log(
-            "✅ ImageCarousel: Imagem carregada",
-            images[index].imageUrl
-          )
-        }
-        onError={() =>
-          console.error(
-            "❌ ImageCarousel: Erro ao carregar",
-            images[index].imageUrl
-          )
-        }
       />
       <button
         onClick={prev}

@@ -109,7 +109,7 @@ export default function useFolgasPage() {
         setShowAgendamentosWarning(false);
       }
     } catch (error) {
-      console.error(error);
+      // Error handled silently
     }
   };
 

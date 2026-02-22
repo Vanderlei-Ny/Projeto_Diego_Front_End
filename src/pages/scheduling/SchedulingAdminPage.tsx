@@ -83,14 +83,18 @@ function SchedulingAdminPage() {
                       </div>
                     ) : hoursDisponible.length === 0 &&
                       hoursAgendados.length > 0 ? (
-                      <div className="col-span-full flex items-center justify-center gap-3 py-8 px-4 bg-red-900/20 border border-red-900/50 rounded-lg">
-                        <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                        <div className="text-center">
-                          <p className="text-red-400 font-semibold">
-                            Todos os horários estão agendados
-                          </p>
-                          <p className="text-red-300 text-sm mt-1">
-                            Tente selecionar outro dia
+                      <div className="col-span-full flex items-center justify-center gap-3 py-8 px-4rounded-lg">
+                        <div className="flex flex-col items-center">
+                          <div className="flex gap-1">
+                            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                            <div className="text-center">
+                              <p className="text-red-400 font-semibold">
+                                Todos os horários estão agendados
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-white text-sm mt-1">
+                            Selecione um outro dia
                           </p>
                         </div>
                       </div>

@@ -24,7 +24,7 @@ export default function useCadastroPage() {
       // After auth context sets userId, go to extra info page
       navigate("/insertEmailAndPhoneNumber");
     } catch (err) {
-      console.error("Erro no cadastro:", err);
+      // Error handled silently
     }
   };
 
@@ -32,19 +32,13 @@ export default function useCadastroPage() {
     credentialResponse: CredentialResponse,
   ) => {
     const token = credentialResponse.credential;
-    console.log(
-      "🔑 Token recebido do Google:",
-      token ? "SIM (tamanho: " + token.length + ")" : "NÃO",
-    );
 
     if (!token) {
-      console.error("❌ Token vazio ou undefined");
       toast.error("Token do Google inválido.");
       return;
     }
 
     try {
-      console.log("📡 Iniciando autenticação com Google...");
       const data = await googleAuth(token as string);
 
       if (data.name && data.telefone) {
@@ -55,13 +49,6 @@ export default function useCadastroPage() {
         navigate("/insertEmailAndPhoneNumber");
       }
     } catch (err) {
-      console.error("❌ Erro na autenticação:", err);
-      const axiosError = err as {
-        response?: { data?: unknown };
-        message?: string;
-      };
-      console.error("❌ Erro response:", axiosError?.response?.data);
-      console.error("❌ Erro message:", axiosError?.message);
       toast.error("Erro ao autenticar com Google.");
     }
   };

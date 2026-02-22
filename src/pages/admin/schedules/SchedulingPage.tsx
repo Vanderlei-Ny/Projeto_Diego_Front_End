@@ -281,7 +281,6 @@ function SchedulingPage() {
                         ) : (
                           <div className="flex flex-wrap gap-2">
                             {day.hours.map((hour: Hour) => {
-                              console.log("⏰ Horário:", hour);
                               return (
                                 <div
                                   key={hour.id}

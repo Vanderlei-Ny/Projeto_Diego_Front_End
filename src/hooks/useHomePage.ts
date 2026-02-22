@@ -22,7 +22,6 @@ export default function useHomePage() {
       await deleteAgendamento(idToDelete);
       toast.success("Agendamento deletado com sucesso!");
     } catch (error) {
-      console.error(error);
       toast.error("Erro ao deletar agendamento.");
     } finally {
       setModalOpen(false);

@@ -46,7 +46,6 @@ export default function useCadastro() {
             null,
         });
       } catch (err) {
-        console.error("Erro ao logar automaticamente após cadastro:", err);
         // Fallback: keep minimal user so insert page can proceed
         login({ userId: _data.id, name: null, telefone: null, token: null });
       }
@@ -55,22 +54,10 @@ export default function useCadastro() {
 
   const googleAuthMutation = useMutation({
     mutationFn: async ({ token }: { token: string }) => {
-      console.log(
-        "📤 Enviando token para backend...",
-        token ? "OK (tamanho: " + token.length + ")" : "VAZIO"
-      );
-      console.log("📤 Token primeiros 50 caracteres:", token.substring(0, 50));
-
       const payload = { token };
-      console.log("📤 Payload que será enviado:", {
-        hasToken: !!payload.token,
-        tokenLength: payload.token?.length,
-      });
 
       const res = await api.post("/login/authWithGoogle", payload);
       const raw = res.data;
-
-      console.log("✅ Resposta recebida:", raw);
 
       if (!raw?.user?.id) {
         throw new Error("Erro ao autenticar com Google.");
@@ -88,7 +75,6 @@ export default function useCadastro() {
       return normalized;
     },
     onSuccess: (data) => {
-      console.log("🎉 Autenticação com sucesso:", data.id);
       login({
         userId: data.id,
         name: data.name ?? null,

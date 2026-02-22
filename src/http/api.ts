@@ -47,15 +47,9 @@ export function setAuthToken(token?: string | null) {
   else delete api.defaults.headers.common["Authorization"];
 }
 
-// Request interceptor for debugging
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
-    if (config.url?.includes("authWithGoogle")) {
-      console.log("📤 [REQUEST] Enviando para:", config.url);
-      console.log("📤 [REQUEST] Headers:", config.headers);
-      console.log("📤 [REQUEST] Body:", config.data);
-      console.log("📤 [REQUEST] Body type:", typeof config.data);
-    }
     return config;
   },
   (error) => Promise.reject(error),
@@ -102,7 +96,6 @@ export function persistAuthToken(token?: string | null) {
     else localStorage.removeItem(TOKEN_KEY);
   } catch (e) {
     // localStorage may be unavailable in some environments; ignore errors
-    console.warn("Could not access localStorage to persist auth token.", e);
   }
 }
 
@@ -110,7 +103,6 @@ export function getPersistedAuthToken(): string | null {
   try {
     return localStorage.getItem(TOKEN_KEY);
   } catch (e) {
-    console.warn("Could not access localStorage to read auth token.", e);
     return null;
   }
 }

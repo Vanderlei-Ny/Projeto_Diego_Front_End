@@ -28,7 +28,6 @@ export default function MobileCarousel() {
         )
       );
     } catch (error) {
-      console.error("Erro ao buscar imagens do carousel:", error);
       setImages([]);
     }
   };
@@ -159,18 +158,6 @@ export default function MobileCarousel() {
                   alt={`Slide ${index}`}
                   className="w-full h-full object-cover pointer-events-none select-none"
                   draggable={false}
-                  onLoad={() =>
-                    console.log(
-                      "✅ MobileCarousel: Imagem carregada",
-                      image.imageUrl
-                    )
-                  }
-                  onError={() =>
-                    console.error(
-                      "❌ MobileCarousel: Erro ao carregar",
-                      image.imageUrl
-                    )
-                  }
                 />
               </div>
             </div>
