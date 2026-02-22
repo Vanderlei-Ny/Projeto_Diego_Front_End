@@ -1,7 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { Bot, GalleryVerticalEnd, House, SquareTerminal } from "lucide-react";
+import {
+  GalleryVerticalEnd,
+  House,
+  SquareTerminal,
+  Clock,
+  LayoutDashboard,
+  Scissors,
+  CalendarOff,
+  BarChart3,
+  Image,
+} from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -16,7 +26,6 @@ import {
 } from "@/components/ui/sidebar";
 import useAuth from "@/hooks/useAuth";
 
-// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -39,37 +48,74 @@ const data = {
       title: "Admin",
       url: "/admin",
       icon: SquareTerminal,
-      allowedRoles: ["admin"],
+      allowedRoles: ["ADMIN"],
+      isActive: true,
       items: [
         {
           title: "Dashboard",
           url: "/admin/dashboard",
-          allowedRoles: ["admin"],
+          icon: BarChart3,
+          allowedRoles: ["ADMIN"],
+        },
+        {
+          title: "Agendamentos",
+          url: "/admin",
+          icon: LayoutDashboard,
+          allowedRoles: ["ADMIN"],
+        },
+        {
+          title: "Horários",
+          url: "/admin/horarios",
+          icon: Clock,
+          allowedRoles: ["ADMIN"],
+        },
+        {
+          title: "Serviços",
+          url: "/admin/servicos",
+          icon: Scissors,
+          allowedRoles: ["ADMIN"],
+        },
+        {
+          title: "Folgas",
+          url: "/admin/folgas",
+          icon: CalendarOff,
+          allowedRoles: ["ADMIN"],
+        },
+        {
+          title: "Carousel",
+          url: "/admin/carousel",
+          icon: Image,
+          allowedRoles: ["ADMIN"],
         },
       ],
     },
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export const AppSidebar = React.memo(function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
 
-  console.log("👤 AppSidebar - user:", user);
-  console.log(
-    "👤 AppSidebar - user?.roles:",
-    user?.roles,
-    "tipo:",
-    typeof user?.roles,
-    "array?:",
-    Array.isArray(user?.roles)
+  const userApplication = React.useMemo(
+    () => ({
+      name: user?.name ?? "Usuário",
+    }),
+    [user?.name],
   );
 
-  const userApplication = {
-    name: user?.name ?? "Usuário",
-  };
-
-  const safeRoles = Array.isArray(user?.roles) ? user?.roles : null;
-  console.log("👤 AppSidebar - safeRoles após validação:", safeRoles);
+  // Combinar roles do array + hierarchy para garantir que admin seja reconhecido
+  const safeRoles = React.useMemo(() => {
+    const roles: string[] = [];
+    if (Array.isArray(user?.roles)) {
+      roles.push(...user.roles);
+    }
+    // Adiciona hierarchy como role também (ADMIN, CLIENT, etc)
+    if (user?.hierarchy) {
+      roles.push(user.hierarchy);
+    }
+    return roles.length > 0 ? roles : null;
+  }, [user?.roles, user?.hierarchy]);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -86,4 +132,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarRail />
     </Sidebar>
   );
-}
+});

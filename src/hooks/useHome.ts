@@ -2,18 +2,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
 
-interface Agendamento {
-  id: number;
-  dataAgendamento: string;
-  hour: string;
-  nameServices: string[];
-}
-
 export default function useHome() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-
-  console.log("📊 useHome - user:", user?.userId);
 
   const {
     data: agendamentos = [],
@@ -22,10 +13,7 @@ export default function useHome() {
   } = useQuery({
     queryKey: ["agendamentos", user?.userId],
     queryFn: async () => {
-      console.log("📥 Buscando agendamentos para usuário:", user?.userId);
-
       if (!user?.userId) {
-        console.log("⚠️ Sem userId ainda");
         return [];
       }
 
@@ -35,18 +23,24 @@ export default function useHome() {
         );
         const data = res.data;
 
-        console.log("✅ Agendamentos recebidos:", data);
+        interface AgendamentoResponse {
+          id?: number;
+          dataAgendamento: string;
+          hour: { availableHour: string };
+          service?: Array<{ name: string }>;
+        }
 
         return Array.isArray(data)
-          ? data.map((item: any, index: number) => ({
+          ? data.map((item: AgendamentoResponse, index: number) => ({
               id: item.id ?? index,
               dataAgendamento: item.dataAgendamento,
-              hour: item.hour.hourDisponible,
-              nameServices: item.service.map((s: any) => s.nameService),
+              hour: item.hour.availableHour,
+              nameServices: Array.isArray(item.service)
+                ? item.service.map((s) => s.name)
+                : [],
             }))
           : [];
       } catch (err) {
-        console.error("❌ Erro ao buscar agendamentos:", err);
         return [];
       }
     },
@@ -57,11 +51,9 @@ export default function useHome() {
 
   const deleteAgendamentoMutation = useMutation({
     mutationFn: async (agendamentoId: number) => {
-      console.log("🗑️ Deletando agendamento:", agendamentoId);
       await api.delete(`/agendamento/deleteAgendamento/${agendamentoId}`);
     },
     onSuccess: () => {
-      console.log("✅ Agendamento deletado, invalidando cache");
       queryClient.invalidateQueries({ queryKey: ["agendamentos"] });
     },
   });

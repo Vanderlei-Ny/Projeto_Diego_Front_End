@@ -30,6 +30,7 @@ export function NavMain({
     items?: {
       title: string;
       url: string;
+      icon?: LucideIcon;
       allowedRoles?: string[];
     }[];
   }[];
@@ -74,7 +75,7 @@ export function NavMain({
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
+                    {item.icon && <item.icon className="text-[#B8952E]" />}
                     <span>{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
@@ -86,9 +87,15 @@ export function NavMain({
                       .map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
+                            <Link
+                              to={subItem.url}
+                              className="flex items-center gap-2"
+                            >
+                              {subItem.icon && (
+                                <subItem.icon className="h-4 w-4 text-[#B8952E]" />
+                              )}
                               <span>{subItem.title}</span>
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
