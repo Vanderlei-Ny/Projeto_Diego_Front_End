@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import useHome from "../useHome";
-import useAuth from "../useAuth";
+import useHome from "./useHome";
+import useAuth from "./useAuth";
 
 export default function useHomePage() {
   const { user, loading: authLoading, isAdmin } = useAuth();
@@ -22,7 +22,6 @@ export default function useHomePage() {
       await deleteAgendamento(idToDelete);
       toast.success("Agendamento deletado com sucesso!");
     } catch (error) {
-      console.error(error);
       toast.error("Erro ao deletar agendamento.");
     } finally {
       setModalOpen(false);

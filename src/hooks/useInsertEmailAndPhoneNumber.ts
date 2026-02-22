@@ -24,9 +24,12 @@ export default function useInsertEmailAndPhoneNumber() {
     },
     onSuccess: (data) => {
       setUser({
-        ...(user ?? {}),
-        name: data.name ?? data.name,
-        telefone: data.telefone ?? data.telefone,
+        userId: user?.userId ?? null,
+        name: data.name,
+        telefone: data.telefone,
+        token: user?.token ?? null,
+        roles: user?.roles ?? null,
+        hierarchy: user?.hierarchy ?? null,
       });
     },
   });

@@ -2,8 +2,8 @@ import { ChevronLeft, Plus, Calendar, Clock, User, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
-import AgendamentoCalendar from "./agendamento/AgendamentoCalendar";
-import useAdminPage from "./admin/useAdminPage";
+import AgendamentoCalendar from "./scheduling/SchedulingCalendar";
+import useAdminPage from "../hooks/useAdminPage";
 
 interface AgendamentoService {
   id: number;
@@ -302,7 +302,7 @@ function AdminPage() {
                       ))}
                     </div>
                   </div>
-                )
+                ),
               )}
             </div>
           )}

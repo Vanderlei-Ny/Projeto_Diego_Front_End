@@ -22,11 +22,10 @@ export default function ImageCarousel() {
       const res = await api.get("/carousel");
       const carouselImages = res.data || [];
       const sorted = carouselImages.sort(
-        (a: CarouselImage, b: CarouselImage) => a.order - b.order
+        (a: CarouselImage, b: CarouselImage) => a.order - b.order,
       );
       setImages(sorted);
     } catch (error) {
-      console.error("Erro ao buscar imagens do carousel:", error);
       setImages([]);
     } finally {
       setLoading(false);
@@ -73,18 +72,6 @@ export default function ImageCarousel() {
         src={images[index].imageUrl}
         alt={`Slide ${index}`}
         className="w-full h-full object-cover transition duration-500"
-        onLoad={() =>
-          console.log(
-            "✅ ImageCarousel: Imagem carregada",
-            images[index].imageUrl
-          )
-        }
-        onError={() =>
-          console.error(
-            "❌ ImageCarousel: Erro ao carregar",
-            images[index].imageUrl
-          )
-        }
       />
       <button
         onClick={prev}

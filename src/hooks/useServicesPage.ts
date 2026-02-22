@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import api from "../../../http/api";
-import useAuth from "../../../hooks/useAuth";
+import api from "../http/api";
+import useAuth from "./useAuth";
 
 interface Service {
   id: number;
@@ -55,7 +55,7 @@ export default function useServicosPage() {
   // Mutation para deletar serviço
   const deleteServiceMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await api.delete(`/service/deteteService/${id}`);
+      const res = await api.delete(`/service/deleteService/${id}`);
       return res.data;
     },
     onSuccess: () => {
@@ -86,7 +86,7 @@ export default function useServicosPage() {
 
   const handleDeleteService = (id: number, name: string) => {
     setDeleteModalMessage(
-      `Tem certeza que deseja deletar o serviço "${name}"?`
+      `Tem certeza que deseja deletar o serviço "${name}"?`,
     );
     setPendingDeleteId(id);
     setDeleteModalOpen(true);

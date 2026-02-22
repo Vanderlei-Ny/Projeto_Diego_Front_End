@@ -10,8 +10,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/loading-spinner";
 import ConfirmModal from "../../components/modal";
-import AgendamentoCalendar from "../agendamento/AgendamentoCalendar";
-import useAdminPage from "./useAdminPage";
+import AgendamentoCalendar from "../scheduling/SchedulingCalendar";
+import useAdminPage from "../../hooks/useAdminPage";
 
 interface AgendamentoService {
   id: number;
@@ -40,8 +40,8 @@ interface Hour {
 
 interface Service {
   id: number;
-  nameService: string;
-  valueService: string;
+  name: string;
+  value: string;
 }
 
 function AdminPage() {
@@ -233,9 +233,9 @@ function AdminPage() {
                           : "bg-black border-white/10 text-white hover:border-white/30"
                       }`}
                     >
-                      <span className="text-sm">{service.nameService}</span>
+                      <span className="text-sm">{service.name}</span>
                       <span className="text-sm font-medium">
-                        R$ {service.valueService}
+                        R$ {service.value}
                       </span>
                     </button>
                   ))}
@@ -277,13 +277,13 @@ function AdminPage() {
                 .sort((a, b) => {
                   const dateA = new Date(
                     agendamentos.find(
-                      (ag: Agendamento) => ag.dataAgendamento === a[0]
-                    )?.dataOriginal || 0
+                      (ag: Agendamento) => ag.dataAgendamento === a[0],
+                    )?.dataOriginal || 0,
                   );
                   const dateB = new Date(
                     agendamentos.find(
-                      (ag: Agendamento) => ag.dataAgendamento === b[0]
-                    )?.dataOriginal || 0
+                      (ag: Agendamento) => ag.dataAgendamento === b[0],
+                    )?.dataOriginal || 0,
                   );
                   return dateA.getTime() - dateB.getTime();
                 })
@@ -331,7 +331,7 @@ function AdminPage() {
                                 >
                                   {service.nome}
                                 </span>
-                              )
+                              ),
                             )}
                           </div>
 

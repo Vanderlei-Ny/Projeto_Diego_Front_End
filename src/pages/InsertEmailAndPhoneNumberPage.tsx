@@ -1,5 +1,5 @@
-import useInsertEmailPhonePage from "../../hooks/page/useInsertEmailPhonePage";
-import LoadingSpinner from "../../components/loading-spinner";
+import useInsertEmailPhonePage from "../hooks/useInsertEmailPhonePage";
+import LoadingSpinner from "../components/loading-spinner";
 
 function InsertEmailAndPhoneNumber() {
   const {

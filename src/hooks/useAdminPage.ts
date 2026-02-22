@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import api from "../../http/api";
-import useAuth from "../../hooks/useAuth";
+import api from "../http/api";
+import useAuth from "./useAuth";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 
@@ -167,7 +167,7 @@ export default function useAdminPage() {
     setSelectedServices((prev) =>
       prev.includes(serviceId)
         ? prev.filter((id) => id !== serviceId)
-        : [...prev, serviceId]
+        : [...prev, serviceId],
     );
   };
 

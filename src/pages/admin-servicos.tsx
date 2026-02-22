@@ -2,7 +2,7 @@ import { ChevronLeft, Plus, Trash2, Scissors, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
-import useServicosPage from "./admin/servicos/useServicosPage";
+import useServicosPage from "../hooks/useServicesPage";
 
 interface Service {
   id: number;

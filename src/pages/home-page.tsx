@@ -3,7 +3,7 @@ import MobileCarousel from "../components/MobileCarousel";
 import SocialIcons from "../components/SocialIcons";
 import BarbershopLogo from "../components/BarbershopLogo";
 import ConfirmModal from "../components/modal";
-import useHomePage from "../hooks/page/useHomePage";
+import useHomePage from "../hooks/useHomePage";
 import LoadingSpinner from "../components/loading-spinner";
 import { Separator } from "../components/ui/separator";
 import { Trash2, Shield } from "lucide-react";

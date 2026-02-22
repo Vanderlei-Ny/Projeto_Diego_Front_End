@@ -11,8 +11,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../components/loading-spinner";
 import ConfirmModal from "../../../components/modal";
-import AgendamentoCalendar from "../../agendamento/AgendamentoCalendar";
-import useFolgasPage from "./useFolgasPage";
+import AgendamentoCalendar from "../../scheduling/SchedulingCalendar";
+import useFolgasPage from "../timeOff/useTimeOffPage";
 
 interface DiaBloqueado {
   id: number;
@@ -28,7 +28,7 @@ interface AgendamentoNoDia {
   horario: string;
 }
 
-function FolgasPage() {
+function TimeOffPage() {
   const navigate = useNavigate();
   const {
     diasBloqueados,
@@ -227,4 +227,4 @@ function FolgasPage() {
   );
 }
 
-export default FolgasPage;
+export default TimeOffPage;

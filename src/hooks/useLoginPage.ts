@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import type { CredentialResponse } from "@react-oauth/google";
-import useLogin from "../useLogin";
+import useLogin from "./useLogin";
 
 export default function useLoginPage() {
   const navigate = useNavigate();
@@ -25,27 +25,21 @@ export default function useLoginPage() {
         navigate("/insertEmailAndPhoneNumber");
       }
     } catch (err) {
-      console.error("Erro no login:", err);
+      // Error handled silently
     }
   };
 
   const handleGoogleLoginSuccess = async (
-    credentialResponse: CredentialResponse
+    credentialResponse: CredentialResponse,
   ) => {
     const token = credentialResponse.credential;
-    console.log(
-      "🔑 Token recebido do Google:",
-      token ? "SIM (tamanho: " + token.length + ")" : "NÃO"
-    );
 
     if (!token) {
-      console.error("❌ Token vazio ou undefined");
       toast.error("Token do Google inválido.");
       return;
     }
 
     try {
-      console.log("📡 Iniciando login com Google...");
       const result = await loginWithGoogle(token as string);
 
       if (result.name && result.telefone) {
@@ -55,13 +49,6 @@ export default function useLoginPage() {
         navigate("/insertEmailAndPhoneNumber");
       }
     } catch (err) {
-      console.error("❌ Erro no login:", err);
-      const axiosError = err as {
-        response?: { data?: unknown };
-        message?: string;
-      };
-      console.error("❌ Erro response:", axiosError?.response?.data);
-      console.error("❌ Erro message:", axiosError?.message);
       toast.error("Erro ao fazer login com Google.");
     }
   };

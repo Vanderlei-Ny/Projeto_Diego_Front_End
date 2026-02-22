@@ -1,9 +1,9 @@
 import LoadingSpinner from "../../components/loading-spinner";
-import { ChevronLeft, Clock, Check } from "lucide-react";
-import useAgendamentoPage from "./useAgendamentoPage";
-import AgendamentoCalendar from "./AgendamentoCalendar";
+import { ChevronLeft, Clock, Check, AlertCircle } from "lucide-react";
+import useAgendamentoPage from "../../hooks/useSchedulingPage";
+import AgendamentoCalendar from "./SchedulingCalendar";
 
-function Agendamento() {
+function SchedulingAdminPage() {
   const {
     services,
     hoursDisponible,
@@ -77,11 +77,28 @@ function Agendamento() {
                 ) : (
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                     {hoursDisponible.length === 0 &&
-                      hoursAgendados.length === 0 && (
-                        <div className="col-span-full text-white/60 text-sm text-center">
-                          Nenhum horário configurado para este dia.
+                    hoursAgendados.length === 0 ? (
+                      <div className="col-span-full text-white/60 text-sm text-center">
+                        Nenhum horário configurado para este dia.
+                      </div>
+                    ) : hoursDisponible.length === 0 &&
+                      hoursAgendados.length > 0 ? (
+                      <div className="col-span-full flex items-center justify-center gap-3 py-8 px-4rounded-lg">
+                        <div className="flex flex-col items-center">
+                          <div className="flex gap-1">
+                            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                            <div className="text-center">
+                              <p className="text-red-400 font-semibold">
+                                Todos os horários estão agendados
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-white text-sm mt-1">
+                            Selecione um outro dia
+                          </p>
                         </div>
-                      )}
+                      </div>
+                    ) : null}
 
                     {hoursDisponible.map((hour) => (
                       <button
@@ -165,4 +182,4 @@ function Agendamento() {
   );
 }
 
-export default Agendamento;
+export default SchedulingAdminPage;

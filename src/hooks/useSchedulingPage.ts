@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import useAgendamento from "../../hooks/useAgendamento";
+import useAgendamento from "./useScheduling";
 import api from "@/http/api";
 
 export default function useAgendamentoPage() {
@@ -28,21 +28,13 @@ export default function useAgendamentoPage() {
   // Carrega dias de funcionamento da barbearia
   useEffect(() => {
     let mounted = true;
-    api
-      .get("/agendamento/activeDays")
-      .then((res) => {
-        if (!mounted) return;
-        const days = Array.isArray(res.data?.activeDays)
-          ? res.data.activeDays
-          : [];
-        setActiveWeekdays(days);
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar dias ativos", err);
-      });
-    return () => {
-      mounted = false;
-    };
+    api.get("/agendamento/activeDays").then((res) => {
+      if (!mounted) return;
+      const days = Array.isArray(res.data?.activeDays)
+        ? res.data.activeDays
+        : [];
+      setActiveWeekdays(days);
+    });
   }, []);
 
   const normalizedServices = useMemo(() => {
@@ -90,10 +82,10 @@ export default function useAgendamentoPage() {
         const dateString = `${year}-${month}-${day}`;
         await verifyDay(dateString);
       } catch (error) {
-        console.error("Erro ao verificar dia:", error);
+        // Error handled silently
       }
     },
-    [resetDayData, verifyDay]
+    [resetDayData, verifyDay],
   );
 
   const handleServiceToggle = useCallback((serviceId: number) => {
@@ -101,7 +93,7 @@ export default function useAgendamentoPage() {
     if (isNaN(id)) return;
 
     setSelectedServices((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   }, []);
 
@@ -139,7 +131,7 @@ export default function useAgendamentoPage() {
       toast.success("Agendamento realizado com sucesso!");
       navigate("/home");
     } catch (error) {
-      console.error("Erro ao criar agendamento:", error);
+      // Error handled silently
     }
   }, [
     createAgendamento,
