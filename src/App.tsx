@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Cadastro from "./pages/cadastro";
+import Cadastro from "./pages/RegisterUserPage.tsx";
 import InsertEmailAndPhoneNumber from "./pages/insert-email-and-phone-number";
 import HomeInterface from "./pages/home-page.tsx";
 import Agendamento from "./pages/agendamento";
@@ -7,8 +7,8 @@ import AdminPage from "./pages/admin";
 import HorariosPage from "./pages/admin-horarios";
 import ServicosPage from "./pages/admin-servicos";
 import FolgasPage from "./pages/admin-folgas";
-import CarouselPage from "./pages/admin/carousel";
-import AdminDashboardPage from "./pages/admin/dashboard";
+import CarouselPage from "./pages/admin/CarouselPage.tsx";
+import AdminDashboardPage from "./pages/admin/dashboardPage.tsx";
 import Login from "./pages/login-page.tsx";
 import ProtectedLayout from "./components/ProtectedLayout.tsx";
 import RequireAdmin from "./components/RequireAdmin";

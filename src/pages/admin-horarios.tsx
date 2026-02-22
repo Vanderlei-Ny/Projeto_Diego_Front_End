@@ -10,7 +10,19 @@ import {
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
-import useHorariosPage from "./admin/horarios/useHorariosPage";
+import useHorariosPage from "@/pages/admin/schedules/useSchedulesPage";
+
+interface Hour {
+  id: number;
+  availableHour: string;
+}
+
+interface DayWithHours {
+  id: number;
+  weekday: string;
+  isActive: boolean;
+  hours: Hour[];
+}
 
 type DiaDaSemana =
   | "DOMINGO"
@@ -124,7 +136,7 @@ function HorariosPage() {
                     className="w-full px-4 py-3 bg-black border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#B8952E]"
                   >
                     <option value="">Selecione o dia...</option>
-                    {availableDaysToAdd.map((day) => (
+                    {availableDaysToAdd.map((day: DiaDaSemana) => (
                       <option key={day} value={day}>
                         {dayNameMap[day]}
                       </option>
@@ -175,7 +187,7 @@ function HorariosPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {allDaysAndHours.map((day) => (
+              {allDaysAndHours.map((day: DayWithHours) => (
                 <div
                   key={day.id}
                   className={`bg-black border rounded-xl overflow-hidden transition-all ${
@@ -189,7 +201,7 @@ function HorariosPage() {
                       <button
                         onClick={() =>
                           setSelectedDayToManage(
-                            selectedDayToManage === day.id ? null : day.id
+                            selectedDayToManage === day.id ? null : day.id,
                           )
                         }
                         className="p-2 rounded-lg hover:bg-white/5 transition-colors"
@@ -229,7 +241,7 @@ function HorariosPage() {
                             Nenhum horário cadastrado.
                           </span>
                         ) : (
-                          day.hours.map((hour) => (
+                          day.hours.map((hour: Hour) => (
                             <span
                               key={hour.id}
                               className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg"

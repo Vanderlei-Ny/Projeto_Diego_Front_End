@@ -21,7 +21,7 @@ interface VerifyDayResponse {
   hoursAgendados: HourDisponible[];
 }
 
-export default function useAgendamento() {
+export default function useScheduling() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -75,7 +75,7 @@ export default function useAgendamento() {
       if (!user?.userId) throw new Error("Usuário não autenticado");
       const res = await api.post(
         `/agendamento/createAgendamento/${user.userId}`,
-        { data, dayId, hourId, services }
+        { data, dayId, hourId, services },
       );
       return res.data;
     },
@@ -85,7 +85,7 @@ export default function useAgendamento() {
       queryClient.invalidateQueries({ queryKey: ["agendamentos"] });
     },
     onError: (
-      error: Error & { response?: { data?: { message?: string } } }
+      error: Error & { response?: { data?: { message?: string } } },
     ) => {
       const message =
         error?.response?.data?.message || "Erro ao criar agendamento";

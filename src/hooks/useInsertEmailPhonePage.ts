@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useInsertEmailAndPhoneNumber from "../useInsertEmailAndPhoneNumber";
-import useAuth from "../useAuth";
+import useInsertEmailAndPhoneNumber from "./useInsertEmailAndPhoneNumber";
+import useAuth from "./useAuth";
 
 export default function useInsertEmailPhonePage() {
   const navigate = useNavigate();

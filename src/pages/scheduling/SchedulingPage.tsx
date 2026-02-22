@@ -1,9 +1,9 @@
 import LoadingSpinner from "../../components/loading-spinner";
 import { ChevronLeft, Clock, Check } from "lucide-react";
-import useAgendamentoPage from "./useAgendamentoPage";
-import AgendamentoCalendar from "./AgendamentoCalendar";
+import useAgendamentoPage from "../../hooks/useSchedulingPage";
+import AgendamentoCalendar from "./SchedulingCalendar";
 
-function Agendamento() {
+function SchedulingPage() {
   const {
     services,
     hoursDisponible,
@@ -165,4 +165,4 @@ function Agendamento() {
   );
 }
 
-export default Agendamento;
+export default SchedulingPage;

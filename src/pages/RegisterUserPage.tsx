@@ -1,9 +1,9 @@
 import { GoogleLogin } from "@react-oauth/google";
-import useCadastroPage from "../../hooks/page/useCadastroPage";
-import LoadingSpinner from "../../components/loading-spinner";
+import useCadastroPage from "../hooks/useCadastroPage";
+import LoadingSpinner from "../components/loading-spinner";
 import { toast } from "sonner";
 
-function Cadastro() {
+function RegisterUser() {
   const {
     email,
     setEmail,
@@ -108,4 +108,4 @@ function Cadastro() {
   );
 }
 
-export default Cadastro;
+export default RegisterUser;

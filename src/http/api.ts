@@ -1,4 +1,8 @@
-import axios from "axios";
+import axios, {
+  AxiosHeaders,
+  type AxiosError,
+  type InternalAxiosRequestConfig,
+} from "axios";
 import { toast } from "sonner";
 
 // Usa variável de ambiente ou localhost como fallback
@@ -14,6 +18,9 @@ const api = axios.create({
 });
 
 let refreshPromise: Promise<string | null> | null = null;
+type RetryRequestConfig = InternalAxiosRequestConfig & {
+  __isRetryRequest?: boolean;
+};
 
 export async function refreshAccessToken(): Promise<string | null> {
   try {
@@ -51,15 +58,15 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const status = error?.response?.status;
-    const originalRequest = error.config;
+  async (error: AxiosError<{ message?: string }>) => {
+    const status = error.response?.status;
+    const originalRequest = error.config as RetryRequestConfig | undefined;
 
     const isAuthEndpoint = originalRequest?.url?.includes("/login/");
     const isRefreshCall = originalRequest?.url?.includes("/login/refresh");
@@ -70,12 +77,10 @@ api.interceptors.response.use(
         refreshPromise = refreshAccessToken();
       }
       const newToken = await refreshPromise;
-      if (newToken) {
-        (originalRequest as any).headers = originalRequest.headers || {};
-        (originalRequest as any).headers[
-          "Authorization"
-        ] = `Bearer ${newToken}`;
-        (originalRequest as any).__isRetryRequest = true;
+      if (newToken && originalRequest) {
+        originalRequest.headers = AxiosHeaders.from(originalRequest.headers);
+        originalRequest.headers.set("Authorization", `Bearer ${newToken}`);
+        originalRequest.__isRetryRequest = true;
         return api(originalRequest);
       }
     }
@@ -86,7 +91,7 @@ api.interceptors.response.use(
       "Erro ao processar requisição";
     toast.error(message);
     return Promise.reject(error);
-  }
+  },
 );
 
 // Persistence helpers — we only persist the token (no user data) as requested.

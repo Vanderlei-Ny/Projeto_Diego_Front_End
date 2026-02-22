@@ -1,7 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
-import useLoginPage from "../hooks/page/useLoginPage";
 import LoadingSpinner from "../components/loading-spinner";
 import { toast } from "sonner";
+import useLoginPage from "@/hooks/useLoginPage";
 
 function Login() {
   const {

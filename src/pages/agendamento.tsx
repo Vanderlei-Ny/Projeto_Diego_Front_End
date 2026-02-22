@@ -1,7 +1,7 @@
 import LoadingSpinner from "../components/loading-spinner";
 import { ChevronLeft, Clock, Check } from "lucide-react";
-import useAgendamentoPage from "./agendamento/useAgendamentoPage";
-import AgendamentoCalendar from "./agendamento/AgendamentoCalendar";
+import useAgendamentoPage from "../hooks/useSchedulingPage";
+import AgendamentoCalendar from "./scheduling/SchedulingCalendar";
 
 function Agendamento() {
   const {

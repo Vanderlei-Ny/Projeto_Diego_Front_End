@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import api from "../../../http/api";
 import useAuth from "../../../hooks/useAuth";
 import dayjs from "dayjs";
+import type { AxiosError } from "axios";
 import "dayjs/locale/pt-br";
 
 dayjs.locale("pt-br");
@@ -20,6 +21,11 @@ interface AgendamentoNoDia {
   id: number;
   cliente: string;
   horario: string;
+}
+
+interface DiaBloqueadoErrorResponse {
+  agendamentos?: AgendamentoNoDia[];
+  error?: string;
 }
 
 export default function useFolgasPage() {
@@ -63,7 +69,7 @@ export default function useFolgasPage() {
       setAgendamentosNoDia([]);
       setShowAgendamentosWarning(false);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<DiaBloqueadoErrorResponse>) => {
       if (error.response?.data?.agendamentos) {
         setAgendamentosNoDia(error.response.data.agendamentos);
         setShowAgendamentosWarning(true);
@@ -90,9 +96,9 @@ export default function useFolgasPage() {
   });
 
   // Verificar agendamentos na data
-  const verificarAgendamentos = async (date: Date) => {
+  const checkAppointments = async (date: Date) => {
     try {
-      const res = await api.post("/diaBloqueado/verificarAgendamentos", {
+      const res = await api.post("/diaBloqueado/checkAppointments", {
         data: dayjs(date).format("YYYY-MM-DD"),
       });
       if (res.data.quantidade > 0) {
@@ -113,7 +119,7 @@ export default function useFolgasPage() {
     setAgendamentosNoDia([]);
     setShowAgendamentosWarning(false);
     if (date) {
-      verificarAgendamentos(date);
+      checkAppointments(date);
     }
   };
 
@@ -136,7 +142,7 @@ export default function useFolgasPage() {
 
   const handleRemoveDiaBloqueado = (id: number, dataFormatada: string) => {
     setDeleteModalMessage(
-      `Tem certeza que deseja desbloquear o dia ${dataFormatada}?`
+      `Tem certeza que deseja desbloquear o dia ${dataFormatada}?`,
     );
     setPendingDeleteId(id);
     setDeleteModalOpen(true);
@@ -158,7 +164,7 @@ export default function useFolgasPage() {
 
   // Dias bloqueados como array de datas (para desabilitar no calendário)
   const diasBloqueadosDatas = diasBloqueados.map((dia) =>
-    dayjs(dia.data).format("YYYY-MM-DD")
+    dayjs(dia.data).format("YYYY-MM-DD"),
   );
 
   return {

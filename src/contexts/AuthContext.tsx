@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useMemo, useState } from "react";
+import type { AxiosError } from "axios";
 import {
   setAuthToken,
   persistAuthToken,
@@ -28,7 +29,7 @@ interface AuthContextValue {
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
-  undefined
+  undefined,
 );
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -65,8 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               roles: Array.isArray(userPayload.roles)
                 ? userPayload.roles
                 : Array.isArray(data.roles)
-                ? data.roles
-                : null,
+                  ? data.roles
+                  : null,
               hierarchy: userPayload.hierarchy ?? null,
             } as User;
             setUser(parsed);
@@ -76,9 +77,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           }
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const axiosErr = err as AxiosError;
         // If token validation failed with 401, try to refresh
-        if (err?.response?.status === 401) {
+        if (axiosErr?.response?.status === 401) {
           try {
             const newToken = await refreshAccessToken();
             if (newToken) {
@@ -97,8 +99,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     roles: Array.isArray(userPayload.roles)
                       ? userPayload.roles
                       : Array.isArray(data.roles)
-                      ? data.roles
-                      : null,
+                        ? data.roles
+                        : null,
                     hierarchy: userPayload.hierarchy ?? null,
                   } as User;
                   setUser(parsed);
@@ -144,7 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo(
     () => ({ user, setUser, login, logout, loading, isAdmin }),
-    [user, loading, isAdmin]
+    [user, loading, isAdmin],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

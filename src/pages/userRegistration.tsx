@@ -1,5 +1,5 @@
 import { GoogleLogin } from "@react-oauth/google";
-import useCadastroPage from "../hooks/page/useCadastroPage";
+import useCadastroPage from "../hooks/useCadastroPage";
 import LoadingSpinner from "../components/loading-spinner";
 import { toast } from "sonner";
 

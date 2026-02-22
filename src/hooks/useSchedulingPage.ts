@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import useAgendamento from "../../hooks/useAgendamento";
+import useAgendamento from "./useScheduling";
 import api from "@/http/api";
 
 export default function useAgendamentoPage() {
@@ -93,7 +93,7 @@ export default function useAgendamentoPage() {
         console.error("Erro ao verificar dia:", error);
       }
     },
-    [resetDayData, verifyDay]
+    [resetDayData, verifyDay],
   );
 
   const handleServiceToggle = useCallback((serviceId: number) => {
@@ -101,7 +101,7 @@ export default function useAgendamentoPage() {
     if (isNaN(id)) return;
 
     setSelectedServices((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   }, []);
 

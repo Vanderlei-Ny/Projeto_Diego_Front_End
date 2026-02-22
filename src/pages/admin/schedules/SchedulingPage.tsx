@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../components/loading-spinner";
 import ConfirmModal from "../../../components/modal";
-import useHorariosPage from "./useHorariosPage";
+import useHorariosPage from "./useSchedulesPage";
 
 interface Hour {
   id: number;
@@ -52,7 +52,7 @@ const dayNameMap: Record<string, string> = {
   SATURDAY: "Sábado",
 };
 
-function HorariosPage() {
+function SchedulingPage() {
   const navigate = useNavigate();
   const {
     allDaysAndHours,
@@ -73,7 +73,6 @@ function HorariosPage() {
     isRemovingDay,
     handleAddHour,
     handleRemoveHour,
-    handleToggleDay,
     handleCreateDay,
     handleRemoveDay,
     // Modal de confirmação
@@ -82,9 +81,6 @@ function HorariosPage() {
     confirmDelete,
     closeDeleteModal,
   } = useHorariosPage();
-
-  console.log("🎨 Renderizando página com dias:", allDaysAndHours);
-  console.log("🗺️ Mapa de dias:", dayNameMap);
 
   const handleGoBack = () => navigate("/admin");
 
@@ -218,7 +214,7 @@ function HorariosPage() {
                     className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-900/50 transition-colors"
                     onClick={() =>
                       setSelectedDayToManage(
-                        selectedDayToManage === day.id ? null : day.id
+                        selectedDayToManage === day.id ? null : day.id,
                       )
                     }
                   >
@@ -337,4 +333,4 @@ function HorariosPage() {
   );
 }
 
-export default HorariosPage;
+export default SchedulingPage;

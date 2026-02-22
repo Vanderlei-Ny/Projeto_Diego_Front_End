@@ -2,39 +2,40 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import type { CredentialResponse } from "@react-oauth/google";
-import useCadastro from "../useCadastro";
+import useLogin from "./useLogin";
 
-export default function useCadastroPage() {
+export default function useLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { createUser, googleAuth, isLoadingCreate, isLoadingGoogle } =
-    useCadastro();
+  const { loginWithEmail, loginWithGoogle, isLoadingEmail, isLoadingGoogle } =
+    useLogin();
 
-  const isBusy = isLoadingCreate || isLoadingGoogle;
+  const isBusy = isLoadingEmail || isLoadingGoogle;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      const created = await createUser(email, password);
-      if (!created?.id)
-        throw new Error(created?.message || "Erro ao cadastrar");
-      // After auth context sets userId, go to extra info page
-      navigate("/insertEmailAndPhoneNumber");
+      const data = await loginWithEmail(email, password);
+
+      if (data.user.name && data.user.telefone) {
+        navigate("/home");
+      } else {
+        navigate("/insertEmailAndPhoneNumber");
+      }
     } catch (err) {
-      console.error("Erro no cadastro:", err);
+      console.error("Erro no login:", err);
     }
   };
 
   const handleGoogleLoginSuccess = async (
-    credentialResponse: CredentialResponse
+    credentialResponse: CredentialResponse,
   ) => {
     const token = credentialResponse.credential;
     console.log(
       "🔑 Token recebido do Google:",
-      token ? "SIM (tamanho: " + token.length + ")" : "NÃO"
+      token ? "SIM (tamanho: " + token.length + ")" : "NÃO",
     );
 
     if (!token) {
@@ -44,29 +45,28 @@ export default function useCadastroPage() {
     }
 
     try {
-      console.log("📡 Iniciando autenticação com Google...");
-      const data = await googleAuth(token as string);
+      console.log("📡 Iniciando login com Google...");
+      const result = await loginWithGoogle(token as string);
 
-      if (data.name && data.telefone) {
-        toast.success("Autenticado com sucesso!");
+      if (result.name && result.telefone) {
         navigate("/home");
       } else {
-        toast.success("Autenticado! Complete seu perfil.");
+        toast.success("Login realizado! Complete seu perfil.");
         navigate("/insertEmailAndPhoneNumber");
       }
     } catch (err) {
-      console.error("❌ Erro na autenticação:", err);
+      console.error("❌ Erro no login:", err);
       const axiosError = err as {
         response?: { data?: unknown };
         message?: string;
       };
       console.error("❌ Erro response:", axiosError?.response?.data);
       console.error("❌ Erro message:", axiosError?.message);
-      toast.error("Erro ao autenticar com Google.");
+      toast.error("Erro ao fazer login com Google.");
     }
   };
 
-  const goToLogin = () => navigate("/login");
+  const goToCadastro = () => navigate("/cadastro");
 
   return {
     email,
@@ -74,10 +74,10 @@ export default function useCadastroPage() {
     password,
     setPassword,
     isBusy,
-    isLoadingCreate,
+    isLoadingEmail,
     isLoadingGoogle,
     handleSubmit,
     handleGoogleLoginSuccess,
-    goToLogin,
+    goToCadastro,
   };
 }
