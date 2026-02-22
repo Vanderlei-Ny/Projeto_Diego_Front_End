@@ -28,15 +28,13 @@ export default function useAgendamentoPage() {
   // Carrega dias de funcionamento da barbearia
   useEffect(() => {
     let mounted = true;
-    api
-      .get("/agendamento/activeDays")
-      .then((res) => {
-        if (!mounted) return;
-        const days = Array.isArray(res.data?.activeDays)
-          ? res.data.activeDays
-          : [];
-        setActiveWeekdays(days);
-      });
+    api.get("/agendamento/activeDays").then((res) => {
+      if (!mounted) return;
+      const days = Array.isArray(res.data?.activeDays)
+        ? res.data.activeDays
+        : [];
+      setActiveWeekdays(days);
+    });
   }, []);
 
   const normalizedServices = useMemo(() => {

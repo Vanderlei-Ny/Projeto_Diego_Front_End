@@ -24,8 +24,8 @@ export default function MobileCarousel() {
       const carouselImages = res.data || [];
       setImages(
         carouselImages.sort(
-          (a: CarouselImage, b: CarouselImage) => a.order - b.order
-        )
+          (a: CarouselImage, b: CarouselImage) => a.order - b.order,
+        ),
       );
     } catch (error) {
       setImages([]);

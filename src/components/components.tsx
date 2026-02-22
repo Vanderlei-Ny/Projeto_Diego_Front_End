@@ -22,7 +22,7 @@ export default function ImageCarousel() {
       const res = await api.get("/carousel");
       const carouselImages = res.data || [];
       const sorted = carouselImages.sort(
-        (a: CarouselImage, b: CarouselImage) => a.order - b.order
+        (a: CarouselImage, b: CarouselImage) => a.order - b.order,
       );
       setImages(sorted);
     } catch (error) {

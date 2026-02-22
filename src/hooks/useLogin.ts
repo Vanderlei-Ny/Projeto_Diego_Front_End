@@ -43,7 +43,7 @@ export default function useLogin() {
     mutationFn: async ({ token }: { token: string }) => {
       const payload = { token };
 
-         const res = await api.post("/login/authWithGoogle", payload);
+      const res = await api.post("/login/authWithGoogle", payload);
       const raw = res.data;
 
       if (!raw?.user?.id) {
