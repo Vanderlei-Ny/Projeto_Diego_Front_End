@@ -1,13 +1,4 @@
-import {
-  ChevronLeft,
-  Plus,
-  Calendar,
-  Clock,
-  User,
-  Trash2,
-  CalendarDays,
-  Image,
-} from "lucide-react";
+import { ChevronLeft, Plus, Calendar, Clock, User, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";

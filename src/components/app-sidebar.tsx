@@ -9,6 +9,8 @@ import {
   LayoutDashboard,
   Scissors,
   CalendarOff,
+  BarChart3,
+  Image,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -24,7 +26,6 @@ import {
 } from "@/components/ui/sidebar";
 import useAuth from "@/hooks/useAuth";
 
-// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -51,6 +52,12 @@ const data = {
       isActive: true,
       items: [
         {
+          title: "Dashboard",
+          url: "/admin/dashboard",
+          icon: BarChart3,
+          allowedRoles: ["ADMIN"],
+        },
+        {
           title: "Agendamentos",
           url: "/admin",
           icon: LayoutDashboard,
@@ -74,6 +81,12 @@ const data = {
           icon: CalendarOff,
           allowedRoles: ["ADMIN"],
         },
+        {
+          title: "Carousel",
+          url: "/admin/carousel",
+          icon: Image,
+          allowedRoles: ["ADMIN"],
+        },
       ],
     },
   ],
@@ -88,7 +101,7 @@ export const AppSidebar = React.memo(function AppSidebar({
     () => ({
       name: user?.name ?? "Usuário",
     }),
-    [user?.name]
+    [user?.name],
   );
 
   // Combinar roles do array + hierarchy para garantir que admin seja reconhecido
