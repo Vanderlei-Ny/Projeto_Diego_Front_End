@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import {
-  GalleryVerticalEnd,
   House,
   SquareTerminal,
   Clock,
@@ -15,7 +14,6 @@ import {
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -27,16 +25,6 @@ import {
 import useAuth from "@/hooks/useAuth";
 
 const data = {
-  user: {
-    name: "shadcn",
-  },
-  teams: [
-    {
-      name: "Barberia Diego Bueno",
-      logo: GalleryVerticalEnd,
-      plan: "Barbearia",
-    },
-  ],
   navMain: [
     {
       title: "Home",
@@ -117,10 +105,26 @@ export const AppSidebar = React.memo(function AppSidebar({
     return roles.length > 0 ? roles : null;
   }, [user?.roles, user?.hierarchy]);
 
+  const isAdmin = user?.hierarchy === "ADMIN";
+
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="flex items-center relative">
-        <TeamSwitcher teams={data.teams} />
+      <SidebarHeader className="flex items-center relative p-3">
+        <div className="flex w-full items-center gap-3 rounded-lg border border-white/10 bg-black/40 px-3 py-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#B8952E]/20 text-[#B8952E]">
+            <Scissors className="h-5 w-5" />
+          </div>
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-semibold text-white">
+              Barbearia Diego Bueno
+            </span>
+            {isAdmin && (
+              <span className="text-xs text-white/60">
+                Painel administrativo
+              </span>
+            )}
+          </div>
+        </div>
         <SidebarTrigger className="absolute top-2 -right-10 text-white md:-right-8 md:group-data-[side=right]:-left-8 md:top-2 md:z-20" />
       </SidebarHeader>
       <SidebarContent>

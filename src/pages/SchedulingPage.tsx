@@ -1,9 +1,9 @@
 import LoadingSpinner from "../components/loading-spinner";
-import { ChevronLeft, Clock, Check } from "lucide-react";
+import { ChevronLeft, Clock, Check, AlertCircle } from "lucide-react";
 import useAgendamentoPage from "../hooks/useSchedulingPage";
 import AgendamentoCalendar from "./scheduling/SchedulingCalendar";
 
-function Agendamento() {
+function SchedulingPage() {
   const {
     services,
     hoursDisponible,
@@ -77,11 +77,28 @@ function Agendamento() {
                 ) : (
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                     {hoursDisponible.length === 0 &&
-                      hoursAgendados.length === 0 && (
-                        <div className="col-span-full text-white/60 text-sm text-center">
-                          Nenhum horário configurado para este dia.
+                    hoursAgendados.length === 0 ? (
+                      <div className="col-span-full text-white/60 text-sm text-center">
+                        Nenhum horário configurado para este dia.
+                      </div>
+                    ) : hoursDisponible.length === 0 &&
+                      hoursAgendados.length > 0 ? (
+                      <div className="col-span-full flex items-center justify-center gap-3 py-8 px-4rounded-lg">
+                        <div className="flex flex-col items-center">
+                          <div className="flex gap-1">
+                            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                            <div className="text-center">
+                              <p className="text-red-400 font-semibold">
+                                Todos os horários estão agendados
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-white text-sm mt-1">
+                            Selecione um outro dia
+                          </p>
                         </div>
-                      )}
+                      </div>
+                    ) : null}
 
                     {hoursDisponible.map((hour) => (
                       <button
@@ -110,53 +127,55 @@ function Agendamento() {
               </div>
 
               {/* Serviços com Scroll */}
-              <div className="bg-neutral-800 rounded-[15px] p-4 sm:p-6 flex-1 flex flex-col min-h-0">
-                <h2 className="text-lg font-semibold text-[#B8952E] mb-4">
-                  Serviços
-                </h2>
-                <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-                  {services.map((service) => (
-                    <button
-                      key={`service-${service.id}`}
-                      onClick={() => handleServiceToggle(service.id)}
-                      className={`w-full p-4 rounded-lg text-left border transition-all flex justify-between items-center ${
-                        selectedServices.includes(service.id)
-                          ? "bg-[#B8952E] border-[#B8952E] text-black"
-                          : "bg-black border-white/10 text-white"
-                      }`}
-                    >
-                      <div>
-                        <p className="font-bold">{service.name}</p>
-                        <p
-                          className={
-                            selectedServices.includes(service.id)
-                              ? "text-black/70"
-                              : "text-white/50"
-                          }
-                        >
-                          R$ {service.value}
-                        </p>
-                      </div>
-                      {selectedServices.includes(service.id) && (
-                        <Check className="w-5 h-5" />
-                      )}
-                    </button>
-                  ))}
-                </div>
+              {selectedHour !== null && (
+                <div className="bg-neutral-800 rounded-[15px] p-4 sm:p-6 flex-1 flex flex-col min-h-0">
+                  <h2 className="text-lg font-semibold text-[#B8952E] mb-4">
+                    Serviços
+                  </h2>
+                  <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                    {services.map((service) => (
+                      <button
+                        key={`service-${service.id}`}
+                        onClick={() => handleServiceToggle(service.id)}
+                        className={`w-full p-4 rounded-lg text-left border transition-all flex justify-between items-center ${
+                          selectedServices.includes(service.id)
+                            ? "bg-[#B8952E] border-[#B8952E] text-black"
+                            : "bg-black border-white/10 text-white"
+                        }`}
+                      >
+                        <div>
+                          <p className="font-bold">{service.name}</p>
+                          <p
+                            className={
+                              selectedServices.includes(service.id)
+                                ? "text-black/70"
+                                : "text-white/50"
+                            }
+                          >
+                            R$ {service.value}
+                          </p>
+                        </div>
+                        {selectedServices.includes(service.id) && (
+                          <Check className="w-5 h-5" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
 
-                {/* Footer de Ação */}
-                <div className="mt-4 pt-4 border-t border-white/10 flex gap-4">
-                  <button
-                    onClick={handleSubmit}
-                    disabled={
-                      selectedServices.length === 0 || !selectedHour || isBusy
-                    }
-                    className="w-full py-3 bg-[#B8952E] text-black font-bold rounded-xl hover:bg-[#d4af37] disabled:opacity-30 transition-all"
-                  >
-                    Finalizar Agendamento
-                  </button>
+                  {/* Footer de Ação */}
+                  <div className="mt-4 pt-4 border-t border-white/10 flex gap-4">
+                    <button
+                      onClick={handleSubmit}
+                      disabled={
+                        selectedServices.length === 0 || !selectedHour || isBusy
+                      }
+                      className="w-full py-3 bg-[#B8952E] text-black font-bold rounded-xl hover:bg-[#d4af37] disabled:opacity-30 transition-all"
+                    >
+                      Finalizar Agendamento
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>
@@ -165,4 +184,4 @@ function Agendamento() {
   );
 }
 
-export default Agendamento;
+export default SchedulingPage;

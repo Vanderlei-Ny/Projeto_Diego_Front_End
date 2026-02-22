@@ -89,7 +89,7 @@ function Login() {
             Entrar
           </button>
 
-          <div className="flex items-center gap-3 w-full max-w-md">
+          {/* <div className="flex items-center gap-3 w-full max-w-md">
             <span className="text-xs text-white/70">Esqueceu sua senha?</span>
             <a
               href="#"
@@ -97,7 +97,7 @@ function Login() {
             >
               Recuperar
             </a>
-          </div>
+          </div> */}
 
           <div className="flex items-center gap-3 w-full max-w-md">
             <div className="flex-1 h-px bg-white/20" />
