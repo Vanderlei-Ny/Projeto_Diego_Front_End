@@ -58,6 +58,46 @@ function AdminPage() {
 
   const handleGoHome = () => navigate("/home");
 
+  const getDateStatus = (listaAgendamentos: Agendamento[]) => {
+    const reference = listaAgendamentos[0];
+    const referenceDate = new Date(reference?.dataOriginal);
+
+    if (Number.isNaN(referenceDate.getTime())) {
+      return {
+        label: "Próximos dias",
+        className: "text-blue-300 border-blue-400/30 bg-blue-500/10",
+      };
+    }
+
+    const target = new Date(referenceDate);
+    target.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (target.getTime() === today.getTime()) {
+      return {
+        label: "Hoje",
+        className: "text-emerald-300 border-emerald-400/30 bg-emerald-500/10",
+      };
+    }
+
+    if (target.getTime() === tomorrow.getTime()) {
+      return {
+        label: "Amanhã",
+        className: "text-amber-300 border-amber-400/30 bg-amber-500/10",
+      };
+    }
+
+    return {
+      label: "Próximos dias",
+      className: "text-blue-300 border-blue-400/30 bg-blue-500/10",
+    };
+  };
+
   // Agrupar agendamentos por data
   const agendamentosPorData = agendamentos.reduce<
     Record<string, Agendamento[]>
@@ -71,7 +111,7 @@ function AdminPage() {
   }, {});
 
   return (
-    <div className="flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 bg-black flex-col">
+    <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
       {(isLoading || isCreating || isDeleting) && (
         <LoadingSpinner fullScreen message="Processando..." />
       )}
@@ -260,49 +300,63 @@ function AdminPage() {
           ) : (
             <div className="space-y-4">
               {Object.entries(agendamentosPorData).map(
-                ([data, listaAgendamentos]) => (
-                  <div
-                    key={data}
-                    className="bg-black rounded-xl p-4 border border-white/10"
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <Calendar className="w-4 h-4 text-[#B8952E]" />
-                      <span className="text-white font-semibold">{data}</span>
-                    </div>
-                    <div className="space-y-2">
-                      {listaAgendamentos.map((agendamento) => (
-                        <div
-                          key={agendamento.id}
-                          className="flex items-center justify-between bg-neutral-900 rounded-lg p-3 border border-white/5"
-                        >
-                          <div className="flex flex-col text-sm text-white gap-1">
-                            <span className="font-semibold">
-                              {agendamento.nomeCliente}
-                            </span>
-                            <span className="text-white/70">
-                              {agendamento.horario} - {agendamento.diaDaSemana}
-                            </span>
-                            <span className="text-white/60">
-                              Serviços:{" "}
-                              {agendamento.services
-                                .map((s) => s.nome)
-                                .join(", ")}
-                            </span>
-                          </div>
-                          <button
-                            onClick={() =>
-                              handleDeleteAgendamento(agendamento.id)
-                            }
-                            className="p-2 rounded-lg hover:bg-red-900/30 transition-colors"
-                            title="Cancelar agendamento"
-                          >
-                            <Trash2 className="w-5 h-5 text-red-400" />
-                          </button>
+                ([data, listaAgendamentos]) => {
+                  const dateStatus = getDateStatus(listaAgendamentos);
+
+                  return (
+                    <div
+                      key={data}
+                      className="bg-black rounded-xl p-4 border border-white/10"
+                    >
+                      <div className="flex items-center justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-[#B8952E]" />
+                          <span className="text-white font-semibold">
+                            {data}
+                          </span>
                         </div>
-                      ))}
+                        <span
+                          className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium ${dateStatus.className}`}
+                        >
+                          {dateStatus.label}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        {listaAgendamentos.map((agendamento) => (
+                          <div
+                            key={agendamento.id}
+                            className="flex items-center justify-between bg-neutral-900 rounded-lg p-3 border border-white/5"
+                          >
+                            <div className="flex flex-col text-sm text-white gap-1">
+                              <span className="font-semibold">
+                                {agendamento.nomeCliente}
+                              </span>
+                              <span className="text-white/70">
+                                {agendamento.horario} -{" "}
+                                {agendamento.diaDaSemana}
+                              </span>
+                              <span className="text-white/60">
+                                Serviços:{" "}
+                                {agendamento.services
+                                  .map((s) => s.nome)
+                                  .join(", ")}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() =>
+                                handleDeleteAgendamento(agendamento.id)
+                              }
+                              className="p-2 rounded-lg hover:bg-red-900/30 transition-colors"
+                              title="Cancelar agendamento"
+                            >
+                              <Trash2 className="w-5 h-5 text-red-400" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ),
+                  );
+                },
               )}
             </div>
           )}

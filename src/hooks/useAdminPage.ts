@@ -5,6 +5,7 @@ import api from "../http/api";
 import useAuth from "./useAuth";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
+import { ENDPOINTS } from "@/endpoints";
 
 dayjs.locale("pt-br");
 
@@ -67,7 +68,7 @@ export default function useAdminPage() {
   const { data: agendamentos = [], isLoading } = useQuery({
     queryKey: ["admin-agendamentos"],
     queryFn: async () => {
-      const res = await api.get("/agendamento/admin/listAll");
+      const res = await api.get(ENDPOINTS.scheduling.adminListAll);
       return res.data as Agendamento[];
     },
     enabled: isAdmin,
@@ -77,7 +78,7 @@ export default function useAdminPage() {
   const { data: services = [] } = useQuery({
     queryKey: ["services"],
     queryFn: async () => {
-      const res = await api.get("/service");
+      const res = await api.get(ENDPOINTS.service.base);
       return res.data as Service[];
     },
   });
@@ -86,7 +87,7 @@ export default function useAdminPage() {
   const { data: activeDaysData } = useQuery({
     queryKey: ["activeDays"],
     queryFn: async () => {
-      const res = await api.get("/agendamento/activeDays");
+      const res = await api.get(ENDPOINTS.scheduling.activeDays);
       return res.data.activeDays as string[];
     },
   });
@@ -97,7 +98,7 @@ export default function useAdminPage() {
   const verifyDay = useCallback(async (date: Date) => {
     setIsVerifyingDay(true);
     try {
-      const res = await api.post("/agendamento/verifyDay", { date });
+      const res = await api.post(ENDPOINTS.scheduling.verifyDay, { date });
       const data = res.data;
       setDayData({
         dayId: data.dayId,
@@ -127,7 +128,7 @@ export default function useAdminPage() {
       hourId: number;
       services: number[];
     }) => {
-      const res = await api.post("/agendamento/admin/createAgendamento", data);
+      const res = await api.post(ENDPOINTS.scheduling.adminCreate, data);
       return res.data;
     },
     onSuccess: () => {
@@ -146,7 +147,7 @@ export default function useAdminPage() {
   // Mutation para deletar agendamento
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await api.delete(`/agendamento/deleteAgendamento/${id}`);
+      const res = await api.delete(ENDPOINTS.scheduling.deleteById(id));
       return res.data;
     },
     onSuccess: () => {

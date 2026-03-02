@@ -1,6 +1,6 @@
 import LoadingSpinner from "../components/loading-spinner";
 import { ChevronLeft, Clock, Check, AlertCircle } from "lucide-react";
-import useAgendamentoPage from "../hooks/useSchedulingPage";
+import useSchedulingPage from "../hooks/useSchedulingPage";
 import AgendamentoCalendar from "./scheduling/SchedulingCalendar";
 
 function SchedulingPage() {
@@ -21,10 +21,10 @@ function SchedulingPage() {
     handleHourSelect,
     handleSubmit,
     handleGoHome,
-  } = useAgendamentoPage();
+  } = useSchedulingPage();
 
   return (
-    <div className="flex w-full h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 bg-black flex-col overflow-hidden">
+    <div className="app-page-bg flex w-full h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col overflow-hidden">
       {isBusy && <LoadingSpinner fullScreen message="Processando..." />}
 
       <div className="flex w-full max-w-7xl mx-auto flex-col gap-4 sm:gap-6 h-full min-h-0">

@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import type { CredentialResponse } from "@react-oauth/google";
-import useCadastro from "./useRegistration";
+import useRegistration from "./useRegistration";
 
-export default function useCadastroPage() {
+export default function useRegisterPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const { createUser, googleAuth, isLoadingCreate, isLoadingGoogle } =
-    useCadastro();
+    useRegistration();
 
   const isBusy = isLoadingCreate || isLoadingGoogle;
 

@@ -10,7 +10,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
-import useHorariosPage from "@/pages/admin/schedules/useSchedulesPage";
 
 interface Hour {
   id: number;
@@ -79,7 +78,7 @@ function HorariosPage() {
     isAddingHour || isRemovingHour || isCreatingDay || isRemovingDay;
 
   return (
-    <div className="flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 bg-black flex-col">
+    <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col transition-colors">
       {isProcessing && <LoadingSpinner fullScreen message="Processando..." />}
 
       <div className="flex w-full max-w-4xl mx-auto flex-col gap-4 sm:gap-6">
@@ -224,10 +223,10 @@ function HorariosPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleRemoveDay(day.id)}
-                        className="p-2 rounded-lg hover:bg-red-600/20 transition-colors"
+                        className="p-2 rounded-lg text-white hover:bg-yellow-200/50 hover:text-[#B8952E] transition-colors"
                         title="Remover dia"
                       >
-                        <Trash2 className="w-5 h-5 text-white/70 hover:text-red-400" />
+                        <Trash2 className="w-5 h-5 " />
                       </button>
                     </div>
                   </div>
@@ -235,7 +234,10 @@ function HorariosPage() {
                   {selectedDayToManage === day.id && (
                     <div className="border-t border-white/5 p-4 space-y-3">
                       <div className="flex items-center gap-3 flex-wrap text-sm text-white/80">
-                        <span>Horários:</span>
+                        <div className="flex gap-2">
+                          <Clock className="text-[#B8952E]" />
+                          <span>Horários:</span>
+                        </div>
                         {day.hours.length === 0 ? (
                           <span className="text-white/50">
                             Nenhum horário cadastrado.
@@ -244,12 +246,12 @@ function HorariosPage() {
                           day.hours.map((hour: Hour) => (
                             <span
                               key={hour.id}
-                              className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg"
+                              className="flex items-center gap-2 px-3 py-2 bg-[#B8952E] rounded-lg"
                             >
                               {hour.availableHour}
                               <button
                                 onClick={() => handleRemoveHour(hour.id)}
-                                className="text-white/70 hover:text-red-400"
+                                className="text-white/70 hover:text-[#B8952E]"
                                 title="Remover horário"
                               >
                                 <X className="w-4 h-4" />

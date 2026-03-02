@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import api from "../http/api";
+import { ENDPOINTS } from "@/endpoints";
 
 interface CarouselImage {
   id: number;
@@ -20,7 +21,7 @@ export default function MobileCarousel() {
 
   const fetchImages = async () => {
     try {
-      const res = await api.get("/carousel");
+      const res = await api.get(ENDPOINTS.carousel.base);
       const carouselImages = res.data || [];
       setImages(
         carouselImages.sort(

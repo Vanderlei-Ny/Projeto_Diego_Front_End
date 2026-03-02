@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
+import { ENDPOINTS } from "@/endpoints";
 
 export default function useInsertEmailAndPhoneNumber() {
   const { user, setUser } = useAuth();
@@ -15,7 +16,7 @@ export default function useInsertEmailAndPhoneNumber() {
     }) => {
       const userId = user?.userId;
       if (!userId) throw new Error("User id is missing");
-      const res = await api.put(`/user/createEmailandPhoneNumber/${userId}`, {
+      const res = await api.put(ENDPOINTS.user.updateEmailAndPhone(userId), {
         name,
         telefone,
       });

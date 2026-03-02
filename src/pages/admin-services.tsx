@@ -1,8 +1,8 @@
 import { ChevronLeft, Plus, Trash2, Scissors, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "../../../components/loading-spinner";
-import ConfirmModal from "../../../components/modal";
-import useServicosPage from "../../../hooks/useServicesPage";
+import LoadingSpinner from "../components/loading-spinner";
+import ConfirmModal from "../components/modal";
+import useServicesPage from "../hooks/useServicesPage";
 
 interface Service {
   id: number;
@@ -10,7 +10,7 @@ interface Service {
   value: string;
 }
 
-function ServicePage() {
+function AdminServicesPage() {
   const navigate = useNavigate();
   const {
     services,
@@ -30,14 +30,14 @@ function ServicePage() {
     deleteModalMessage,
     confirmDelete,
     closeDeleteModal,
-  } = useServicosPage();
+  } = useServicesPage();
 
   const handleGoBack = () => navigate("/admin");
 
   const isProcessing = isCreating || isDeleting;
 
   return (
-    <div className="flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 bg-black flex-col">
+    <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
       {isProcessing && <LoadingSpinner fullScreen message="Processando..." />}
 
       <div className="flex w-full max-w-4xl mx-auto flex-col gap-4 sm:gap-6">
@@ -55,7 +55,7 @@ function ServicePage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors"
             >
               <Plus className="w-5 h-5" />
               <span className="hidden sm:inline">Novo Serviço</span>
@@ -120,7 +120,7 @@ function ServicePage() {
                 <button
                   onClick={handleCreateService}
                   disabled={!newServiceName.trim() || !newServiceValue.trim()}
-                  className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Criar
                 </button>
@@ -166,10 +166,10 @@ function ServicePage() {
                     onClick={() =>
                       handleDeleteService(service.id, service.name)
                     }
-                    className="p-2 hover:bg-red-900/30 rounded-lg transition-colors opacity-50 group-hover:opacity-100"
+                    className="p-2 hover:bg-red-600/20 rounded-lg transition-colors opacity-60 group-hover:opacity-100"
                     title="Deletar serviço"
                   >
-                    <Trash2 className="w-5 h-5 text-red-500" />
+                    <Trash2 className="w-5 h-5 text-white/70 group-hover:text-red-400" />
                   </button>
                 </div>
               ))}
@@ -189,4 +189,4 @@ function ServicePage() {
   );
 }
 
-export default ServicePage;
+export default AdminServicesPage;

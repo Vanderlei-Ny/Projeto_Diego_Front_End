@@ -7,6 +7,7 @@ import {
   refreshAccessToken,
 } from "../http/api";
 import api from "../http/api";
+import { ENDPOINTS } from "@/endpoints";
 
 type Hierarchy = "CLIENT" | "ADMIN";
 
@@ -52,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         setAuthToken(storedToken);
 
-        const res = await api.post("/login/validateToken");
+        const res = await api.post(ENDPOINTS.auth.validateToken);
         const data = res.data;
 
         if (data) {
@@ -85,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const newToken = await refreshAccessToken();
             if (newToken) {
               // Retry validation with the new token
-              const res = await api.post("/login/validateToken");
+              const res = await api.post(ENDPOINTS.auth.validateToken);
               const data = res.data;
 
               if (data) {

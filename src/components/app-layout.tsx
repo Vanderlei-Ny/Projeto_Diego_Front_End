@@ -8,7 +8,7 @@ export const AppLayout = memo(function AppLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full bg-center bg-neutral-800 flex justify-center min-h-screen">
+    <div className="w-full bg-center bg-sidebar flex justify-center min-h-screen">
       <div className="w-full flex items-start gap-2 sm:gap-3 md:gap-4 lg:gap-6 ">
         <SidebarProvider>
           {/* Sidebar component (Sheet on mobile, fixed on desktop) */}
@@ -20,7 +20,7 @@ export const AppLayout = memo(function AppLayout({
             <div className="w-full px-3 py-2 md:hidden flex items-center justify-start">
               {/* Place the trigger outside of the Sidebar so it can open the mobile Sheet */}
               <div className="inline-flex">
-                <SidebarTrigger className="text-white" />
+                <SidebarTrigger className="text-sidebar-foreground" />
               </div>
             </div>
             {children}

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
+import { ENDPOINTS } from "@/endpoints";
 
 export default function useLogin() {
   const { login } = useAuth();
@@ -13,7 +14,10 @@ export default function useLogin() {
       email: string;
       password: string;
     }) => {
-      const res = await api.post("/login/loginUser", { email, password });
+      const res = await api.post(ENDPOINTS.auth.loginWithEmail, {
+        email,
+        password,
+      });
       const data = res.data;
 
       if (!data?.user?.id) {
@@ -43,7 +47,7 @@ export default function useLogin() {
     mutationFn: async ({ token }: { token: string }) => {
       const payload = { token };
 
-      const res = await api.post("/login/authWithGoogle", payload);
+      const res = await api.post(ENDPOINTS.auth.loginWithGoogle, payload);
       const raw = res.data;
 
       if (!raw?.user?.id) {
