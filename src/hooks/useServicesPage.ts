@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "../http/api";
 import useAuth from "./useAuth";
+import { ENDPOINTS } from "@/endpoints";
 
 interface Service {
   id: number;
@@ -10,7 +11,7 @@ interface Service {
   value: string;
 }
 
-export default function useServicosPage() {
+export default function useServicesPage() {
   const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
 
@@ -28,7 +29,7 @@ export default function useServicosPage() {
   const { data: services = [], isLoading: isLoadingServices } = useQuery({
     queryKey: ["services"],
     queryFn: async () => {
-      const res = await api.get("/service");
+      const res = await api.get(ENDPOINTS.service.base);
       return res.data as Service[];
     },
     enabled: isAdmin,
@@ -37,7 +38,7 @@ export default function useServicosPage() {
   // Mutation para criar serviço
   const createServiceMutation = useMutation({
     mutationFn: async (data: { name: string; value: string }) => {
-      const res = await api.post("/service/createService", data);
+      const res = await api.post(ENDPOINTS.service.create, data);
       return res.data;
     },
     onSuccess: () => {
@@ -55,7 +56,7 @@ export default function useServicosPage() {
   // Mutation para deletar serviço
   const deleteServiceMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await api.delete(`/service/deleteService/${id}`);
+      const res = await api.delete(ENDPOINTS.service.remove(id));
       return res.data;
     },
     onSuccess: () => {

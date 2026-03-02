@@ -4,6 +4,7 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from "axios";
 import { toast } from "sonner";
+import { ENDPOINTS } from "@/endpoints";
 
 // Usa variável de ambiente ou localhost como fallback
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
@@ -24,7 +25,7 @@ type RetryRequestConfig = InternalAxiosRequestConfig & {
 
 export async function refreshAccessToken(): Promise<string | null> {
   try {
-    const res = await api.post("/login/refresh");
+    const res = await api.post(ENDPOINTS.auth.refreshSession);
     const token = res.data?.token as string | undefined;
     if (token) {
       setAuthToken(token);
@@ -63,7 +64,9 @@ api.interceptors.response.use(
     const originalRequest = error.config as RetryRequestConfig | undefined;
 
     const isAuthEndpoint = originalRequest?.url?.includes("/login/");
-    const isRefreshCall = originalRequest?.url?.includes("/login/refresh");
+    const isRefreshCall = originalRequest?.url?.includes(
+      ENDPOINTS.auth.refreshSession,
+    );
 
     // Tenta renovar apenas quando 401 e não é a própria rota de refresh
     if (status === 401 && !isAuthEndpoint && !isRefreshCall) {

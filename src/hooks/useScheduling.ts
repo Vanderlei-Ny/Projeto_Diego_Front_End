@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
 import { toast } from "sonner";
+import { ENDPOINTS } from "@/endpoints";
 
 interface Service {
   id: number;
@@ -33,7 +34,7 @@ export default function useScheduling() {
   } = useQuery({
     queryKey: ["services"],
     queryFn: async () => {
-      const res = await api.get("/service/listAllServices");
+      const res = await api.get(ENDPOINTS.service.listAllPublic);
       return res.data as Service[];
     },
     retry: 2,
@@ -43,7 +44,7 @@ export default function useScheduling() {
   const { data: diasBloqueadosData } = useQuery({
     queryKey: ["diasBloqueadosDatas"],
     queryFn: async () => {
-      const res = await api.get("/diaBloqueado/datas");
+      const res = await api.get(ENDPOINTS.blockedDay.dates);
       return res.data.diasBloqueados as string[];
     },
     retry: 2,
@@ -54,7 +55,7 @@ export default function useScheduling() {
   // Verifica disponibilidade de um dia específico
   const verifyDayMutation = useMutation({
     mutationFn: async (date: string) => {
-      const res = await api.post("/agendamento/verifyDay", { date });
+      const res = await api.post(ENDPOINTS.scheduling.verifyDay, { date });
       return res.data as VerifyDayResponse;
     },
   });
@@ -74,8 +75,13 @@ export default function useScheduling() {
     }) => {
       if (!user?.userId) throw new Error("Usuário não autenticado");
       const res = await api.post(
-        `/agendamento/createAgendamento/${user.userId}`,
-        { data, dayId, hourId, services },
+        ENDPOINTS.scheduling.createByUser(user.userId),
+        {
+          data,
+          dayId,
+          hourId,
+          services,
+        },
       );
       return res.data;
     },

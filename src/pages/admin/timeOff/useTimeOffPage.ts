@@ -6,6 +6,7 @@ import useAuth from "../../../hooks/useAuth";
 import dayjs from "dayjs";
 import type { AxiosError } from "axios";
 import "dayjs/locale/pt-br";
+import { ENDPOINTS } from "@/endpoints";
 
 dayjs.locale("pt-br");
 
@@ -28,7 +29,7 @@ interface DiaBloqueadoErrorResponse {
   error?: string;
 }
 
-export default function useFolgasPage() {
+export default function useTimeOffPage() {
   const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
 
@@ -49,7 +50,7 @@ export default function useFolgasPage() {
   const { data: diasBloqueados = [], isLoading: isLoadingDias } = useQuery({
     queryKey: ["diasBloqueados"],
     queryFn: async () => {
-      const res = await api.get("/diaBloqueado");
+      const res = await api.get(ENDPOINTS.blockedDay.base);
       return res.data as DiaBloqueado[];
     },
     enabled: isAdmin,
@@ -58,7 +59,7 @@ export default function useFolgasPage() {
   // Mutation para criar dia bloqueado
   const createDiaBloqueadoMutation = useMutation({
     mutationFn: async (data: { data: string; motivo: string }) => {
-      const res = await api.post("/diaBloqueado/create", data);
+      const res = await api.post(ENDPOINTS.blockedDay.create, data);
       return res.data;
     },
     onSuccess: () => {
@@ -83,7 +84,7 @@ export default function useFolgasPage() {
   // Mutation para remover dia bloqueado
   const removeDiaBloqueadoMutation = useMutation({
     mutationFn: async (id: number) => {
-      const res = await api.delete(`/diaBloqueado/remove/${id}`);
+      const res = await api.delete(ENDPOINTS.blockedDay.remove(id));
       return res.data;
     },
     onSuccess: () => {
@@ -98,7 +99,7 @@ export default function useFolgasPage() {
   // Verificar agendamentos na data
   const checkAppointments = async (date: Date) => {
     try {
-      const res = await api.post("/diaBloqueado/checkAppointments", {
+      const res = await api.post(ENDPOINTS.blockedDay.checkAppointments, {
         data: dayjs(date).format("YYYY-MM-DD"),
       });
       if (res.data.quantidade > 0) {

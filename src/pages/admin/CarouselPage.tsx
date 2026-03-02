@@ -6,7 +6,7 @@ export default function CarouselPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 bg-black flex-col">
+    <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
       <div className="flex w-full max-w-6xl mx-auto flex-col gap-4 sm:gap-6">
         {/* Header */}
         <div className="flex w-full items-center justify-between bg-neutral-800 rounded-[15px] p-4 md:p-6">

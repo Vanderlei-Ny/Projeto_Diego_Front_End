@@ -10,6 +10,7 @@ import {
   CalendarOff,
   BarChart3,
   Image,
+  Users,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -64,6 +65,12 @@ const data = {
           allowedRoles: ["ADMIN"],
         },
         {
+          title: "Usuários",
+          url: "/admin/usuarios",
+          icon: Users,
+          allowedRoles: ["ADMIN"],
+        },
+        {
           title: "Folgas",
           url: "/admin/folgas",
           icon: CalendarOff,
@@ -110,22 +117,22 @@ export const AppSidebar = React.memo(function AppSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="flex items-center relative p-3">
-        <div className="flex w-full items-center gap-3 rounded-lg border border-white/10 bg-black/40 px-3 py-2.5">
+        <div className="flex w-full items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-accent/60 px-3 py-2.5 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-1.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#B8952E]/20 text-[#B8952E]">
             <Scissors className="h-5 w-5" />
           </div>
-          <div className="flex min-w-0 flex-col">
-            <span className="truncate text-sm font-semibold text-white">
+          <div className="flex min-w-0 flex-col overflow-hidden transition-all group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:opacity-0">
+            <span className="truncate text-sm font-semibold text-sidebar-foreground">
               Barbearia Diego Bueno
             </span>
             {isAdmin && (
-              <span className="text-xs text-white/60">
+              <span className="text-xs text-sidebar-foreground/70">
                 Painel administrativo
               </span>
             )}
           </div>
         </div>
-        <SidebarTrigger className="absolute top-2 -right-10 text-white md:-right-8 md:group-data-[side=right]:-left-8 md:top-2 md:z-20" />
+        <SidebarTrigger className="absolute top-2 -right-10 text-sidebar-foreground md:-right-8 md:group-data-[side=right]:-left-8 md:top-2 md:z-20" />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} userRoles={safeRoles} />

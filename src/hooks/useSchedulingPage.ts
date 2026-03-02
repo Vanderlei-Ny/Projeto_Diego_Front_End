@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import useAgendamento from "./useScheduling";
+import useScheduling from "./useScheduling";
 import api from "@/http/api";
+import { ENDPOINTS } from "@/endpoints";
 
-export default function useAgendamentoPage() {
+export default function useSchedulingPage() {
   const navigate = useNavigate();
   const {
     services,
@@ -16,7 +17,7 @@ export default function useAgendamentoPage() {
     dayData,
     resetDayData,
     diasBloqueados,
-  } = useAgendamento();
+  } = useScheduling();
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedHour, setSelectedHour] = useState<number | null>(null);
@@ -28,13 +29,17 @@ export default function useAgendamentoPage() {
   // Carrega dias de funcionamento da barbearia
   useEffect(() => {
     let mounted = true;
-    api.get("/agendamento/activeDays").then((res) => {
+    api.get(ENDPOINTS.scheduling.activeDays).then((res) => {
       if (!mounted) return;
       const days = Array.isArray(res.data?.activeDays)
         ? res.data.activeDays
         : [];
       setActiveWeekdays(days);
     });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const normalizedServices = useMemo(() => {

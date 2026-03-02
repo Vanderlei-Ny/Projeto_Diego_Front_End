@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import api from "../../../http/api";
 import useAuth from "../../../hooks/useAuth";
+import { ENDPOINTS } from "@/endpoints";
 
 interface Hour {
   id: number;
@@ -59,13 +60,13 @@ export function isValidHour(value: string): boolean {
   return regex.test(value);
 }
 
-export default function useHorariosPage() {
+export default function useHoursPage() {
   const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
 
   // Estados
   const [selectedDayToManage, setSelectedDayToManage] = useState<number | null>(
-    null
+    null,
   );
   const [newHourInput, setNewHourInput] = useState("");
   const [showAddDayForm, setShowAddDayForm] = useState(false);
@@ -82,7 +83,7 @@ export default function useHorariosPage() {
   const { data: allDaysAndHoursRaw = [], isLoading: isLoadingDays } = useQuery({
     queryKey: ["allDaysAndHours"],
     queryFn: async () => {
-      const res = await api.get("/dayAndHours/listAll");
+      const res = await api.get(ENDPOINTS.dayAndHours.listAll);
       return res.data as DayWithHours[];
     },
     enabled: isAdmin,
@@ -100,13 +101,13 @@ export default function useHorariosPage() {
   };
 
   const allDaysAndHours = [...allDaysAndHoursRaw].sort(
-    (a, b) => dayOrder[a.weekday] - dayOrder[b.weekday]
+    (a, b) => dayOrder[a.weekday] - dayOrder[b.weekday],
   );
 
   // Mutation para adicionar horário
   const addHourMutation = useMutation({
     mutationFn: async (data: { dayId: number; hour: string }) => {
-      const res = await api.post("/dayAndHours/addHour", data);
+      const res = await api.post(ENDPOINTS.dayAndHours.addHour, data);
       return res.data;
     },
     onSuccess: () => {
@@ -120,7 +121,7 @@ export default function useHorariosPage() {
   // Mutation para remover horário
   const removeHourMutation = useMutation({
     mutationFn: async (hourId: number) => {
-      const res = await api.delete(`/dayAndHours/removeHour/${hourId}`);
+      const res = await api.delete(ENDPOINTS.dayAndHours.removeHour(hourId));
       return res.data;
     },
     onSuccess: () => {
@@ -133,7 +134,7 @@ export default function useHorariosPage() {
   // Mutation para ativar/desativar dia
   const toggleDayMutation = useMutation({
     mutationFn: async (dayId: number) => {
-      const res = await api.patch(`/dayAndHours/toggleDay/${dayId}`);
+      const res = await api.patch(ENDPOINTS.dayAndHours.toggleDay(dayId));
       return res.data;
     },
     onSuccess: (data) => {
@@ -146,7 +147,7 @@ export default function useHorariosPage() {
   // Mutation para criar novo dia (sem horários obrigatórios)
   const createDayMutation = useMutation({
     mutationFn: async (data: { diaDaSemana: string }) => {
-      const res = await api.post("/dayAndHours/createDay", data);
+      const res = await api.post(ENDPOINTS.dayAndHours.createDay, data);
       return res.data;
     },
     onSuccess: () => {
@@ -161,7 +162,7 @@ export default function useHorariosPage() {
   // Mutation para remover dia
   const removeDayMutation = useMutation({
     mutationFn: async (dayId: number) => {
-      const res = await api.delete(`/dayAndHours/removeDay/${dayId}`);
+      const res = await api.delete(ENDPOINTS.dayAndHours.removeDay(dayId));
       return res.data;
     },
     onSuccess: () => {
@@ -217,7 +218,7 @@ export default function useHorariosPage() {
 
   const handleRemoveDay = (dayId: number) => {
     setDeleteModalMessage(
-      "Tem certeza que deseja remover este dia e todos os seus horários?"
+      "Tem certeza que deseja remover este dia e todos os seus horários?",
     );
     setPendingDeleteAction(() => () => removeDayMutation.mutate(dayId));
     setDeleteModalOpen(true);

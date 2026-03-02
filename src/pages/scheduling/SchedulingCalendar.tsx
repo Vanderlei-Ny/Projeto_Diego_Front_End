@@ -11,15 +11,25 @@ import dayjs from "dayjs";
 interface AgendamentoCalendarProps {
   selectedDate: Date | undefined;
   onSelect: (date: Date | undefined) => void;
-  activeWeekdays: string[];
+  activeWeekdays?: string[];
   diasBloqueados?: string[]; // Array de datas bloqueadas no formato "YYYY-MM-DD"
+  disablePastDates?: boolean;
+  showContainer?: boolean;
+  showSelectedSummary?: boolean;
+  title?: string;
+  className?: string;
 }
 
 export default function AgendamentoCalendar({
   selectedDate,
   onSelect,
-  activeWeekdays,
+  activeWeekdays = [],
   diasBloqueados = [],
+  disablePastDates = true,
+  showContainer = true,
+  showSelectedSummary = true,
+  title = "Data",
+  className = "",
 }: AgendamentoCalendarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,12 +55,16 @@ export default function AgendamentoCalendar({
       // Aguarda mais tempo para o calendário renderizar a seleção visualmente
       setIsOpen(false);
     },
-    [onSelect]
+    [onSelect],
   );
 
   return (
-    <div className="bg-neutral-800 rounded-[15px] p-4">
-      <h2 className="text-lg font-semibold text-[#B8952E] mb-4">Data</h2>
+    <div
+      className={`${showContainer ? "bg-neutral-800 rounded-[15px] p-4" : ""} ${className}`.trim()}
+    >
+      {title ? (
+        <h2 className="text-lg font-semibold text-[#B8952E] mb-4">{title}</h2>
+      ) : null}
 
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
@@ -70,7 +84,7 @@ export default function AgendamentoCalendar({
               const today = new Date(new Date().setHours(0, 0, 0, 0));
               const isPast = date < today;
 
-              if (isPast) return true;
+              if (disablePastDates && isPast) return true;
 
               // Verificar se o dia está bloqueado
               const dateStr = dayjs(date).format("YYYY-MM-DD");
@@ -106,7 +120,7 @@ export default function AgendamentoCalendar({
         </PopoverContent>
       </Popover>
 
-      {selectedDate && (
+      {showSelectedSummary && selectedDate && (
         <div className="mt-4 p-3 bg-black rounded-lg border border-[#B8952E]/30">
           <p className="text-white/70 text-xs uppercase tracking-wider">
             Data selecionada

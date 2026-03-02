@@ -77,6 +77,148 @@
   --sidebar-accent-foreground: hsl(0 0% 98%);
   --sidebar-border: hsl(0 0% 14%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --page-bg: #000000;
+  --app-bg: #000000;
+  --app-surface: #262626;
+  --app-surface-2: #171717;
+  --app-card: #000000;
+  --app-card-soft: rgba(0, 0, 0, 0.9);
+  --app-input: rgba(0, 0, 0, 0.78);
+  --app-text: #ffffff;
+  --app-text-soft: rgba(255, 255, 255, 0.75);
+  --app-text-muted: rgba(255, 255, 255, 0.6);
+  --app-border: rgba(255, 255, 255, 0.12);
+  --app-border-soft: rgba(255, 255, 255, 0.08);
+  --app-fab-bg: #000000;
+  --app-fab-hover: #171717;
+  --app-fab-text: #f2d37a;
+}
+
+.app-theme-dark {
+  --page-bg: #000000;
+  --app-bg: #000000;
+  --app-surface: #262626;
+  --app-surface-2: #171717;
+  --app-card: #000000;
+  --app-card-soft: rgba(0, 0, 0, 0.9);
+  --app-input: rgba(0, 0, 0, 0.78);
+  --app-text: #ffffff;
+  --app-text-soft: rgba(255, 255, 255, 0.75);
+  --app-text-muted: rgba(255, 255, 255, 0.6);
+  --app-border: rgba(255, 255, 255, 0.12);
+  --app-border-soft: rgba(255, 255, 255, 0.08);
+  --app-fab-bg: #000000;
+  --app-fab-hover: #171717;
+  --app-fab-text: #f2d37a;
+  --sidebar: #111111;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #1a1a1a;
+  --sidebar-primary-foreground: #f5f5f5;
+  --sidebar-accent: #1f1f1f;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: #b8952e;
+}
+
+.app-theme-light {
+  --page-bg: #ffffff;
+  --app-bg: #ffffff;
+  --app-surface: #f5f5f5;
+  --app-surface-2: #ededed;
+  --app-card: #ffffff;
+  --app-card-soft: #ffffff;
+  --app-input: #ffffff;
+  --app-text: #171717;
+  --app-text-soft: rgba(23, 23, 23, 0.8);
+  --app-text-muted: rgba(23, 23, 23, 0.62);
+  --app-border: rgba(23, 23, 23, 0.18);
+  --app-border-soft: rgba(23, 23, 23, 0.1);
+  --app-fab-bg: #f5f5f5;
+  --app-fab-hover: #e5e5e5;
+  --app-fab-text: #171717;
+  --sidebar: #f5f5f5;
+  --sidebar-foreground: #171717;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #171717;
+  --sidebar-accent: #ededed;
+  --sidebar-accent-foreground: #171717;
+  --sidebar-border: rgba(23, 23, 23, 0.14);
+  --sidebar-ring: #b8952e;
+}
+
+.app-page-bg {
+  background-color: var(--app-bg);
+  color: var(--app-text);
+}
+
+.app-theme-fab {
+  border-color: #b8952e66;
+  background-color: var(--app-fab-bg);
+  color: var(--app-fab-text);
+}
+
+.app-theme-fab:hover {
+  background-color: var(--app-fab-hover);
+}
+
+/*
+  Compatibilidade global: aplica a nova paleta em classes já usadas no projeto,
+  para não precisar refatorar todos os componentes de uma vez.
+*/
+.app-theme-light .bg-neutral-800,
+.app-theme-light .bg-neutral-900 {
+  background-color: var(--app-surface) !important;
+}
+
+.app-theme-light .bg-black {
+  background-color: var(--app-card) !important;
+}
+
+.app-theme-light .bg-black\/90,
+.app-theme-light .bg-black\/80,
+.app-theme-light .bg-black\/70,
+.app-theme-light .bg-black\/60,
+.app-theme-light .bg-black\/50,
+.app-theme-light .bg-black\/40,
+.app-theme-light .bg-black\/30,
+.app-theme-light .bg-black\/20,
+.app-theme-light .bg-black\/10,
+.app-theme-light .bg-black\/5 {
+  background-color: var(--app-card-soft) !important;
+}
+
+.app-theme-light .text-white {
+  color: var(--app-text) !important;
+}
+
+.app-theme-light .text-white\/90,
+.app-theme-light .text-white\/80,
+.app-theme-light .text-white\/70,
+.app-theme-light .text-white\/60,
+.app-theme-light .text-white\/50,
+.app-theme-light .text-white\/40,
+.app-theme-light .text-white\/30,
+.app-theme-light .text-white\/20 {
+  color: var(--app-text-muted) !important;
+}
+
+.app-theme-light .placeholder\:text-white\/70::placeholder,
+.app-theme-light .placeholder\:text-white\/60::placeholder,
+.app-theme-light .placeholder\:text-white\/50::placeholder,
+.app-theme-light .placeholder\:text-white\/40::placeholder,
+.app-theme-light .placeholder\:text-white\/30::placeholder {
+  color: var(--app-text-muted) !important;
+}
+
+.app-theme-light .border-white\/10,
+.app-theme-light .border-white\/5 {
+  border-color: var(--app-border) !important;
+}
+
+.app-theme-light .hover\:bg-neutral-700:hover,
+.app-theme-light .hover\:bg-neutral-800:hover,
+.app-theme-light .hover\:bg-neutral-900:hover {
+  background-color: var(--app-surface-2) !important;
 }
 
 .dark {

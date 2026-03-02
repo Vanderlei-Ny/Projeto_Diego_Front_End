@@ -1,8 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
+import { ENDPOINTS } from "@/endpoints";
 
-export default function useCadastro() {
+export default function useRegistration() {
   const { login } = useAuth();
 
   const createUserMutation = useMutation({
@@ -13,7 +14,7 @@ export default function useCadastro() {
       email: string;
       password: string;
     }) => {
-      const res = await api.post("/user/createUser", { email, password });
+      const res = await api.post(ENDPOINTS.user.create, { email, password });
       const data = res.data;
 
       if (!data.id) throw new Error(data.message || "Erro ao cadastrar");
@@ -23,7 +24,7 @@ export default function useCadastro() {
     // After creating the user, automatically log them in with the same credentials
     onSuccess: async (_data, variables) => {
       try {
-        const loginRes = await api.post("/login/loginUser", {
+        const loginRes = await api.post(ENDPOINTS.auth.loginWithEmail, {
           email: variables.email,
           password: variables.password,
         });
@@ -56,7 +57,7 @@ export default function useCadastro() {
     mutationFn: async ({ token }: { token: string }) => {
       const payload = { token };
 
-      const res = await api.post("/login/authWithGoogle", payload);
+      const res = await api.post(ENDPOINTS.auth.loginWithGoogle, payload);
       const raw = res.data;
 
       if (!raw?.user?.id) {

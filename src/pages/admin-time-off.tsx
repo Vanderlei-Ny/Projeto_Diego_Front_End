@@ -9,10 +9,10 @@ import {
   User,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "../../../components/loading-spinner";
-import ConfirmModal from "../../../components/modal";
-import AgendamentoCalendar from "../../scheduling/SchedulingCalendar";
-import useFolgasPage from "../timeOff/useTimeOffPage";
+import LoadingSpinner from "../components/loading-spinner";
+import ConfirmModal from "../components/modal";
+import AgendamentoCalendar from "./scheduling/SchedulingCalendar";
+import useTimeOffPage from "./admin/timeOff/useTimeOffPage";
 
 interface DiaBloqueado {
   id: number;
@@ -28,7 +28,7 @@ interface AgendamentoNoDia {
   horario: string;
 }
 
-function TimeOffPage() {
+function AdminTimeOffPage() {
   const navigate = useNavigate();
   const {
     diasBloqueados,
@@ -48,14 +48,14 @@ function TimeOffPage() {
     deleteModalMessage,
     confirmDelete,
     closeDeleteModal,
-  } = useFolgasPage();
+  } = useTimeOffPage();
 
   const handleGoBack = () => navigate("/admin");
 
   const isProcessing = isCreating || isRemoving;
 
   return (
-    <div className="flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 bg-black flex-col">
+    <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
       {isProcessing && <LoadingSpinner fullScreen message="Processando..." />}
 
       <div className="flex w-full max-w-4xl mx-auto flex-col gap-4 sm:gap-6">
@@ -79,87 +79,87 @@ function TimeOffPage() {
         </div>
 
         {/* Formulário para bloquear dia */}
-        <div className="bg-neutral-800 rounded-[15px] p-4 md:p-6">
+        <div className="bg-neutral-800 rounded-[15px] p-4 md:p-6 ">
           <h2 className="text-lg font-semibold text-[#B8952E] mb-4 flex items-center gap-2">
             <Plus className="w-5 h-5" /> Bloquear Novo Dia
           </h2>
 
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* Calendário */}
-            <div className="lg:w-1/2">
+          <div className="flex flex-col gap-6">
+            {/* Campo de motivo */}
+            <div>
               <label className="block text-white/80 text-sm mb-2">
-                Selecione a Data
+                Motivo (opcional)
               </label>
-              <AgendamentoCalendar
-                selectedDate={selectedDate}
-                onSelect={handleDateSelect}
-                activeWeekdays={[
-                  "DOMINGO",
-                  "SEGUNDA",
-                  "TERCA",
-                  "QUARTA",
-                  "QUINTA",
-                  "SEXTA",
-                  "SABADO",
-                ]}
+              <input
+                type="text"
+                value={motivo}
+                onChange={(e) => setMotivo(e.target.value)}
+                placeholder="Ex: Folga, Feriado, Imprevisto..."
+                className="w-full px-4 py-3 bg-black border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#B8952E] placeholder:text-white/30"
               />
             </div>
 
-            {/* Motivo e ações */}
-            <div className="lg:w-1/2 flex flex-col gap-4">
-              <div>
-                <label className="block text-white/80 text-sm mb-2">
-                  Motivo (opcional)
-                </label>
-                <input
-                  type="text"
-                  value={motivo}
-                  onChange={(e) => setMotivo(e.target.value)}
-                  placeholder="Ex: Folga, Feriado, Imprevisto..."
-                  className="w-full px-4 py-3 bg-black border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#B8952E] placeholder:text-white/30"
+            <div className="flex flex-col w-full gap-3">
+              <div className="bg-black/30 border border-white/10 rounded-xl p-4">
+                <AgendamentoCalendar
+                  selectedDate={selectedDate}
+                  onSelect={handleDateSelect}
+                  activeWeekdays={[
+                    "DOMINGO",
+                    "SEGUNDA",
+                    "TERCA",
+                    "QUARTA",
+                    "QUINTA",
+                    "SEXTA",
+                    "SABADO",
+                  ]}
+                  showContainer={false}
+                  showSelectedSummary={false}
+                  title="Selecione a Data"
                 />
               </div>
 
-              {/* Aviso de agendamentos existentes */}
-              {showAgendamentosWarning && agendamentosNoDia.length > 0 && (
-                <div className="bg-red-900/20 border border-red-900/50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-red-500 mb-3">
-                    <AlertTriangle className="w-5 h-5" />
-                    <span className="font-semibold">
-                      Existem {agendamentosNoDia.length} agendamento(s) neste
-                      dia!
-                    </span>
+              <div className="p-4 flex flex-col gap-4 min-h-[380px]">
+                {showAgendamentosWarning && agendamentosNoDia.length > 0 && (
+                  <div className="bg-red-900/20 border border-red-900/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-red-500 mb-3">
+                      <AlertTriangle className="w-5 h-5" />
+                      <span className="font-semibold">
+                        Existem {agendamentosNoDia.length} agendamento(s) neste
+                        dia!
+                      </span>
+                    </div>
+                    <p className="text-white/60 text-sm mb-3">
+                      Cancele os agendamentos antes de bloquear o dia:
+                    </p>
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      {agendamentosNoDia.map((ag: AgendamentoNoDia) => (
+                        <div
+                          key={ag.id}
+                          className="flex items-center gap-3 bg-black/50 rounded p-2 text-sm"
+                        >
+                          <User className="w-4 h-4 text-white/40" />
+                          <span className="text-white">{ag.cliente}</span>
+                          <Clock className="w-4 h-4 text-white/40 ml-auto" />
+                          <span className="text-white/60">{ag.horario}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-white/60 text-sm mb-3">
-                    Cancele os agendamentos antes de bloquear o dia:
-                  </p>
-                  <div className="space-y-2 max-h-32 overflow-y-auto">
-                    {agendamentosNoDia.map((ag: AgendamentoNoDia) => (
-                      <div
-                        key={ag.id}
-                        className="flex items-center gap-3 bg-black/50 rounded p-2 text-sm"
-                      >
-                        <User className="w-4 h-4 text-white/40" />
-                        <span className="text-white">{ag.cliente}</span>
-                        <Clock className="w-4 h-4 text-white/40 ml-auto" />
-                        <span className="text-white/60">{ag.horario}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                )}
 
-              <button
-                onClick={handleCreateDiaBloqueado}
-                disabled={
-                  !selectedDate ||
-                  (showAgendamentosWarning && agendamentosNoDia.length > 0)
-                }
-                className="mt-auto px-6 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <CalendarOff className="w-5 h-5" />
-                Bloquear Dia
-              </button>
+                <button
+                  onClick={handleCreateDiaBloqueado}
+                  disabled={
+                    !selectedDate ||
+                    (showAgendamentosWarning && agendamentosNoDia.length > 0)
+                  }
+                  className="w-full px-6 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <CalendarOff className="w-5 h-5" />
+                  Bloquear Dia
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@ function TimeOffPage() {
               {diasBloqueados.map((dia: DiaBloqueado) => (
                 <div
                   key={dia.id}
-                  className="bg-black border border-red-900/30 rounded-xl p-4 flex items-center justify-between hover:border-red-500/50 transition-colors group"
+                  className="bg-black border border-[#B8952E]/30 rounded-xl p-4 flex items-center justify-between hover:border-[#B8952E] transition-colors group"
                 >
                   <div className="flex flex-col gap-1">
                     <span className="text-white font-medium">
@@ -197,17 +197,19 @@ function TimeOffPage() {
                       {dia.diaSemana}
                     </span>
                     {dia.motivo && (
-                      <span className="text-red-400 text-xs">{dia.motivo}</span>
+                      <span className="text-[#B8952E] text-xs">
+                        {dia.motivo}
+                      </span>
                     )}
                   </div>
                   <button
                     onClick={() =>
                       handleRemoveDiaBloqueado(dia.id, dia.dataFormatada)
                     }
-                    className="p-2 hover:bg-green-900/30 rounded-lg transition-colors opacity-50 group-hover:opacity-100"
+                    className="p-2 hover:bg-red-600/20 rounded-lg transition-colors opacity-60 group-hover:opacity-100"
                     title="Desbloquear dia"
                   >
-                    <Trash2 className="w-5 h-5 text-green-500" />
+                    <Trash2 className="w-5 h-5 text-white/70 hover:text-red-400" />
                   </button>
                 </div>
               ))}
@@ -227,4 +229,4 @@ function TimeOffPage() {
   );
 }
 
-export default TimeOffPage;
+export default AdminTimeOffPage;

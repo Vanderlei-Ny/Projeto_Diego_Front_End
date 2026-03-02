@@ -11,7 +11,7 @@ export default function ProtectedLayout() {
   // Mostra loading apenas durante a validação inicial do token
   if (loading) {
     return (
-      <div className="flex w-full h-screen items-center justify-center bg-black">
+      <div className="app-page-bg flex w-full h-screen items-center justify-center">
         <LoadingSpinner message="Carregando..." size="lg" />
       </div>
     );

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
+import { ENDPOINTS } from "@/endpoints";
 
 export default function useHome() {
   const { user } = useAuth();
@@ -18,9 +19,7 @@ export default function useHome() {
       }
 
       try {
-        const res = await api.get(
-          `/agendamento/listAgendamentoOfUser/${user.userId}`
-        );
+        const res = await api.get(ENDPOINTS.scheduling.listByUser(user.userId));
         const data = res.data;
 
         interface AgendamentoResponse {
@@ -51,7 +50,7 @@ export default function useHome() {
 
   const deleteAgendamentoMutation = useMutation({
     mutationFn: async (agendamentoId: number) => {
-      await api.delete(`/agendamento/deleteAgendamento/${agendamentoId}`);
+      await api.delete(ENDPOINTS.scheduling.deleteById(agendamentoId));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["agendamentos"] });

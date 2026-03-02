@@ -16,7 +16,7 @@ function Login() {
   } = useLoginPage();
 
   return (
-    <div className="flex w-full min-h-screen items-center justify-center bg-black bg-cover bg-center bg-no-repeat bg-fixed px-2 sm:px-4 md:px-8 py-6 sm:py-10">
+    <div className="app-page-bg flex w-full min-h-screen items-center justify-center bg-cover bg-center bg-no-repeat bg-fixed px-2 sm:px-4 md:px-8 py-6 sm:py-10">
       {isBusy && <LoadingSpinner fullScreen message="Entrando..." />}
       <div className="flex w-full h-2/3 flex-col md:flex-row items-stretch justify-center gap-4 sm:gap-6 lg:gap-8 bg-black/90 rounded-[15px] p-4 sm:p-6 md:p-8 max-w-4xl mx-auto border border-white/10">
         {/* Lado esquerdo - branding */}

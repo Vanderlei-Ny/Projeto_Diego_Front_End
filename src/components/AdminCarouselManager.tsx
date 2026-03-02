@@ -3,6 +3,7 @@ import { Trash2, Upload } from "lucide-react";
 import api from "../http/api";
 import { toast } from "sonner";
 import ConfirmModal from "./modal";
+import { ENDPOINTS } from "@/endpoints";
 
 interface CarouselImageData {
   id: number;
@@ -27,7 +28,7 @@ export default function AdminCarouselManager() {
   const fetchImages = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/carousel");
+      const res = await api.get(ENDPOINTS.carousel.base);
       setImages(res.data || []);
     } catch (error) {
       toast.error("Erro ao buscar imagens do carousel");
@@ -74,7 +75,7 @@ export default function AdminCarouselManager() {
       const formData = new FormData();
       formData.append("image", imageFile);
 
-      const res = await api.post("/carousel", formData, {
+      const res = await api.post(ENDPOINTS.carousel.base, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -105,7 +106,7 @@ export default function AdminCarouselManager() {
     if (deleteId === null) return;
 
     try {
-      await api.delete(`/carousel/${deleteId}`);
+      await api.delete(ENDPOINTS.carousel.byId(deleteId));
       setImages(images.filter((img) => img.id !== deleteId));
       toast.success("Imagem removida com sucesso!");
     } catch (error) {

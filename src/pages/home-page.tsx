@@ -5,8 +5,15 @@ import BarbershopLogo from "../components/BarbershopLogo";
 import ConfirmModal from "../components/modal";
 import useHomePage from "../hooks/useHomePage";
 import LoadingSpinner from "../components/loading-spinner";
-import { Separator } from "../components/ui/separator";
-import { Trash2, Shield } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  Clock3,
+  Scissors,
+  Shield,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function HomeInterface() {
@@ -29,78 +36,83 @@ function HomeInterface() {
 
   // Handlers moved into useHomePage hook
 
+  const firstName = user.name?.split(" ")[0] ?? "Cliente";
+
   return (
     <>
-      <div className="flex w-full px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-10 min-h-screen md:h-screen ">
-        <div className="flex w-full h-full flex-col items-center p-3 sm:p-6 md:p-10 bg-black rounded-[15px] gap-3 sm:gap-4">
-          <div className="flex flex-col justify-between lg:flex-row w-full bg-neutral-800 rounded-[15px] gap-3 sm:gap-4 md:gap-0">
-            {/* Nome da barbearia - Mobile (topo) */}
-            <BarbershopLogo variant="mobile" className="lg:hidden mx-3 mt-3" />
+      <div className="app-page-bg w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-10">
+        <div className="flex w-full h-full flex-col items-center p-3 sm:p-6 md:p-10 gap-3 sm:gap-4">
+          <div className="flex flex-col justify-between lg:flex-row w-full bg-neutral-800 rounded-[15px] p-4 md:p-6 gap-4 border border-white/10">
+            <div className="flex h-full flex-col justify-between gap-4 sm:gap-5 px-3 sm:px-4 py-3 sm:py-4 md:py-0 md:px-0 lg:max-w-[520px]">
+              <BarbershopLogo variant="mobile" className="lg:hidden" />
+              <BarbershopLogo
+                variant="desktop"
+                className="hidden lg:flex w-fit"
+              />
 
-            {/* Mobile Carousel - visível apenas em mobile */}
-            <div className="lg:hidden w-full">
-              <MobileCarousel />
-            </div>
+              <div className="space-y-3">
+                <h1 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
+                  Bem-vindo, <span className="text-[#B8952E]">{firstName}</span>
+                </h1>
 
-            {/* Separator visível apenas no mobile */}
-            <div className="lg:hidden w-full px-4">
-              <Separator className="bg-neutral-700" />
-            </div>
+                <p className="text-white/70 text-sm sm:text-base max-w-xl">
+                  Experiência completa de barbearia: agende seu horário em
+                  segundos, acompanhe seus atendimentos e mantenha seu estilo
+                  sempre em dia.
+                </p>
+              </div>
 
-            {/* Conteúdo Desktop - Nome + Botão à esquerda */}
-            <div className="flex h-full flex-col justify-between gap-3 sm:gap-4 px-3 sm:px-4 py-3 sm:py-4 md:py-0 md:px-0">
-              {/* Nome da barbearia - Desktop */}
-              <BarbershopLogo variant="desktop" className="hidden lg:flex" />
-              {/* aqui eu vou colocar o icon da empresa */}
-              <div
-                className="
-                  flex flex-col
-                  justify-center 
-                  px-3 sm:px-5 py-3 sm:py-5
-                  gap-3
-                  "
-              >
-                {/* Botão de Agendar - visível apenas para clientes (não admin) */}
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-black/50 px-3 py-1.5 text-xs text-white/80">
+                  <CalendarDays className="w-3.5 h-3.5 text-[#B8952E]" /> Ter a
+                  Sáb
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-1">
                 {!isAdmin && (
-                  <>
-                    <p className="text-gray-100 font-medium text-sm sm:text-base">
-                      Agende já
-                    </p>
-                    <button
-                      onClick={() => navigate("/agendamento")}
-                      className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-[#B8952E] rounded-[10px] font-medium hover:bg-yellow-400 transition-colors text-sm sm:text-base"
-                    >
-                      Agendar
-                    </button>
-                  </>
+                  <button
+                    onClick={() => navigate("/agendamento")}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 bg-[#B8952E] rounded-[10px] font-semibold hover:bg-yellow-400 transition-colors text-sm sm:text-base text-black"
+                  >
+                    Agendar agora <ArrowRight className="w-4 h-4" />
+                  </button>
                 )}
-                {/* Botão de Admin - visível apenas para admins */}
+
                 {isAdmin && (
                   <button
                     onClick={() => navigate("/admin")}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-neutral-700 border border-[#B8952E] rounded-[10px] font-medium hover:bg-neutral-600 transition-colors text-sm sm:text-base text-[#B8952E]"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 py-3 bg-neutral-700 border border-[#B8952E] rounded-[10px] font-medium hover:bg-neutral-600 transition-colors text-sm sm:text-base text-[#B8952E]"
                   >
-                    <Shield className="w-4 h-4" />
-                    Painel Admin
+                    <Shield className="w-4 h-4" /> Painel Admin
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Desktop Carousel - visível apenas em desktop */}
+            <div className="lg:hidden w-full">
+              <MobileCarousel />
+            </div>
+
             <div className="hidden lg:flex items-center justify-center w-auto px-4 py-4">
               <ImageCarousel />
             </div>
           </div>
-          <div className="flex flex-col lg:flex-row w-full h-auto lg:h-full justify-between items-stretch gap-3 sm:gap-4 min-h-0 bg-neutral-800 rounded-[15px] p-3 sm:p-4">
-            {/* Barra lateral de redes sociais - Desktop */}
+
+          <div className="flex flex-col lg:flex-row w-full h-auto lg:h-full justify-between items-stretch gap-3 sm:gap-4 min-h-0 bg-neutral-800 rounded-[15px] p-4 md:p-6">
             <SocialIcons variant="desktop" />
-            {/* Seção de agendamentos - visível apenas para clientes (não admin) */}
+
             {!isAdmin && (
-              <div className="flex flex-col w-full lg:w-75 bg-neutral-900 items-start justify-start px-2 sm:px-4 py-3 sm:py-4 rounded-md max-h-screen lg:max-h-full min-w-0 overflow-hidden">
-                <p className="text-[#B8952E] font-semibold text-sm sm:text-base mb-2 sm:mb-3">
-                  Seus agendamentos
-                </p>
+              <div className="flex flex-col w-full lg:w-75 bg-black border border-white/10 items-start justify-start px-4 py-4 rounded-xl max-h-screen lg:max-h-full min-w-0 overflow-hidden">
+                <div className="mb-2 sm:mb-3 w-full flex items-center justify-between gap-2">
+                  <p className="text-[#B8952E] font-semibold text-sm sm:text-base">
+                    Seus agendamentos
+                  </p>
+                  <span className="text-xs px-2 py-1 rounded-md border border-[#B8952E]/40 bg-[#B8952E]/10 text-[#F2D37A]">
+                    {agendamentos.length} marcado(s)
+                  </span>
+                </div>
+
                 <div className="w-full overflow-y-auto sm:max-h-[350px] lg:max-h-full space-y-2 sm:space-y-3 pt-2">
                   {loading ? (
                     <div className="flex items-center justify-center w-full py-8">
@@ -110,18 +122,23 @@ function HomeInterface() {
                       />
                     </div>
                   ) : agendamentos.length === 0 ? (
-                    <p className="text-white text-center text-xs sm:text-sm">
-                      Nenhum agendamento encontrado.
-                    </p>
+                    <div className="w-full rounded-lg border border-white/10 bg-black/60 p-4 text-center">
+                      <p className="text-white text-xs sm:text-sm">
+                        Nenhum agendamento encontrado.
+                      </p>
+                      <p className="text-white/60 text-xs mt-1">
+                        Faça seu primeiro agendamento e garanta seu horário.
+                      </p>
+                    </div>
                   ) : (
                     agendamentos.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between w-full p-2 sm:p-3 text-white mb-2 sm:mb-3 bg-neutral-800 rounded-md gap-2"
+                        className="flex items-center justify-between w-full p-2 sm:p-3 text-white mb-2 sm:mb-3 bg-black border border-white/10 rounded-lg gap-2 hover:border-[#B8952E]/40 transition-colors"
                       >
                         <div className="flex flex-col gap-1 sm:gap-2 flex-1 min-w-0">
-                          <span className="text-white text-xs sm:text-sm font-bold">
-                            Realizado
+                          <span className="text-[#F2D37A] text-xs sm:text-sm font-semibold">
+                            Agendamento confirmado
                           </span>
                           <div className="flex items-center gap-1 sm:gap-2 text-xs text-white/90 flex-wrap">
                             <svg
@@ -145,7 +162,26 @@ function HomeInterface() {
                               {item.hour}
                             </span>
                           </div>
+
+                          {item.nameServices && item.nameServices.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {item.nameServices.slice(0, 2).map((service) => (
+                                <span
+                                  key={service}
+                                  className="px-2 py-0.5 rounded border border-white/10 bg-black/60 text-[10px] text-white/80"
+                                >
+                                  {service}
+                                </span>
+                              ))}
+                              {item.nameServices.length > 2 ? (
+                                <span className="px-2 py-0.5 rounded border border-white/10 bg-black/60 text-[10px] text-white/60">
+                                  +{item.nameServices.length - 2}
+                                </span>
+                              ) : null}
+                            </div>
+                          ) : null}
                         </div>
+
                         <button
                           onClick={() => openDeleteModal(item.id)}
                           className="flex-shrink-0 cursor-pointer hover:text-yellow-400 transition-colors"

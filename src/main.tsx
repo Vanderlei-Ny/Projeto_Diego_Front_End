@@ -5,17 +5,20 @@ import AuthProvider from "./contexts/AuthContext";
 import { Toaster } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
+import AppErrorBoundary from "./components/AppErrorBoundary";
 
 const queryClient = new QueryClient();
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
 createRoot(document.getElementById("root")!).render(
-  <GoogleOAuthProvider clientId={clientId}>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <App />
-        <Toaster position="bottom-right" />
-      </AuthProvider>
-    </QueryClientProvider>
-  </GoogleOAuthProvider>
+  <AppErrorBoundary>
+    <GoogleOAuthProvider clientId={clientId}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <App />
+          <Toaster position="bottom-right" />
+        </AuthProvider>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
+  </AppErrorBoundary>,
 );

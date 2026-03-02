@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../http/api";
+import { ENDPOINTS } from "@/endpoints";
 
 interface CarouselImage {
   id: number;
@@ -19,7 +20,7 @@ export default function ImageCarousel() {
 
   const fetchImages = async () => {
     try {
-      const res = await api.get("/carousel");
+      const res = await api.get(ENDPOINTS.carousel.base);
       const carouselImages = res.data || [];
       const sorted = carouselImages.sort(
         (a: CarouselImage, b: CarouselImage) => a.order - b.order,

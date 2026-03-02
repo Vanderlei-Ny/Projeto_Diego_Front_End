@@ -8,9 +8,9 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "../../../components/loading-spinner";
-import ConfirmModal from "../../../components/modal";
-import useHorariosPage from "./useSchedulesPage";
+import LoadingSpinner from "../components/loading-spinner";
+import ConfirmModal from "../components/modal";
+import useHoursPage from "@/pages/admin/schedules/useSchedulesPage";
 
 interface Hour {
   id: number;
@@ -42,17 +42,9 @@ const dayNameMap: Record<string, string> = {
   QUINTA: "Quinta-feira",
   SEXTA: "Sexta-feira",
   SABADO: "Sábado",
-  // English enum keys mapping to Portuguese
-  SUNDAY: "Domingo",
-  MONDAY: "Segunda-feira",
-  TUESDAY: "Terça-feira",
-  WEDNESDAY: "Quarta-feira",
-  THURSDAY: "Quinta-feira",
-  FRIDAY: "Sexta-feira",
-  SATURDAY: "Sábado",
 };
 
-function SchedulingPage() {
+function AdminHoursPage() {
   const navigate = useNavigate();
   const {
     allDaysAndHours,
@@ -68,7 +60,6 @@ function SchedulingPage() {
     availableDaysToAdd,
     isAddingHour,
     isRemovingHour,
-    isTogglingDay,
     isCreatingDay,
     isRemovingDay,
     handleAddHour,
@@ -80,19 +71,15 @@ function SchedulingPage() {
     deleteModalMessage,
     confirmDelete,
     closeDeleteModal,
-  } = useHorariosPage();
+  } = useHoursPage();
 
   const handleGoBack = () => navigate("/admin");
 
   const isProcessing =
-    isAddingHour ||
-    isRemovingHour ||
-    isTogglingDay ||
-    isCreatingDay ||
-    isRemovingDay;
+    isAddingHour || isRemovingHour || isCreatingDay || isRemovingDay;
 
   return (
-    <div className="flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 bg-black flex-col">
+    <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col transition-colors">
       {isProcessing && <LoadingSpinner fullScreen message="Processando..." />}
 
       <div className="flex w-full max-w-4xl mx-auto flex-col gap-4 sm:gap-6">
@@ -110,7 +97,7 @@ function SchedulingPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowAddDayForm(!showAddDayForm)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-[#a38427] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors"
             >
               <Plus className="w-5 h-5" />
               <span className="hidden sm:inline">Adicionar Dia</span>
@@ -149,7 +136,7 @@ function SchedulingPage() {
                     className="w-full px-4 py-3 bg-black border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#B8952E]"
                   >
                     <option value="">Selecione o dia...</option>
-                    {availableDaysToAdd.map((day) => (
+                    {availableDaysToAdd.map((day: DiaDaSemana) => (
                       <option key={day} value={day}>
                         {dayNameMap[day]}
                       </option>
@@ -170,7 +157,7 @@ function SchedulingPage() {
                   <button
                     onClick={handleCreateDay}
                     disabled={!newDayName}
-                    className="px-6 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-[#a38427] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Criar Dia
                   </button>
@@ -203,115 +190,109 @@ function SchedulingPage() {
               {allDaysAndHours.map((day: DayWithHours) => (
                 <div
                   key={day.id}
-                  className={`bg-black border border-white/10 rounded-xl overflow-hidden transition-all ${
+                  className={`bg-black border rounded-xl overflow-hidden transition-all ${
                     selectedDayToManage === day.id
-                      ? "ring-2 ring-[#B8952E]"
-                      : ""
+                      ? "border-[#B8952E]"
+                      : "border-white/10"
                   }`}
                 >
-                  {/* Cabeçalho do dia */}
-                  <div
-                    className="flex items-center justify-between p-4 cursor-pointer hover:bg-neutral-900/50 transition-colors"
-                    onClick={() =>
-                      setSelectedDayToManage(
-                        selectedDayToManage === day.id ? null : day.id,
-                      )
-                    }
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg font-medium text-white">
-                        DEBUG: {JSON.stringify(day.weekday)} -{" "}
-                        {day.weekday
-                          ? dayNameMap[day.weekday] || day.weekday
-                          : "Sem nome"}
-                      </span>
-                      <span className="px-2 py-0.5 bg-neutral-800 rounded-full text-white/60 text-xs">
-                        {day.hours?.length || 0} horário
-                        {(day.hours?.length || 0) !== 1 ? "s" : ""}
-                      </span>
+                  <div className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-3 text-white">
+                      <button
+                        onClick={() =>
+                          setSelectedDayToManage(
+                            selectedDayToManage === day.id ? null : day.id,
+                          )
+                        }
+                        className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+                      >
+                        <ChevronDown
+                          className={`w-5 h-5 transition-transform ${
+                            selectedDayToManage === day.id
+                              ? "rotate-180"
+                              : "rotate-0"
+                          }`}
+                        />
+                      </button>
+                      <div className="flex flex-col">
+                        <span className="font-semibold">
+                          {dayNameMap[day.weekday]}
+                        </span>
+                      </div>
                     </div>
+
                     <div className="flex items-center gap-2">
-                      <ChevronDown
-                        className={`w-5 h-5 text-white/60 transition-transform ${
-                          selectedDayToManage === day.id ? "rotate-180" : ""
-                        }`}
-                      />
+                      <button
+                        onClick={() => handleRemoveDay(day.id)}
+                        className="p-2 rounded-lg text-white hover:bg-yellow-200/50 hover:text-[#B8952E] transition-colors"
+                        title="Remover dia"
+                      >
+                        <Trash2 className="w-5 h-5 " />
+                      </button>
                     </div>
                   </div>
 
-                  {/* Conteúdo expandido */}
                   {selectedDayToManage === day.id && (
-                    <div className="p-4 border-t border-white/10 bg-neutral-900/30">
-                      {/* Adicionar novo horário */}
-                      <div className="mb-4">
-                        <label className="block text-white/80 text-sm mb-2">
-                          Adicionar Horário
-                        </label>
+                    <div className="border-t border-white/5 p-4 space-y-3">
+                      <div className="flex items-center gap-3 flex-wrap text-sm text-white/80">
                         <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={newHourInput}
-                            onChange={(e) =>
-                              handleHourInputChange(e.target.value)
-                            }
-                            placeholder="Digite: 0900 → 09:00"
-                            className="flex-1 px-4 py-3 bg-black border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#B8952E] placeholder:text-white/30"
-                            onKeyDown={(e) =>
-                              e.key === "Enter" && handleAddHour()
-                            }
-                          />
-                          <button
-                            onClick={handleAddHour}
-                            className="px-4 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-[#a38427] transition-colors"
-                          >
-                            <Plus className="w-5 h-5" />
-                          </button>
+                          <Clock className="text-[#B8952E]" />
+                          <span>Horários:</span>
                         </div>
-                      </div>
-
-                      {/* Lista de horários */}
-                      <div className="mb-4">
-                        <label className="block text-white/80 text-sm mb-2">
-                          Horários Cadastrados
-                        </label>
                         {day.hours.length === 0 ? (
-                          <p className="text-white/40 text-sm py-2">
-                            Nenhum horário cadastrado. Adicione acima.
-                          </p>
+                          <span className="text-white/50">
+                            Nenhum horário cadastrado.
+                          </span>
                         ) : (
-                          <div className="flex flex-wrap gap-2">
-                            {day.hours.map((hour: Hour) => {
-                              return (
-                                <div
-                                  key={hour.id}
-                                  className="inline-flex items-center gap-2 px-3 py-2 bg-black border border-white/10 rounded-lg group hover:border-[#B8952E]/50 transition-colors"
-                                >
-                                  <Clock className="w-4 h-4 text-[#B8952E]" />
-                                  <span className="text-white font-medium">
-                                    DEBUG: {JSON.stringify(hour.availableHour)}{" "}
-                                    - {hour.availableHour || "Sem horário"}
-                                  </span>
-                                  <button
-                                    onClick={() => handleRemoveHour(hour.id)}
-                                    className="p-1 hover:bg-red-900/30 rounded transition-colors opacity-50 group-hover:opacity-100"
-                                  >
-                                    <X className="w-4 h-4 text-red-500" />
-                                  </button>
-                                </div>
-                              );
-                            })}
-                          </div>
+                          day.hours.map((hour: Hour) => (
+                            <span
+                              key={hour.id}
+                              className="flex items-center gap-2 px-3 py-2 bg-[#B8952E] rounded-lg"
+                            >
+                              {hour.availableHour}
+                              <button
+                                onClick={() => handleRemoveHour(hour.id)}
+                                className="text-white/70 hover:text-[#B8952E]"
+                                title="Remover horário"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </span>
+                          ))
                         )}
                       </div>
 
-                      {/* Botão remover dia */}
-                      <button
-                        onClick={() => handleRemoveDay(day.id)}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-900/20 border border-red-900/30 text-red-500 rounded-lg font-medium hover:bg-red-900/40 transition-colors"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                        Remover Dia
-                      </button>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          type="text"
+                          value={newHourInput}
+                          onChange={(e) =>
+                            handleHourInputChange(e.target.value)
+                          }
+                          placeholder="Ex: 14:30"
+                          className="w-full sm:w-48 px-4 py-3 bg-black border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#B8952E]"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => {
+                              if (selectedDayToManage !== day.id) {
+                                setSelectedDayToManage(day.id);
+                              }
+                              handleAddHour();
+                            }}
+                            disabled={!newHourInput.trim()}
+                            className="px-4 py-3 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Adicionar Horário
+                          </button>
+                          <button
+                            onClick={() => handleHourInputChange("")}
+                            className="px-4 py-3 bg-neutral-700 text-white rounded-lg font-medium hover:bg-neutral-600 transition-colors"
+                          >
+                            Limpar
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -332,4 +313,4 @@ function SchedulingPage() {
   );
 }
 
-export default SchedulingPage;
+export default AdminHoursPage;

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import type { CredentialResponse } from "@react-oauth/google";
 import useLogin from "./useLogin";
+import { getPersistedAuthToken } from "@/http/api";
 
 export default function useLoginPage() {
   const navigate = useNavigate();
@@ -13,6 +14,13 @@ export default function useLoginPage() {
     useLogin();
 
   const isBusy = isLoadingEmail || isLoadingGoogle;
+
+  useEffect(() => {
+    const persistedToken = getPersistedAuthToken();
+    if (persistedToken) {
+      navigate("/home", { replace: true });
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
