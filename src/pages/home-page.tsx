@@ -8,10 +8,8 @@ import LoadingSpinner from "../components/loading-spinner";
 import {
   ArrowRight,
   CalendarDays,
-  Clock3,
   Scissors,
   Shield,
-  Sparkles,
   Trash2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -66,6 +64,10 @@ function HomeInterface() {
                 <span className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-black/50 px-3 py-1.5 text-xs text-white/80">
                   <CalendarDays className="w-3.5 h-3.5 text-[#B8952E]" /> Ter a
                   Sáb
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-black/50 px-3 py-1.5 text-xs text-white/80">
+                  <Scissors className="w-3.5 h-3.5 text-[#B8952E]" /> Estilo em
+                  dia
                 </span>
               </div>
 

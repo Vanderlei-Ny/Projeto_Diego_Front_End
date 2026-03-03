@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
+import useHoursPage from "@/pages/admin/schedules/useSchedulesPage";
 
 interface Hour {
   id: number;
@@ -70,7 +71,7 @@ function HorariosPage() {
     deleteModalMessage,
     confirmDelete,
     closeDeleteModal,
-  } = useHorariosPage();
+  } = useHoursPage();
 
   const handleGoBack = () => navigate("/admin");
 
