@@ -11,27 +11,11 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
 import useHoursPage from "@/pages/admin/schedules/useSchedulesPage";
-
-interface Hour {
-  id: number;
-  availableHour: string;
-}
-
-interface DayWithHours {
-  id: number;
-  weekday: string;
-  isActive: boolean;
-  hours: Hour[];
-}
-
-type DiaDaSemana =
-  | "DOMINGO"
-  | "SEGUNDA"
-  | "TERCA"
-  | "QUARTA"
-  | "QUINTA"
-  | "SEXTA"
-  | "SABADO";
+import type {
+  DayWithHours,
+  DiaDaSemana,
+  Hour,
+} from "@/types/scheduling/scheduling.types";
 
 // Mapa para traduzir os dias
 const dayNameMap: Record<string, string> = {

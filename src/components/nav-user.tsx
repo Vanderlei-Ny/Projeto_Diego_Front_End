@@ -1,6 +1,9 @@
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut, Pencil } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import EditProfileModal from "@/components/EditProfileModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,18 +21,74 @@ import {
 import { getInitialName } from "@/utils/getInitialNames";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
+import useInsertEmailAndPhoneNumber from "@/hooks/useInsertEmailAndPhoneNumber";
+import type { NavUserData } from "@/types/navigation/navigation.types";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-  };
-}) {
+export function NavUser({ user }: { user: NavUserData }) {
   const { isMobile } = useSidebar();
+  const { user: authUser } = useAuth();
+  const { updateInfo, isLoading: isSavingProfile } =
+    useInsertEmailAndPhoneNumber();
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editTelefone, setEditTelefone] = useState("");
 
   const navigate = useNavigate();
   const { logout } = useAuth();
+
+  const formatPhone = (value: string) => {
+    let input = value.replace(/\D/g, "");
+
+    if (input.length > 11) input = input.slice(0, 11);
+
+    let formatted = input;
+
+    if (input.length > 0) {
+      formatted = `(${input.slice(0, 2)}`;
+    }
+
+    if (input.length >= 3) {
+      formatted += `) ${input.slice(2, 7)}`;
+    }
+
+    if (input.length >= 8) {
+      formatted += `-${input.slice(7)}`;
+    }
+
+    return formatted;
+  };
+
+  function openEditProfileModal() {
+    setEditName(authUser?.name ?? "");
+    setEditTelefone(authUser?.telefone ?? "");
+    setIsEditProfileOpen(true);
+  }
+
+  function closeEditProfileModal() {
+    setIsEditProfileOpen(false);
+  }
+
+  function handleEditTelefoneChange(value: string) {
+    setEditTelefone(formatPhone(value));
+  }
+
+  async function saveProfile() {
+    const cleanName = editName.trim();
+    const cleanPhone = editTelefone.trim();
+
+    if (!cleanName || !cleanPhone) {
+      toast.error("Preencha nome e telefone para continuar.");
+      return;
+    }
+
+    try {
+      await updateInfo(cleanName, cleanPhone);
+      toast.success("Perfil atualizado com sucesso!");
+      setIsEditProfileOpen(false);
+    } catch (_error) {
+      toast.error("Erro ao atualizar seu perfil.");
+    }
+  }
 
   function logOut() {
     // Use context logout to clear token and user state, then navigate to login
@@ -77,12 +136,30 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={openEditProfileModal}
+              className="cursor-pointer"
+            >
+              <Pencil />
+              Editar perfil
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={logOut} className="cursor-pointer">
               <LogOut />
               Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <EditProfileModal
+          isOpen={isEditProfileOpen}
+          name={editName}
+          telefone={editTelefone}
+          isSaving={isSavingProfile}
+          onClose={closeEditProfileModal}
+          onNameChange={setEditName}
+          onTelefoneChange={handleEditTelefoneChange}
+          onSave={saveProfile}
+        />
       </SidebarMenuItem>
     </SidebarMenu>
   );

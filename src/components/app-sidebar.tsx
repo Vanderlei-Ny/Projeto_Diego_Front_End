@@ -28,13 +28,13 @@ import useAuth from "@/hooks/useAuth";
 const data = {
   navMain: [
     {
-      title: "Home",
+      title: "Início",
       url: "/home",
       icon: House,
       isActive: true,
     },
     {
-      title: "Admin",
+      title: "Administrador",
       url: "/admin",
       icon: SquareTerminal,
       allowedRoles: ["ADMIN"],
@@ -117,9 +117,10 @@ export const AppSidebar = React.memo(function AppSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="flex items-center relative p-3">
-        <div className="flex w-full items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-accent/60 px-3 py-2.5 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-1.5">
+        <div className="flex w-full items-center gap-3 px-3 py-2.5 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-1.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#B8952E]/20 text-[#B8952E]">
             <Scissors className="h-5 w-5" />
+            <img className="w-35" src="../public/logo.png" />
           </div>
           <div className="flex min-w-0 flex-col overflow-hidden transition-all group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:opacity-0">
             <span className="truncate text-sm font-semibold text-sidebar-foreground">

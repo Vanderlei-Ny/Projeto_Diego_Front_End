@@ -1,9 +1,20 @@
 import { ChevronLeft, ShieldCheck, UserRoundCog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "@/components/loading-spinner";
-import useAdminUsersPage, {
-  type UserHierarchy,
-} from "@/hooks/useAdminUsersPage";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import useAdminUsersPage from "@/hooks/useAdminUsersPage";
+import type { UserHierarchy } from "@/types/admin/admin.types";
+
+const ROLE_LABEL: Record<UserHierarchy, string> = {
+  ADMIN: "Administrador",
+  CLIENT: "Cliente",
+};
 
 function AdminUsersPage() {
   const navigate = useNavigate();
@@ -34,7 +45,7 @@ function AdminUsersPage() {
               Gerenciar Usuários
             </h1>
             <p className="text-white/60 text-sm mt-1">
-              Altere a role dos usuários com segurança
+              Altere o perfil de acesso dos usuários com segurança
             </p>
           </div>
 
@@ -95,26 +106,31 @@ function AdminUsersPage() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-                      <select
+                      <Select
                         value={selectedRole}
-                        onChange={(event) =>
-                          handleRoleChange(
-                            item.id,
-                            event.target.value as UserHierarchy,
-                          )
+                        onValueChange={(value) =>
+                          handleRoleChange(item.id, value as UserHierarchy)
                         }
-                        className="min-w-36 px-3 py-2 bg-black border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#B8952E]"
                       >
-                        <option value="CLIENT">CLIENT</option>
-                        <option value="ADMIN">ADMIN</option>
-                      </select>
+                        <SelectTrigger className="min-w-44">
+                          <SelectValue placeholder="Selecione o perfil" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="CLIENT">
+                            {ROLE_LABEL.CLIENT}
+                          </SelectItem>
+                          <SelectItem value="ADMIN">
+                            {ROLE_LABEL.ADMIN}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
 
                       <button
                         onClick={() => handleSaveRole(item)}
                         disabled={!isDirty || isUpdatingRole}
                         className="px-4 py-2 bg-[#B8952E] text-black rounded-lg font-medium hover:bg-yellow-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Salvar role
+                        Salvar
                       </button>
                     </div>
                   </div>

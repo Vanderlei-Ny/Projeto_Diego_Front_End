@@ -1,8 +1,4 @@
-interface LoadingSpinnerProps {
-  message?: string;
-  size?: "sm" | "md" | "lg";
-  fullScreen?: boolean;
-}
+import type { LoadingSpinnerProps } from "@/types/components/component-props.types";
 
 export function LoadingSpinner({
   message = "Carregando...",

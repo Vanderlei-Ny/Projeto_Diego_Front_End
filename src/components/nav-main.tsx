@@ -1,4 +1,4 @@
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import {
@@ -16,24 +16,13 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import type { NavMainItem } from "@/types/navigation/navigation.types";
 
 export function NavMain({
   items,
   userRoles,
 }: {
-  items: {
-    title: string;
-    url: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
-    allowedRoles?: string[];
-    items?: {
-      title: string;
-      url: string;
-      icon?: LucideIcon;
-      allowedRoles?: string[];
-    }[];
-  }[];
+  items: NavMainItem[];
   userRoles?: string[] | null;
 }) {
   // helper that checks if userRoles intersect with allowedRoles
@@ -53,7 +42,7 @@ export function NavMain({
 
     const lowerUserRoles = userRoles.map((r) => r?.toLowerCase() ?? "");
     return allowedRoles.some((r) =>
-      lowerUserRoles.includes(r?.toLowerCase() ?? "")
+      lowerUserRoles.includes(r?.toLowerCase() ?? ""),
     );
   }
 
@@ -112,7 +101,7 @@ export function NavMain({
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          )
+          ),
         )}
       </SidebarMenu>
     </SidebarGroup>

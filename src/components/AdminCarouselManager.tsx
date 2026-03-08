@@ -4,16 +4,10 @@ import api from "../http/api";
 import { toast } from "sonner";
 import ConfirmModal from "./modal";
 import { ENDPOINTS } from "@/endpoints";
-
-interface CarouselImageData {
-  id: number;
-  filename: string;
-  imageUrl: string;
-  order: number;
-}
+import type { CarouselImage } from "@/types/carousel/carousel.types";
 
 export default function AdminCarouselManager() {
-  const [images, setImages] = useState<CarouselImageData[]>([]);
+  const [images, setImages] = useState<CarouselImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);

@@ -13,20 +13,10 @@ import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
 import AgendamentoCalendar from "./scheduling/SchedulingCalendar";
 import useTimeOffPage from "./admin/timeOff/useTimeOffPage";
-
-interface DiaBloqueado {
-  id: number;
-  data: string;
-  dataFormatada: string;
-  diaSemana: string;
-  motivo: string | null;
-}
-
-interface AgendamentoNoDia {
-  id: number;
-  cliente: string;
-  horario: string;
-}
+import type {
+  AgendamentoNoDia,
+  DiaBloqueado,
+} from "@/types/time-off/time-off.types";
 
 function AdminTimeOffPage() {
   const navigate = useNavigate();
@@ -119,7 +109,7 @@ function AdminTimeOffPage() {
                 />
               </div>
 
-              <div className="p-4 flex flex-col gap-4 min-h-[380px]">
+              <div className="p-4 flex flex-col gap-4">
                 {showAgendamentosWarning && agendamentosNoDia.length > 0 && (
                   <div className="bg-red-900/20 border border-red-900/50 rounded-lg p-4">
                     <div className="flex items-center gap-2 text-red-500 mb-3">

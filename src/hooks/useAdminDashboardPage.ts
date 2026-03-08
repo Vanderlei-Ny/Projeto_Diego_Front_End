@@ -3,31 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import api from "@/http/api";
 import { ENDPOINTS } from "@/endpoints";
-
-interface DashboardSummaryResponse {
-  totals: {
-    overall: number;
-    week: number;
-    month: number;
-    range: number;
-  };
-  filters: {
-    startDate: string | null;
-    endDate: string | null;
-  };
-  appointmentsPerDay: {
-    date: string;
-    label: string;
-    total: number;
-  }[];
-  appointmentsTable: {
-    id: number;
-    date: string;
-    hour: string;
-    customerName: string;
-    services: string[];
-  }[];
-}
+import type { DashboardSummaryResponse } from "@/types/admin/admin.types";
 
 const formatQueryDate = (value?: Date) =>
   value ? dayjs(value).format("YYYY-MM-DD") : undefined;

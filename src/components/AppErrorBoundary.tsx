@@ -1,12 +1,8 @@
 import React from "react";
-
-type AppErrorBoundaryProps = {
-  children: React.ReactNode;
-};
-
-type AppErrorBoundaryState = {
-  hasError: boolean;
-};
+import type {
+  AppErrorBoundaryProps,
+  AppErrorBoundaryState,
+} from "@/types/components/component-props.types";
 
 export default class AppErrorBoundary extends React.Component<
   AppErrorBoundaryProps,

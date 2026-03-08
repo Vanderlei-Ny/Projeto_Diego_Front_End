@@ -3,24 +3,8 @@ import api from "../http/api";
 import useAuth from "./useAuth";
 import { toast } from "sonner";
 import { ENDPOINTS } from "@/endpoints";
-
-interface Service {
-  id: number;
-  name: string;
-  value: string;
-}
-
-interface HourDisponible {
-  id: number;
-  availableHour: string;
-}
-
-interface VerifyDayResponse {
-  message: string;
-  dayId: number;
-  hoursDisponible: HourDisponible[];
-  hoursAgendados: HourDisponible[];
-}
+import type { Service } from "@/types/service/service.types";
+import type { VerifyDayResponse } from "@/types/scheduling/scheduling.types";
 
 export default function useScheduling() {
   const { user } = useAuth();

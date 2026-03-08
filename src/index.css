@@ -202,6 +202,21 @@
   color: var(--app-text-muted) !important;
 }
 
+.app-theme-light .text-gray-100,
+.app-theme-light .text-gray-200 {
+  color: var(--app-text) !important;
+}
+
+.app-theme-light .text-gray-300,
+.app-theme-light .text-gray-400,
+.app-theme-light .text-gray-500,
+.app-theme-light .text-gray-600,
+.app-theme-light .text-gray-700,
+.app-theme-light .text-gray-800,
+.app-theme-light .text-gray-900 {
+  color: var(--app-text-muted) !important;
+}
+
 .app-theme-light .placeholder\:text-white\/70::placeholder,
 .app-theme-light .placeholder\:text-white\/60::placeholder,
 .app-theme-light .placeholder\:text-white\/50::placeholder,

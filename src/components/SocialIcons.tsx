@@ -1,4 +1,5 @@
 import { Instagram, MessageCircle, Facebook } from "lucide-react";
+import type { SocialIconsProps } from "@/types/components/component-props.types";
 
 const socialLinks = [
   {
@@ -17,10 +18,6 @@ const socialLinks = [
     icon: Facebook,
   },
 ];
-
-interface SocialIconsProps {
-  variant: "mobile" | "desktop";
-}
 
 export default function SocialIcons({ variant }: SocialIconsProps) {
   if (variant === "mobile") {

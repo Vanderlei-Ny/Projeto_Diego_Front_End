@@ -4,12 +4,7 @@ import { toast } from "sonner";
 import api from "../http/api";
 import useAuth from "./useAuth";
 import { ENDPOINTS } from "@/endpoints";
-
-interface Service {
-  id: number;
-  name: string;
-  value: string;
-}
+import type { Service } from "@/types/service/service.types";
 
 export default function useServicesPage() {
   const { isAdmin } = useAuth();

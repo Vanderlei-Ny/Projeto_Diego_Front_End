@@ -6,45 +6,13 @@ import useAuth from "./useAuth";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { ENDPOINTS } from "@/endpoints";
+import type { Service } from "@/types/service/service.types";
+import type {
+  AdminAgendamento,
+  DayData,
+} from "@/types/scheduling/scheduling.types";
 
 dayjs.locale("pt-br");
-
-interface Service {
-  id: number;
-  name: string;
-  value: string;
-}
-
-interface AgendamentoService {
-  id: number;
-  nome: string;
-  valor: string;
-}
-
-interface Agendamento {
-  id: number;
-  dataAgendamento: string;
-  dataOriginal: string;
-  nomeCliente: string;
-  telefone: string | null;
-  email: string | null;
-  userId: number | null;
-  agendado: boolean;
-  horario: string;
-  diaDaSemana: string;
-  services: AgendamentoService[];
-}
-
-interface Hour {
-  id: number;
-  availableHour: string;
-}
-
-interface DayData {
-  dayId: number;
-  hoursDisponible: Hour[];
-  hoursAgendados: Hour[];
-}
 
 export default function useAdminPage() {
   const { isAdmin } = useAuth();
@@ -69,7 +37,7 @@ export default function useAdminPage() {
     queryKey: ["admin-agendamentos"],
     queryFn: async () => {
       const res = await api.get(ENDPOINTS.scheduling.adminListAll);
-      return res.data as Agendamento[];
+      return res.data as AdminAgendamento[];
     },
     enabled: isAdmin,
   });
