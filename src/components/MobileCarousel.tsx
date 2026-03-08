@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import api from "../http/api";
 import { ENDPOINTS } from "@/endpoints";
 import type { CarouselImage } from "@/types/carousel/carousel.types";
+import ImageWithLoader from "@/components/ImageWithLoader";
 
 export default function MobileCarousel() {
   const [images, setImages] = useState<CarouselImage[]>([]);
@@ -148,9 +149,11 @@ export default function MobileCarousel() {
                     : "scale-[0.85] opacity-40"
                 }`}
               >
-                <img
+                <ImageWithLoader
                   src={image.imageUrl}
                   alt={`Slide ${index}`}
+                  containerClassName="w-full h-full"
+                  loaderClassName="bg-black/35"
                   className="w-full h-full object-cover pointer-events-none select-none"
                   draggable={false}
                 />

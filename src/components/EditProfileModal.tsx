@@ -1,4 +1,6 @@
 import type { EditProfileModalProps } from "@/types/components/component-props.types";
+import { getInitialName } from "@/utils/getInitialNames";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function EditProfileModal({
   isOpen,
@@ -21,7 +23,16 @@ export default function EditProfileModal({
         className="bg-black/90 rounded-2xl p-5 sm:p-6 w-full max-w-md shadow-lg border border-white/10"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-white text-lg font-semibold mb-4">Editar perfil</h2>
+        <div className="flex gap-2">
+          <Avatar className="h-8 w-8 rounded-lg">
+            <AvatarFallback className="rounded-lg bg-[#B8952E]">
+              {getInitialName(name)}
+            </AvatarFallback>
+          </Avatar>
+          <h2 className="text-white text-lg font-semibold mb-4">
+            Editar perfil
+          </h2>
+        </div>
 
         <div className="flex flex-col gap-2 mb-3">
           <label className="text-sm text-white/80">Nome completo</label>

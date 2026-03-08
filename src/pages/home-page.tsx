@@ -39,7 +39,7 @@ function HomeInterface() {
   return (
     <>
       <div className="app-page-bg w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-10">
-        <div className="flex w-full h-full flex-col items-center p-3 sm:p-6 md:p-10 gap-3 sm:gap-4">
+        <div className="flex w-full h-full flex-col items-center p-3 sm:p-6 md:p-10 gap-3 sm:gap-4 min-h-0 lg:h-[calc(100vh-5rem)]">
           <div className="flex flex-col justify-between lg:flex-row w-full bg-neutral-800 rounded-[15px] p-4 md:p-6 gap-4 border border-white/10">
             <div className="flex h-full flex-col justify-between gap-4 sm:gap-5 px-3 sm:px-4 py-3 sm:py-4 md:py-0 md:px-0 lg:max-w-[520px]">
               <BarbershopLogo variant="mobile" className="lg:hidden" />
@@ -82,12 +82,20 @@ function HomeInterface() {
                 )}
 
                 {isAdmin && (
-                  <button
-                    onClick={() => navigate("/admin")}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 py-3 bg-neutral-700 border border-[#B8952E] rounded-[10px] font-medium hover:bg-neutral-600 transition-colors text-sm sm:text-base text-[#B8952E]"
-                  >
-                    <Shield className="w-4 h-4" /> Painel Admin
-                  </button>
+                  <>
+                    <button
+                      onClick={() => navigate("/admin?quick=1")}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 bg-[#B8952E] rounded-[10px] font-semibold hover:bg-yellow-400 transition-colors text-sm sm:text-base text-black"
+                    >
+                      Agendamento rápido <ArrowRight className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => navigate("/admin")}
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 py-3 bg-neutral-700 border border-[#B8952E] rounded-[10px] font-medium hover:bg-neutral-600 transition-colors text-sm sm:text-base text-[#B8952E]"
+                    >
+                      <Shield className="w-4 h-4" /> Painel Admin
+                    </button>
+                  </>
                 )}
               </div>
             </div>
@@ -101,11 +109,11 @@ function HomeInterface() {
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row w-full h-auto lg:h-full justify-between items-stretch gap-3 sm:gap-4 min-h-0 bg-neutral-800 rounded-[15px] p-4 md:p-6">
+          <div className="flex flex-col lg:flex-row w-full lg:flex-1 justify-between items-stretch gap-3 sm:gap-4 min-h-0 bg-neutral-800 rounded-[15px] p-4 md:p-6 overflow-hidden">
             <SocialIcons variant="desktop" />
 
             {!isAdmin && (
-              <div className="flex flex-col w-full lg:w-75 bg-black border border-white/10 items-start justify-start px-4 py-4 rounded-xl max-h-screen lg:max-h-full min-w-0 overflow-hidden">
+              <div className="flex flex-col w-full lg:w-75 bg-black border border-white/10 items-start justify-start px-4 py-4 rounded-xl h-full max-h-full min-w-0 overflow-hidden">
                 <div className="mb-2 sm:mb-3 w-full flex items-center justify-between gap-2">
                   <p className="text-[#B8952E] font-semibold text-sm sm:text-base">
                     Seus agendamentos
@@ -115,7 +123,7 @@ function HomeInterface() {
                   </span>
                 </div>
 
-                <div className="w-full overflow-y-auto sm:max-h-[350px] lg:max-h-full space-y-2 sm:space-y-3 pt-2">
+                <div className="w-full flex-1 min-h-0 overflow-y-auto space-y-2 sm:space-y-3 pt-2">
                   {loading ? (
                     <div className="flex items-center justify-center w-full py-8">
                       <LoadingSpinner

@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import api from "@/http/api";
 import { ENDPOINTS } from "@/endpoints";
 import type { DashboardSummaryResponse } from "@/types/admin/admin.types";
+import { formatIsoDateTime } from "@/utils/calendarDate";
 
 const formatQueryDate = (value?: Date) =>
   value ? dayjs(value).format("YYYY-MM-DD") : undefined;
@@ -11,28 +12,20 @@ const formatQueryDate = (value?: Date) =>
 const toStartOfDay = (date: dayjs.ConfigType) =>
   dayjs(date).startOf("day").toDate();
 
+const toEndOfDay = (date: dayjs.ConfigType) =>
+  dayjs(date).endOf("day").toDate();
+
 const quickRanges = [
-  { label: "Últimos 7 dias", days: 7 },
-  { label: "Últimos 30 dias", days: 30 },
-  { label: "Últimos 90 dias", days: 90 },
+  { label: "Próximos 7 dias", days: 7 },
+  { label: "Próximos 30 dias", days: 30 },
+  { label: "Próximos 90 dias", days: 90 },
 ];
 
 const dateFormat = new Intl.DateTimeFormat("pt-BR");
 
-const dateTimeFormat = new Intl.DateTimeFormat("pt-BR", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-});
-
 export default function useAdminDashboardPage() {
-  const defaultEndDate = useMemo(() => toStartOfDay(new Date()), []);
-  const defaultStartDate = useMemo(
-    () => toStartOfDay(dayjs().subtract(30, "day")),
-    [],
-  );
+  const defaultStartDate = useMemo(() => toStartOfDay(new Date()), []);
+  const defaultEndDate = useMemo<Date | undefined>(() => undefined, []);
 
   const [startDate, setStartDate] = useState<Date | undefined>(
     defaultStartDate,
@@ -72,23 +65,20 @@ export default function useAdminDashboardPage() {
   const appointmentsTable = data?.appointmentsTable ?? [];
 
   const isDefaultRange =
-    !!startDate &&
-    !!endDate &&
-    dayjs(startDate).isSame(defaultStartDate, "day") &&
-    dayjs(endDate).isSame(defaultEndDate, "day");
+    !!startDate && dayjs(startDate).isSame(defaultStartDate, "day") && !endDate;
 
   const hasCustomRange = !isDefaultRange;
 
   const dateRangeLabel =
     startDate && endDate
       ? `${dateFormat.format(startDate)} - ${dateFormat.format(endDate)}`
-      : "Período personalizado";
+      : startDate
+        ? `A partir de ${dateFormat.format(startDate)}`
+        : "Período personalizado";
 
   const applyQuickRange = (days: number) => {
-    const nextEndDate = toStartOfDay(new Date());
-    const nextStartDate = toStartOfDay(
-      dayjs(nextEndDate).subtract(days - 1, "day"),
-    );
+    const nextStartDate = toStartOfDay(new Date());
+    const nextEndDate = toEndOfDay(dayjs(nextStartDate).add(days - 1, "day"));
 
     setStartDate(nextStartDate);
     setEndDate(nextEndDate);
@@ -100,25 +90,19 @@ export default function useAdminDashboardPage() {
   };
 
   const isQuickRangeActive = (days: number) => {
+    const today = toStartOfDay(new Date());
+    const expectedEndDate = toEndOfDay(dayjs(today).add(days - 1, "day"));
+
     return (
       !!startDate &&
       !!endDate &&
-      dayjs(endDate).isSame(toStartOfDay(new Date()), "day") &&
-      dayjs(startDate).isSame(
-        toStartOfDay(dayjs(new Date()).subtract(days - 1, "day")),
-        "day",
-      )
+      dayjs(startDate).isSame(today, "day") &&
+      dayjs(endDate).isSame(expectedEndDate, "minute")
     );
   };
 
   const formatAppointmentDateTime = (date: string, hour: string) => {
-    const dateTime = new Date(`${date}T${hour}`);
-
-    if (Number.isNaN(dateTime.getTime())) {
-      return `${date} ${hour}`;
-    }
-
-    return dateTimeFormat.format(dateTime);
+    return formatIsoDateTime(date, hour);
   };
 
   return {
