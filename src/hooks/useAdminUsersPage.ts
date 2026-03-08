@@ -4,17 +4,7 @@ import { toast } from "sonner";
 import api from "@/http/api";
 import { ENDPOINTS } from "@/endpoints";
 import useAuth from "@/hooks/useAuth";
-
-export type UserHierarchy = "ADMIN" | "CLIENT";
-
-export interface AdminUser {
-  id: number;
-  name: string | null;
-  email: string;
-  phoneNumber: string | null;
-  hierarchy: UserHierarchy;
-  createdAt: string;
-}
+import type { AdminUser, UserHierarchy } from "@/types/admin/admin.types";
 
 export default function useAdminUsersPage() {
   const queryClient = useQueryClient();

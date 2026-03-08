@@ -1,7 +1,4 @@
-interface BarbershopLogoProps {
-  variant?: "mobile" | "desktop";
-  className?: string;
-}
+import type { BarbershopLogoProps } from "@/types/components/component-props.types";
 
 export default function BarbershopLogo({
   variant = "desktop",

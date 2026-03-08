@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import type { AxiosError } from "axios";
 import {
   setAuthToken,
@@ -8,33 +8,18 @@ import {
 } from "../http/api";
 import api from "../http/api";
 import { ENDPOINTS } from "@/endpoints";
-
-type Hierarchy = "CLIENT" | "ADMIN";
-
-interface User {
-  userId: number | null;
-  name?: string | null;
-  telefone?: string | null;
-  token?: string | null;
-  roles?: string[] | null;
-  hierarchy?: Hierarchy | null;
-}
-
-interface AuthContextValue {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  login: (user: User) => void;
-  logout: () => void;
-  loading: boolean;
-  isAdmin: boolean;
-}
+import type {
+  AuthContextValue,
+  AuthProviderProps,
+  AuthUser,
+} from "@/types/auth/auth.types";
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
   undefined,
 );
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Validate token on mount and restore session using the persisted token (only the token is stored in localStorage).
@@ -63,14 +48,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               token: data.token ?? userPayload.token ?? null,
               userId: userPayload.id,
               name: userPayload.name ?? null,
-              telefone: userPayload.telefone ?? null,
+              telefone: userPayload.telefone ?? userPayload.phoneNumber ?? null,
               roles: Array.isArray(userPayload.roles)
                 ? userPayload.roles
                 : Array.isArray(data.roles)
                   ? data.roles
                   : null,
               hierarchy: userPayload.hierarchy ?? null,
-            } as User;
+            } as AuthUser;
             setUser(parsed);
             if (parsed.token) {
               setAuthToken(parsed.token);
@@ -96,14 +81,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     token: newToken,
                     userId: userPayload.id,
                     name: userPayload.name ?? null,
-                    telefone: userPayload.telefone ?? null,
+                    telefone:
+                      userPayload.telefone ?? userPayload.phoneNumber ?? null,
                     roles: Array.isArray(userPayload.roles)
                       ? userPayload.roles
                       : Array.isArray(data.roles)
                         ? data.roles
                         : null,
                     hierarchy: userPayload.hierarchy ?? null,
-                  } as User;
+                  } as AuthUser;
                   setUser(parsed);
                   setAuthToken(newToken);
                   persistAuthToken(newToken);
@@ -127,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     validate();
   }, []);
 
-  const login = (userInfo: User) => {
+  const login = (userInfo: AuthUser) => {
     // Persist only the token in localStorage for session restore; do not store
     // other user properties in localStorage for security.
     setUser(userInfo);

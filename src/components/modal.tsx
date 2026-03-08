@@ -1,10 +1,4 @@
-interface ConfirmModalProps {
-  message: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-  isOpen: boolean;
-  date?: string;
-}
+import type { ConfirmModalProps } from "@/types/components/component-props.types";
 
 export default function ConfirmModal({
   message,

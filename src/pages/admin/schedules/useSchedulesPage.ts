@@ -4,27 +4,10 @@ import { toast } from "sonner";
 import api from "../../../http/api";
 import useAuth from "../../../hooks/useAuth";
 import { ENDPOINTS } from "@/endpoints";
-
-interface Hour {
-  id: number;
-  availableHour: string;
-}
-
-interface DayWithHours {
-  id: number;
-  weekday: string;
-  isActive: boolean;
-  hours: Hour[];
-}
-
-type DiaDaSemana =
-  | "DOMINGO"
-  | "SEGUNDA"
-  | "TERCA"
-  | "QUARTA"
-  | "QUINTA"
-  | "SEXTA"
-  | "SABADO";
+import type {
+  DayWithHours,
+  DiaDaSemana,
+} from "@/types/scheduling/scheduling.types";
 
 // Função para formatar horário enquanto digita
 export function formatHourInput(value: string): string {

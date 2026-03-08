@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../http/api";
 import useAuth from "./useAuth";
 import { ENDPOINTS } from "@/endpoints";
+import type { UserSchedulingResponse } from "@/types/scheduling/scheduling.types";
 
 export default function useHome() {
   const { user } = useAuth();
@@ -22,15 +23,8 @@ export default function useHome() {
         const res = await api.get(ENDPOINTS.scheduling.listByUser(user.userId));
         const data = res.data;
 
-        interface AgendamentoResponse {
-          id?: number;
-          dataAgendamento: string;
-          hour: { availableHour: string };
-          service?: Array<{ name: string }>;
-        }
-
         return Array.isArray(data)
-          ? data.map((item: AgendamentoResponse, index: number) => ({
+          ? data.map((item: UserSchedulingResponse, index: number) => ({
               id: item.id ?? index,
               dataAgendamento: item.dataAgendamento,
               hour: item.hour.availableHour,

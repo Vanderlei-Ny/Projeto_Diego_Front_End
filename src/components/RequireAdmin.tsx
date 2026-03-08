@@ -1,10 +1,7 @@
 import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import LoadingSpinner from "./loading-spinner";
-
-interface RequireAdminProps {
-  children: React.ReactNode;
-}
+import type { RequireAdminProps } from "@/types/components/component-props.types";
 
 export default function RequireAdmin({ children }: RequireAdminProps) {
   const { user, loading, isAdmin } = useAuth();

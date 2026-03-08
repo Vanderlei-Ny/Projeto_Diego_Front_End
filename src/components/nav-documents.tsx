@@ -1,12 +1,11 @@
-"use client"
+"use client";
 
 import {
   IconDots,
   IconFolder,
   IconShare3,
   IconTrash,
-  type Icon,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
 import {
   DropdownMenu,
@@ -14,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -23,18 +22,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import type { NavDocumentItem } from "@/types/navigation/navigation.types";
 
-export function NavDocuments({
-  items,
-}: {
-  items: {
-    name: string
-    url: string
-    icon: Icon
-  }[]
-}) {
-  const { isMobile } = useSidebar()
+export function NavDocuments({ items }: { items: NavDocumentItem[] }) {
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -88,5 +80,5 @@ export function NavDocuments({
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

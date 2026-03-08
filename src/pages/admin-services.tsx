@@ -3,12 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
 import useServicesPage from "../hooks/useServicesPage";
-
-interface Service {
-  id: number;
-  name: string;
-  value: string;
-}
+import type { Service } from "@/types/service/service.types";
 
 function AdminServicesPage() {
   const navigate = useNavigate();

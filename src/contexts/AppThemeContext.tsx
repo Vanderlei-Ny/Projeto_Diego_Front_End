@@ -1,12 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-
-type ThemeMode = "dark" | "light";
-
-type AppThemeContextValue = {
-  mode: ThemeMode;
-  isDarkMode: boolean;
-  toggleMode: () => void;
-};
+import type {
+  AppThemeContextValue,
+  ThemeMode,
+} from "@/types/theme/theme.types";
 
 const STORAGE_KEY = "app-theme-mode";
 

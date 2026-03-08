@@ -7,18 +7,7 @@ import {
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useCallback, useState } from "react";
 import dayjs from "dayjs";
-
-interface AgendamentoCalendarProps {
-  selectedDate: Date | undefined;
-  onSelect: (date: Date | undefined) => void;
-  activeWeekdays?: string[];
-  diasBloqueados?: string[]; // Array de datas bloqueadas no formato "YYYY-MM-DD"
-  disablePastDates?: boolean;
-  showContainer?: boolean;
-  showSelectedSummary?: boolean;
-  title?: string;
-  className?: string;
-}
+import type { AgendamentoCalendarProps } from "@/types/components/component-props.types";
 
 export default function AgendamentoCalendar({
   selectedDate,

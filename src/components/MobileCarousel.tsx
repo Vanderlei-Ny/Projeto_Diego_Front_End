@@ -1,13 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import api from "../http/api";
 import { ENDPOINTS } from "@/endpoints";
-
-interface CarouselImage {
-  id: number;
-  filename: string;
-  imageUrl: string;
-  order: number;
-}
+import type { CarouselImage } from "@/types/carousel/carousel.types";
 
 export default function MobileCarousel() {
   const [images, setImages] = useState<CarouselImage[]>([]);

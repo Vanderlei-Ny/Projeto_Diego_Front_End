@@ -7,27 +7,13 @@ import dayjs from "dayjs";
 import type { AxiosError } from "axios";
 import "dayjs/locale/pt-br";
 import { ENDPOINTS } from "@/endpoints";
+import type {
+  AgendamentoNoDia,
+  DiaBloqueado,
+  DiaBloqueadoErrorResponse,
+} from "@/types/time-off/time-off.types";
 
 dayjs.locale("pt-br");
-
-interface DiaBloqueado {
-  id: number;
-  data: string;
-  dataFormatada: string;
-  diaSemana: string;
-  motivo: string | null;
-}
-
-interface AgendamentoNoDia {
-  id: number;
-  cliente: string;
-  horario: string;
-}
-
-interface DiaBloqueadoErrorResponse {
-  agendamentos?: AgendamentoNoDia[];
-  error?: string;
-}
 
 export default function useTimeOffPage() {
   const { isAdmin } = useAuth();

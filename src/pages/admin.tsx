@@ -4,26 +4,7 @@ import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
 import AgendamentoCalendar from "./scheduling/SchedulingCalendar";
 import useAdminPage from "../hooks/useAdminPage";
-
-interface AgendamentoService {
-  id: number;
-  nome: string;
-  valor: string;
-}
-
-interface Agendamento {
-  id: number;
-  dataAgendamento: string;
-  dataOriginal: string;
-  nomeCliente: string;
-  telefone: string | null;
-  email: string | null;
-  userId: number | null;
-  agendado: boolean;
-  horario: string;
-  diaDaSemana: string;
-  services: AgendamentoService[];
-}
+import type { AdminAgendamento } from "@/types/scheduling/scheduling.types";
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -58,7 +39,7 @@ function AdminPage() {
 
   const handleGoHome = () => navigate("/home");
 
-  const getDateStatus = (listaAgendamentos: Agendamento[]) => {
+  const getDateStatus = (listaAgendamentos: AdminAgendamento[]) => {
     const reference = listaAgendamentos[0];
     const referenceDate = new Date(reference?.dataOriginal);
 
@@ -100,15 +81,21 @@ function AdminPage() {
 
   // Agrupar agendamentos por data
   const agendamentosPorData = agendamentos.reduce<
-    Record<string, Agendamento[]>
-  >((acc: Record<string, Agendamento[]>, agendamento: Agendamento) => {
-    const data = agendamento.dataAgendamento;
-    if (!acc[data]) {
-      acc[data] = [];
-    }
-    acc[data].push(agendamento);
-    return acc;
-  }, {});
+    Record<string, AdminAgendamento[]>
+  >(
+    (
+      acc: Record<string, AdminAgendamento[]>,
+      agendamento: AdminAgendamento,
+    ) => {
+      const data = agendamento.dataAgendamento;
+      if (!acc[data]) {
+        acc[data] = [];
+      }
+      acc[data].push(agendamento);
+      return acc;
+    },
+    {},
+  );
 
   return (
     <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
@@ -171,103 +158,114 @@ function AdminPage() {
               </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-6 mt-6">
-              {/* Calendário */}
-              <div className="lg:w-1/3">
-                <AgendamentoCalendar
-                  key={selectedDate?.toISOString() ?? "no-date"}
-                  selectedDate={selectedDate}
-                  onSelect={handleDateSelect}
-                  activeWeekdays={activeWeekdays}
-                />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 items-start">
+              {/* Data */}
+              <div>
+                <h3 className="text-white font-medium mb-3 flex items-center gap-2">
+                  <Calendar className="w-4 h-4" /> Data *
+                </h3>
+                <div className="bg-black/30 border border-white/10 rounded-xl p-4">
+                  <AgendamentoCalendar
+                    key={selectedDate?.toISOString() ?? "no-date"}
+                    selectedDate={selectedDate}
+                    onSelect={handleDateSelect}
+                    activeWeekdays={activeWeekdays}
+                    showContainer={false}
+                    title=""
+                  />
+                </div>
               </div>
 
               {/* Horários */}
-              <div className="lg:w-1/3">
+              <div>
                 <h3 className="text-white font-medium mb-3 flex items-center gap-2">
                   <Clock className="w-4 h-4" /> Horário *
                 </h3>
-                {isVerifyingDay ? (
-                  <div className="flex items-center justify-center py-6">
-                    <LoadingSpinner
-                      message="Carregando horários..."
-                      size="sm"
-                    />
-                  </div>
-                ) : !selectedDate ? (
-                  <p className="text-white/60 text-sm">
-                    Selecione uma data primeiro.
-                  </p>
-                ) : (
-                  <div className="grid grid-cols-3 gap-2">
-                    {hoursDisponible.length === 0 &&
-                      hoursAgendados.length === 0 && (
-                        <p className="col-span-full text-white/60 text-sm">
-                          Nenhum horário disponível.
-                        </p>
-                      )}
-                    {hoursDisponible.map((hour) => (
+                <div className="bg-black/30 border border-white/10 rounded-xl p-4 min-h-[140px]">
+                  {isVerifyingDay ? (
+                    <div className="flex items-center justify-center py-6">
+                      <LoadingSpinner
+                        message="Carregando horários..."
+                        size="sm"
+                      />
+                    </div>
+                  ) : !selectedDate ? (
+                    <p className="text-white/60 text-sm">
+                      Selecione uma data primeiro.
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-3 gap-2">
+                      {hoursDisponible.length === 0 &&
+                        hoursAgendados.length === 0 && (
+                          <p className="col-span-full text-white/60 text-sm">
+                            Nenhum horário disponível.
+                          </p>
+                        )}
+                      {hoursDisponible.map((hour) => (
+                        <button
+                          key={hour.id}
+                          onClick={() => handleHourSelect(hour.id)}
+                          className={`py-2 rounded-lg text-sm font-medium border transition-all ${
+                            selectedHour === hour.id
+                              ? "bg-[#B8952E] border-[#B8952E] text-black"
+                              : "bg-black border-white/10 text-white"
+                          }`}
+                        >
+                          {hour.availableHour}
+                        </button>
+                      ))}
+                      {hoursAgendados.map((hour) => (
+                        <button
+                          key={hour.id}
+                          disabled
+                          className="py-2 rounded-lg text-sm bg-black border-white/5 text-white/20 cursor-not-allowed"
+                        >
+                          {hour.availableHour}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Serviços */}
+              <div>
+                <h3 className="text-white font-medium mb-3 flex items-center gap-2">
+                  <User className="w-4 h-4" /> Serviços
+                </h3>
+                <div className="bg-black/30 border border-white/10 rounded-xl p-4 min-h-[140px]">
+                  <div className="space-y-2">
+                    {services.map((service) => (
                       <button
-                        key={hour.id}
-                        onClick={() => handleHourSelect(hour.id)}
-                        className={`py-2 rounded-lg text-sm font-medium border transition-all ${
-                          selectedHour === hour.id
+                        key={service.id}
+                        onClick={() => handleServiceToggle(service.id)}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border text-sm font-medium transition-all ${
+                          selectedServices.includes(service.id)
                             ? "bg-[#B8952E] border-[#B8952E] text-black"
                             : "bg-black border-white/10 text-white"
                         }`}
                       >
-                        {hour.availableHour}
+                        <div className="flex flex-col text-left">
+                          <span className="font-semibold">{service.name}</span>
+                          <span
+                            className={
+                              selectedServices.includes(service.id)
+                                ? "text-black/60"
+                                : "text-white/60"
+                            }
+                          >
+                            R$ {service.value}
+                          </span>
+                        </div>
+                        {selectedServices.includes(service.id) && <CheckIcon />}
                       </button>
                     ))}
-                    {hoursAgendados.map((hour) => (
-                      <button
-                        key={hour.id}
-                        disabled
-                        className="py-2 rounded-lg text-sm bg-black border-white/5 text-white/20 cursor-not-allowed"
-                      >
-                        {hour.availableHour}
-                      </button>
-                    ))}
+                    {services.length === 0 && (
+                      <p className="text-white/60 text-sm">
+                        Nenhum serviço cadastrado.
+                      </p>
+                    )}
                   </div>
-                )}
-              </div>
-
-              {/* Serviços */}
-              <div className="lg:w-1/3">
-                <h3 className="text-white font-medium mb-3 flex items-center gap-2">
-                  <User className="w-4 h-4" /> Serviços
-                </h3>
-                <div className="space-y-2">
-                  {services.map((service) => (
-                    <button
-                      key={service.id}
-                      onClick={() => handleServiceToggle(service.id)}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border text-sm font-medium transition-all ${
-                        selectedServices.includes(service.id)
-                          ? "bg-[#B8952E] border-[#B8952E] text-black"
-                          : "bg-black border-white/10 text-white"
-                      }`}
-                    >
-                      <div className="flex flex-col text-left">
-                        <span className="font-semibold">{service.name}</span>
-                        <span
-                          className={
-                            selectedServices.includes(service.id)
-                              ? "text-black/60"
-                              : "text-white/60"
-                          }
-                        >
-                          R$ {service.value}
-                        </span>
-                      </div>
-                      {selectedServices.includes(service.id) && <CheckIcon />}
-                    </button>
-                  ))}
-                  {services.length === 0 && (
-                    <p className="text-white/60 text-sm">
-                      Nenhum serviço cadastrado.
-                    </p>
-                  )}
                 </div>
               </div>
             </div>
