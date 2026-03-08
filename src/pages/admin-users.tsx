@@ -31,9 +31,11 @@ function AdminUsersPage() {
     handleSaveRole,
   } = useAdminUsersPage();
 
+  const isProcessing = isUpdatingRole;
+
   return (
     <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
-      {(isLoading || isUpdatingRole) && (
+      {isProcessing && (
         <LoadingSpinner fullScreen message="Processando..." />
       )}
 
@@ -57,7 +59,12 @@ function AdminUsersPage() {
           </button>
         </div>
 
-        <div className="bg-neutral-800 rounded-[15px] p-4 md:p-6">
+        {isLoading ? (
+          <div className="bg-neutral-800 rounded-[15px] p-6 min-h-[45vh] flex items-center justify-center">
+            <LoadingSpinner message="Carregando usuários..." size="lg" />
+          </div>
+        ) : (
+          <div className="bg-neutral-800 rounded-[15px] p-4 md:p-6">
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-4">
             <p className="text-[#B8952E] font-semibold text-sm sm:text-base">
               Usuários cadastrados ({users.length})
@@ -138,7 +145,8 @@ function AdminUsersPage() {
               })}
             </div>
           )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

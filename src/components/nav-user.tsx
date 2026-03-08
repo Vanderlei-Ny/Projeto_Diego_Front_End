@@ -23,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import useInsertEmailAndPhoneNumber from "@/hooks/useInsertEmailAndPhoneNumber";
 import type { NavUserData } from "@/types/navigation/navigation.types";
+import api from "@/http/api";
+import { ENDPOINTS } from "@/endpoints";
 
 export function NavUser({ user }: { user: NavUserData }) {
   const { isMobile } = useSidebar();
@@ -90,10 +92,15 @@ export function NavUser({ user }: { user: NavUserData }) {
     }
   }
 
-  function logOut() {
-    // Use context logout to clear token and user state, then navigate to login
-    logout();
-    navigate("/login");
+  async function logOut() {
+    try {
+      await api.post(ENDPOINTS.auth.logout);
+    } catch (_error) {
+      // Mesmo com falha no servidor, forçamos limpeza local da sessão.
+    } finally {
+      logout();
+      navigate("/login");
+    }
   }
 
   return (

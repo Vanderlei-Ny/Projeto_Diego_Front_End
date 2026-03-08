@@ -161,6 +161,17 @@
   background-color: var(--app-fab-hover);
 }
 
+/* Sidebar colapsada: manter ícones sem fundo */
+.group[data-collapsible="icon"] [data-sidebar="menu-button"],
+.group[data-collapsible="icon"]
+  [data-sidebar="menu-button"][data-active="true"],
+.group[data-collapsible="icon"] [data-sidebar="menu-button"]:hover,
+.group[data-collapsible="icon"] [data-sidebar="menu-button"]:active {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
 /*
   Compatibilidade global: aplica a nova paleta em classes já usadas no projeto,
   para não precisar refatorar todos os componentes de uma vez.
@@ -234,6 +245,30 @@
 .app-theme-light .hover\:bg-neutral-800:hover,
 .app-theme-light .hover\:bg-neutral-900:hover {
   background-color: var(--app-surface-2) !important;
+}
+
+/* Calendario: melhora contraste no tema claro */
+.app-theme-light [data-slot="calendar"] .rdp-day {
+  color: #171717 !important;
+}
+
+.app-theme-light [data-slot="calendar"] .rdp-day_today {
+  color: #111111 !important;
+  font-weight: 700 !important;
+}
+
+.app-theme-light [data-slot="calendar"] .rdp-head_cell,
+.app-theme-light [data-slot="calendar"] .rdp-caption,
+.app-theme-light [data-slot="calendar"] .rdp-nav_button {
+  color: #4a3a12 !important;
+}
+
+.app-theme-light [data-slot="calendar"] .rdp-day_selected {
+  color: #111111 !important;
+}
+
+.app-theme-light [data-slot="calendar"] .rdp-day_disabled {
+  color: rgba(23, 23, 23, 0.42) !important;
 }
 
 .dark {

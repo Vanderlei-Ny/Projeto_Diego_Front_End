@@ -5,6 +5,7 @@ import ConfirmModal from "../components/modal";
 import AgendamentoCalendar from "./scheduling/SchedulingCalendar";
 import useAdminPage from "../hooks/useAdminPage";
 import type { AdminAgendamento } from "@/types/scheduling/scheduling.types";
+import { getTodayAndTomorrowBrDateKeys } from "@/utils/calendarDate";
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -38,35 +39,29 @@ function AdminPage() {
   } = useAdminPage();
 
   const handleGoHome = () => navigate("/home");
+  const isProcessing = isCreating || isDeleting;
 
   const getDateStatus = (listaAgendamentos: AdminAgendamento[]) => {
     const reference = listaAgendamentos[0];
-    const referenceDate = new Date(reference?.dataOriginal);
+    const referenceDateKey = reference?.dataAgendamento?.trim();
 
-    if (Number.isNaN(referenceDate.getTime())) {
+    if (!referenceDateKey) {
       return {
         label: "Próximos dias",
         className: "text-blue-300 border-blue-400/30 bg-blue-500/10",
       };
     }
 
-    const target = new Date(referenceDate);
-    target.setHours(0, 0, 0, 0);
+    const { todayKey, tomorrowKey } = getTodayAndTomorrowBrDateKeys();
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    if (target.getTime() === today.getTime()) {
+    if (referenceDateKey === todayKey) {
       return {
         label: "Hoje",
         className: "text-emerald-300 border-emerald-400/30 bg-emerald-500/10",
       };
     }
 
-    if (target.getTime() === tomorrow.getTime()) {
+    if (referenceDateKey === tomorrowKey) {
       return {
         label: "Amanhã",
         className: "text-amber-300 border-amber-400/30 bg-amber-500/10",
@@ -99,7 +94,7 @@ function AdminPage() {
 
   return (
     <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
-      {(isLoading || isCreating || isDeleting) && (
+      {isProcessing && (
         <LoadingSpinner fullScreen message="Processando..." />
       )}
 
@@ -135,7 +130,13 @@ function AdminPage() {
           </div>
         </div>
 
-        {/* Formulário de Novo Agendamento */}
+        {isLoading ? (
+          <div className="bg-neutral-800 rounded-[15px] p-6 min-h-[45vh] flex items-center justify-center">
+            <LoadingSpinner message="Carregando agendamentos..." size="lg" />
+          </div>
+        ) : (
+          <>
+            {/* Formulário de Novo Agendamento */}
         {showForm && (
           <div className="bg-neutral-800 rounded-[15px] p-4 md:p-6">
             <h2 className="text-lg font-semibold text-[#B8952E] mb-4 flex items-center gap-2">
@@ -195,6 +196,14 @@ function AdminPage() {
                     </p>
                   ) : (
                     <div className="grid grid-cols-3 gap-2">
+                      {hoursDisponible.length === 0 &&
+                        hoursAgendados.length > 0 && (
+                          <p className="col-span-full rounded-md border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+                            Todos os horários deste dia já foram agendados.
+                            Escolha uma outra data.
+                          </p>
+                        )}
+
                       {hoursDisponible.length === 0 &&
                         hoursAgendados.length === 0 && (
                           <p className="col-span-full text-white/60 text-sm">
@@ -287,7 +296,7 @@ function AdminPage() {
           </div>
         )}
 
-        {/* Lista de Agendamentos */}
+            {/* Lista de Agendamentos */}
         <div className="bg-neutral-800 rounded-[15px] p-4 md:p-6">
           <h2 className="text-lg font-semibold text-[#B8952E] mb-4 flex items-center gap-2">
             <Calendar className="w-5 h-5" /> Agendamentos
@@ -359,6 +368,9 @@ function AdminPage() {
             </div>
           )}
         </div>
+
+          </>
+        )}
       </div>
 
       {/* Modal de Confirmação */}

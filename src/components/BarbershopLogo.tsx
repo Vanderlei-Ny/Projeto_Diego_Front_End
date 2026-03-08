@@ -1,4 +1,5 @@
 import type { BarbershopLogoProps } from "@/types/components/component-props.types";
+import ImageWithLoader from "@/components/ImageWithLoader";
 
 export default function BarbershopLogo({
   variant = "desktop",
@@ -20,7 +21,13 @@ export default function BarbershopLogo({
   return (
     <div className={`${baseStyles} ${variantStyles[variant]} ${className}`}>
       <p>Barbearia Diego Bueno</p>
-      <img src="/scissors.svg" className={iconStyles[variant]} alt="Tesoura" />
+      <ImageWithLoader
+        src="/scissors.svg"
+        alt="Tesoura"
+        containerClassName={iconStyles[variant]}
+        loaderClassName="bg-transparent"
+        className="w-full h-full"
+      />
     </div>
   );
 }

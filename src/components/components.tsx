@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../http/api";
 import { ENDPOINTS } from "@/endpoints";
 import type { CarouselImage } from "@/types/carousel/carousel.types";
+import ImageWithLoader from "@/components/ImageWithLoader";
 
 export default function ImageCarousel() {
   const [images, setImages] = useState<CarouselImage[]>([]);
@@ -63,9 +64,11 @@ export default function ImageCarousel() {
 
   return (
     <div className="relative w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] md:w-[300px] md:h-[300px] overflow-hidden rounded-xl">
-      <img
+      <ImageWithLoader
         src={images[index].imageUrl}
         alt={`Slide ${index}`}
+        containerClassName="w-full h-full"
+        loaderClassName="bg-black/40"
         className="w-full h-full object-cover transition duration-500"
       />
       <button

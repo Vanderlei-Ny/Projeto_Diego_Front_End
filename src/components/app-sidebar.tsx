@@ -119,8 +119,12 @@ export const AppSidebar = React.memo(function AppSidebar({
       <SidebarHeader className="flex items-center relative p-3">
         <div className="flex w-full items-center gap-3 px-3 py-2.5 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-1.5">
           <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#B8952E]/20 text-[#B8952E]">
-            <Scissors className="h-5 w-5" />
-            <img className="w-35" src="../public/logo.png" />
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="w-12 h-12 object-contain"
+              loading="eager"
+            />
           </div>
           <div className="flex min-w-0 flex-col overflow-hidden transition-all group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:opacity-0">
             <span className="truncate text-sm font-semibold text-sidebar-foreground">

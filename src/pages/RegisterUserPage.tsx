@@ -26,7 +26,7 @@ function RegisterUser() {
             <img src="/scissors.svg" className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
 
-          <div className="bg-[url('/logo2.png')] bg-no-repeat bg-contain bg-center rounded-[12px] w-full h-48 sm:h-64 md:h-72" />
+          <div className="bg-[url('/logo-barbearia.png')] bg-no-repeat bg-contain bg-center rounded-[12px] w-full h-48 sm:h-64 md:h-72" />
 
           <div className="flex flex-col gap-3">
             <p className="text-gray-100 font-medium text-sm sm:text-sm">

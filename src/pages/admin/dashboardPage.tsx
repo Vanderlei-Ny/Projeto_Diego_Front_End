@@ -6,7 +6,6 @@ import {
   Clock3,
   FilterX,
   ListOrdered,
-  Sparkles,
 } from "lucide-react";
 import { ChartAreaInteractive } from "../../components/chart-area-interactive";
 import LoadingSpinner from "../../components/loading-spinner";
@@ -71,17 +70,11 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
-      {isLoading && (
-        <LoadingSpinner fullScreen message="Carregando dashboard..." />
-      )}
-
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
-        <div className="flex w-full flex-col gap-4 bg-neutral-800 rounded-[15px] p-4 md:p-6 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-2">
-            <Badge className="bg-[#B8952E]/20 text-[#F2D37A] border border-[#B8952E]/50">
-              <Sparkles className="mr-1 h-3 w-3" /> Painel do Administrador
-            </Badge>
-            <h1 className="text-xl sm:text-2xl font-bold text-[#B8952E]">
+        <div className="flex w-full items-center justify-between bg-neutral-800 rounded-[15px] p-4 md:p-6">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#B8952E] flex items-center gap-2">
+              <CalendarClock className="w-6 h-6" />
               Dashboard de Agendamentos
             </h1>
             <p className="text-white/60 text-sm mt-1">
@@ -91,18 +84,22 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              type="button"
+            <button
               onClick={() => navigate("/admin")}
-              variant="ghost"
-              className="text-white hover:bg-neutral-700"
+              className="p-2 hover:bg-neutral-700 rounded-md transition-colors"
             >
-              <ChevronLeft className="h-4 w-4" /> Voltar
-            </Button>
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
           </div>
         </div>
 
-        <Card className="flex flex-col gap-4 p-4 bg-neutral-800 border-white/10">
+        {isLoading ? (
+          <div className="bg-neutral-800 rounded-[15px] p-6 min-h-[55vh] flex items-center justify-center">
+            <LoadingSpinner message="Carregando dashboard..." size="lg" />
+          </div>
+        ) : (
+          <>
+            <Card className="flex flex-col gap-4 p-4 bg-neutral-800 border-white/10">
           <CardHeader className="px-0">
             <CardTitle className="text-[#B8952E]">Filtro de período</CardTitle>
             <CardDescription className="text-white/60">
@@ -151,7 +148,7 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {summaryCards.map((card) => {
             const Icon = card.icon;
 
@@ -181,7 +178,7 @@ export default function AdminDashboardPage() {
           })}
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
           <AgendamentoCalendar
             title="Data inicial"
             selectedDate={startDate}
@@ -208,7 +205,7 @@ export default function AdminDashboardPage() {
           />
         </div>
 
-        <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
+          <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
           <ChartAreaInteractive
             data={chartData.map((item) => ({
               date: item.date,
@@ -257,7 +254,9 @@ export default function AdminDashboardPage() {
               ) : null}
             </CardContent>
           </Card>
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

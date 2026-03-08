@@ -75,13 +75,16 @@ export function NavMain({
                       ?.filter((sub) => hasAccess(sub.allowedRoles))
                       .map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubButton
+                            asChild
+                            className="[&>svg]:!text-[#B8952E]"
+                          >
                             <Link
                               to={subItem.url}
                               className="flex items-center gap-2"
                             >
                               {subItem.icon && (
-                                <subItem.icon className="h-4 w-4 text-[#B8952E]" />
+                                <subItem.icon className="h-4 w-4 !text-[#B8952E]" />
                               )}
                               <span>{subItem.title}</span>
                             </Link>

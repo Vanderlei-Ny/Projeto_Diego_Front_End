@@ -5,6 +5,7 @@ import api from "../http/api";
 import useAuth from "./useAuth";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ENDPOINTS } from "@/endpoints";
 import type { Service } from "@/types/service/service.types";
 import type {
@@ -17,6 +18,8 @@ dayjs.locale("pt-br");
 export default function useAdminPage() {
   const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Estados para agendamentos
   const [showForm, setShowForm] = useState(false);
@@ -66,7 +69,10 @@ export default function useAdminPage() {
   const verifyDay = useCallback(async (date: Date) => {
     setIsVerifyingDay(true);
     try {
-      const res = await api.post(ENDPOINTS.scheduling.verifyDay, { date });
+      const dateString = dayjs(date).format("YYYY-MM-DD");
+      const res = await api.post(ENDPOINTS.scheduling.verifyDay, {
+        date: dateString,
+      });
       const data = res.data;
       setDayData({
         dayId: data.dayId,
@@ -86,6 +92,24 @@ export default function useAdminPage() {
       setSelectedHour(null);
     }
   }, [selectedDate, verifyDay]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("quick") !== "1") {
+      return;
+    }
+
+    setShowForm(true);
+    params.delete("quick");
+    const nextSearch = params.toString();
+    navigate(
+      {
+        pathname: location.pathname,
+        search: nextSearch ? `?${nextSearch}` : "",
+      },
+      { replace: true },
+    );
+  }, [location.pathname, location.search, navigate]);
 
   // Mutation para criar agendamento
   const createMutation = useMutation({

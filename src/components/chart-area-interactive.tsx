@@ -16,6 +16,11 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import {
+  formatIsoDateToBr,
+  formatIsoDateToShortPtBr,
+  isIsoDate,
+} from "@/utils/calendarDate";
 
 export const description = "An interactive area chart";
 
@@ -39,13 +44,8 @@ export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
   const safeData = React.useMemo(
     () =>
       data
-        .filter((item) => {
-          const date = new Date(item.date);
-          return !Number.isNaN(date.getTime());
-        })
-        .sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-        ),
+        .filter((item) => isIsoDate(item.date))
+        .sort((a, b) => a.date.localeCompare(b.date)),
     [data],
   );
 
@@ -94,25 +94,16 @@ export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
                 axisLine={false}
                 tickMargin={8}
                 minTickGap={32}
-                tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return date.toLocaleDateString("pt-BR", {
-                    month: "short",
-                    day: "numeric",
-                  });
-                }}
+                tickFormatter={(value) =>
+                  formatIsoDateToShortPtBr(String(value))
+                }
               />
               <ChartTooltip
                 cursor={false}
                 isAnimationActive={false}
                 content={
                   <ChartTooltipContent
-                    labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("pt-BR", {
-                        month: "short",
-                        day: "numeric",
-                      });
-                    }}
+                    labelFormatter={(value) => formatIsoDateToBr(String(value))}
                     indicator="dot"
                   />
                 }

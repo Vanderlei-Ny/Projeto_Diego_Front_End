@@ -217,7 +217,7 @@ export default function AdminCarouselManager() {
                   </p>
                   <button
                     onClick={() => handleDeleteImage(img.id)}
-                    className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-lg transition-colors"
+                    className="w-full flex items-center justify-center gap-2  text-white font-medium py-2 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                     Remover
