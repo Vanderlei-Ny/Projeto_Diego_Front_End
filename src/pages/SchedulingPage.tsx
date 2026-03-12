@@ -16,6 +16,7 @@ function SchedulingPage() {
     selectedServices,
     activeWeekdays,
     diasBloqueados,
+    isCalendarDataReady,
     handleDateSelect,
     handleServiceToggle,
     handleHourSelect,
@@ -52,6 +53,7 @@ function SchedulingPage() {
               onSelect={handleDateSelect}
               activeWeekdays={activeWeekdays}
               diasBloqueados={diasBloqueados}
+              isCalendarDataReady={isCalendarDataReady}
             />
           </div>
 

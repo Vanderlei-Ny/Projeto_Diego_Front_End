@@ -25,6 +25,7 @@ function AdminPage() {
     hoursDisponible,
     hoursAgendados,
     activeWeekdays,
+    isLoadingActiveDays,
     isVerifyingDay,
     handleDateSelect,
     handleHourSelect,
@@ -169,6 +170,7 @@ function AdminPage() {
                         selectedDate={selectedDate}
                         onSelect={handleDateSelect}
                         activeWeekdays={activeWeekdays}
+                        isCalendarDataReady={!isLoadingActiveDays}
                         showContainer={false}
                         title=""
                       />

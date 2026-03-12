@@ -95,8 +95,9 @@ export const AppSidebar = React.memo(function AppSidebar({
   const userApplication = React.useMemo(
     () => ({
       name: user?.name ?? "Usuário",
+      avatarUrl: user?.avatarUrl ?? null,
     }),
-    [user?.name],
+    [user?.name, user?.avatarUrl],
   );
 
   // Combinar roles do array + hierarchy para garantir que admin seja reconhecido

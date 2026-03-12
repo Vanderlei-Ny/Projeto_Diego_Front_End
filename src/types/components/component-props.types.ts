@@ -52,6 +52,8 @@ export interface AgendamentoCalendarProps {
   activeWeekdays?: string[];
   diasBloqueados?: string[];
   disablePastDates?: boolean;
+  /** Quando false, todos os dias ficam desabilitados até os dados (dias ativos/bloqueados) estarem prontos. Evita que todos os dias fiquem clicáveis durante o carregamento. */
+  isCalendarDataReady?: boolean;
   showContainer?: boolean;
   showSelectedSummary?: boolean;
   title?: string;

@@ -32,6 +32,7 @@ export default function useLogin() {
         token: data.token,
         name: data.user.name ?? null,
         telefone: data.user.telefone ?? null,
+        avatarUrl: data.user.avatarUrl ?? null,
         hierarchy: data.user.hierarchy ?? null,
         roles:
           data.user.hierarchy ??
@@ -44,8 +45,8 @@ export default function useLogin() {
   });
 
   const loginWithGoogleMutation = useMutation({
-    mutationFn: async ({ token }: { token: string }) => {
-      const payload = { token };
+    mutationFn: async ({ credential }: { credential: string }) => {
+      const payload = { credential };
 
       const res = await api.post(ENDPOINTS.auth.loginWithGoogle, payload);
       const raw = res.data;
@@ -58,6 +59,7 @@ export default function useLogin() {
         id: raw.user.id,
         name: raw.user.name ?? null,
         telefone: raw.user.telefone ?? null,
+        avatarUrl: raw.user.avatarUrl ?? null,
         token: raw.token ?? null,
         roles: Array.isArray(raw.user.hierarchy) ? raw.user.hierarchy : null,
         hierarchy: raw.user.hierarchy ?? null,
@@ -71,6 +73,7 @@ export default function useLogin() {
         userId: data.id,
         name: data.name ?? null,
         telefone: data.telefone ?? null,
+        avatarUrl: data.avatarUrl ?? null,
         token: data.token ?? null,
         roles: data.roles ?? null,
         hierarchy: data.hierarchy ?? null,
@@ -81,8 +84,8 @@ export default function useLogin() {
   return {
     loginWithEmail: (email: string, password: string) =>
       loginWithEmailMutation.mutateAsync({ email, password }),
-    loginWithGoogle: (token: string) =>
-      loginWithGoogleMutation.mutateAsync({ token }),
+    loginWithGoogle: (credential: string) =>
+      loginWithGoogleMutation.mutateAsync({ credential }),
     isLoadingEmail: loginWithEmailMutation.isPending,
     isLoadingGoogle: loginWithGoogleMutation.isPending,
     errorEmail: loginWithEmailMutation.error,

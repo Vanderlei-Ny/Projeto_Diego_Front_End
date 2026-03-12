@@ -37,6 +37,7 @@ export function NavUser({ user }: { user: NavUserData }) {
 
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const avatarSrc = user.avatarUrl ?? authUser?.avatarUrl ?? undefined;
 
   const formatPhone = (value: string) => {
     let input = value.replace(/\D/g, "");
@@ -113,7 +114,7 @@ export function NavUser({ user }: { user: NavUserData }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg ">
-                <AvatarImage alt={user.name} />
+                <AvatarImage src={avatarSrc} alt={user.name} />
                 <AvatarFallback className="rounded-lg bg-[#B8952E]">
                   {getInitialName(user.name)}
                 </AvatarFallback>
@@ -133,6 +134,7 @@ export function NavUser({ user }: { user: NavUserData }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage src={avatarSrc} alt={user.name} />
                   <AvatarFallback className="rounded-lg bg-[#B8952E]">
                     {getInitialName(user.name)}
                   </AvatarFallback>
