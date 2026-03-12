@@ -70,8 +70,8 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
-        <div className="flex w-full items-center justify-between bg-neutral-800 rounded-[15px] p-4 md:p-6">
+      <div className="mx-auto flex w-full h-full max-w-7xl flex-col gap-4 sm:gap-6 ">
+        <div className="flex w-full items-center justify-between bg-neutral-800 rounded-[15px] p-4 md:p-6 ">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-[#B8952E] flex items-center gap-2">
               <CalendarClock className="w-6 h-6" />
@@ -207,15 +207,17 @@ export default function AdminDashboardPage() {
               />
             </div>
 
-            <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
-              <ChartAreaInteractive
-                data={chartData.map((item) => ({
-                  date: item.date,
-                  total: item.total,
-                }))}
-              />
+            <div className="grid gap-4 xl:grid-cols-[2fr_1fr] h-100">
+              <div className=" flex flex-col flex-shrink-0">
+                <ChartAreaInteractive
+                  data={chartData.map((item) => ({
+                    date: item.date,
+                    total: item.total,
+                  }))}
+                />
+              </div>
 
-              <Card className="bg-neutral-800 border-white/10 text-white">
+              <Card className="bg-neutral-800 border-white/10 text-white overflow-y-auto">
                 <CardHeader>
                   <CardTitle className="text-[#B8952E]">
                     Próximos agendamentos

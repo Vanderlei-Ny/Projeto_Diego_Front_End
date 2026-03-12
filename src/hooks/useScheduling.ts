@@ -25,7 +25,10 @@ export default function useScheduling() {
   });
 
   // Busca dias bloqueados (folgas, feriados, etc)
-  const { data: diasBloqueadosData } = useQuery({
+  const {
+    data: diasBloqueadosData,
+    isLoading: isLoadingDiasBloqueados,
+  } = useQuery({
     queryKey: ["diasBloqueadosDatas"],
     queryFn: async () => {
       const res = await api.get(ENDPOINTS.blockedDay.dates);
@@ -88,6 +91,7 @@ export default function useScheduling() {
     loadingServices,
     servicesError,
     diasBloqueados,
+    isLoadingDiasBloqueados,
     verifyDay: (date: string) => verifyDayMutation.mutateAsync(date),
     createAgendamento: (data: {
       data: string;

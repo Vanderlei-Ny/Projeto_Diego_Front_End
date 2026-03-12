@@ -57,6 +57,32 @@ export default function useLoginPage() {
         navigate("/insertEmailAndPhoneNumber");
       }
     } catch (err) {
+      const code = (err as any)?.response?.data?.code;
+      const retryAfterSeconds =
+        (err as any)?.response?.data?.retryAfterSeconds ?? null;
+
+      if (code === "GOOGLE_CLOCK_SKEW") {
+        const delayMs = ((Number(retryAfterSeconds) || 5) + 1) * 1000;
+        toast.info(
+          `Ajustando relógio. Tentando novamente em ${
+            Number(retryAfterSeconds) || 5
+          }s...`,
+        );
+        setTimeout(async () => {
+          try {
+            const result = await loginWithGoogle(token as string);
+            if (result.name && result.telefone) {
+              navigate("/home");
+            } else {
+              toast.success("Login realizado! Complete seu perfil.");
+              navigate("/insertEmailAndPhoneNumber");
+            }
+          } catch {
+            toast.error("Erro ao fazer login com Google.");
+          }
+        }, delayMs);
+        return;
+      }
       toast.error("Erro ao fazer login com Google.");
     }
   };

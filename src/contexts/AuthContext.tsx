@@ -49,6 +49,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
               userId: userPayload.id,
               name: userPayload.name ?? null,
               telefone: userPayload.telefone ?? userPayload.phoneNumber ?? null,
+              avatarUrl: userPayload.avatarUrl ?? null,
               roles: Array.isArray(userPayload.roles)
                 ? userPayload.roles
                 : Array.isArray(data.roles)
@@ -83,6 +84,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     name: userPayload.name ?? null,
                     telefone:
                       userPayload.telefone ?? userPayload.phoneNumber ?? null,
+                    avatarUrl: userPayload.avatarUrl ?? null,
                     roles: Array.isArray(userPayload.roles)
                       ? userPayload.roles
                       : Array.isArray(data.roles)

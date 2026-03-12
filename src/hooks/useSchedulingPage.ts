@@ -17,14 +17,20 @@ export default function useSchedulingPage() {
     dayData,
     resetDayData,
     diasBloqueados,
+    isLoadingDiasBloqueados,
   } = useScheduling();
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedHour, setSelectedHour] = useState<number | null>(null);
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
   const [activeWeekdays, setActiveWeekdays] = useState<string[]>([]);
+  const [activeWeekdaysReady, setActiveWeekdaysReady] = useState(false);
 
   const isBusy = isVerifyingDay || isCreatingAgendamento;
+
+  // Calendário só libera seleção quando dias ativos e bloqueados estiverem carregados
+  const isCalendarDataReady =
+    activeWeekdaysReady && !isLoadingDiasBloqueados;
 
   // Carrega dias de funcionamento da barbearia
   useEffect(() => {
@@ -35,6 +41,7 @@ export default function useSchedulingPage() {
         ? res.data.activeDays
         : [];
       setActiveWeekdays(days);
+      setActiveWeekdaysReady(true);
     });
 
     return () => {
@@ -162,6 +169,7 @@ export default function useSchedulingPage() {
     isVerifyingDay,
     activeWeekdays,
     diasBloqueados,
+    isCalendarDataReady,
 
     // state
     selectedDate,

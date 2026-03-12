@@ -38,6 +38,7 @@ export default function useRegistration() {
           userId: loginData.user.id,
           name: loginData.user.name ?? null,
           telefone: loginData.user.telefone ?? null,
+          avatarUrl: loginData.user.avatarUrl ?? null,
           token: loginData.token ?? null,
           roles:
             loginData.user.Hierarchy ??
@@ -54,8 +55,8 @@ export default function useRegistration() {
   });
 
   const googleAuthMutation = useMutation({
-    mutationFn: async ({ token }: { token: string }) => {
-      const payload = { token };
+    mutationFn: async ({ credential }: { credential: string }) => {
+      const payload = { credential };
 
       const res = await api.post(ENDPOINTS.auth.loginWithGoogle, payload);
       const raw = res.data;
@@ -68,6 +69,7 @@ export default function useRegistration() {
         id: raw.user.id,
         name: raw.user.name ?? null,
         telefone: raw.user.telefone ?? null,
+        avatarUrl: raw.user.avatarUrl ?? null,
         token: raw.token ?? null,
         roles: Array.isArray(raw.user.Hierarchy) ? raw.user.Hierarchy : null,
         existingUser: raw.existingUser ?? false,
@@ -80,6 +82,7 @@ export default function useRegistration() {
         userId: data.id,
         name: data.name ?? null,
         telefone: data.telefone ?? null,
+        avatarUrl: data.avatarUrl ?? null,
         token: data.token ?? null,
         roles: data.roles ?? null,
       });
@@ -89,7 +92,8 @@ export default function useRegistration() {
   return {
     createUser: (email: string, password: string) =>
       createUserMutation.mutateAsync({ email, password }),
-    googleAuth: (token: string) => googleAuthMutation.mutateAsync({ token }),
+    googleAuth: (credential: string) =>
+      googleAuthMutation.mutateAsync({ credential }),
     isLoadingCreate: createUserMutation.isPending,
     isLoadingGoogle: googleAuthMutation.isPending,
     errorCreate: createUserMutation.error,
