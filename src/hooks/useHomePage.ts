@@ -11,12 +11,13 @@ export default function useHomePage() {
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
 
   const openDeleteModal = (id: number) => {
+    if (isDeleting || loading) return;
     setIdToDelete(id);
     setModalOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (idToDelete === null) return;
+    if (idToDelete === null || isDeleting || loading) return;
 
     try {
       await deleteAgendamento(idToDelete);

@@ -29,8 +29,7 @@ export default function useSchedulingPage() {
   const isBusy = isVerifyingDay || isCreatingAgendamento;
 
   // Calendário só libera seleção quando dias ativos e bloqueados estiverem carregados
-  const isCalendarDataReady =
-    activeWeekdaysReady && !isLoadingDiasBloqueados;
+  const isCalendarDataReady = activeWeekdaysReady && !isLoadingDiasBloqueados;
 
   // Carrega dias de funcionamento da barbearia
   useEffect(() => {
@@ -140,7 +139,6 @@ export default function useSchedulingPage() {
         services: selectedServices,
       });
 
-      toast.success("Agendamento realizado com sucesso!");
       navigate("/home");
     } catch (error) {
       // Error handled silently

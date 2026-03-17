@@ -10,7 +10,8 @@ export default function useHome() {
 
   const {
     data: agendamentos = [],
-    isLoading: loading,
+    isLoading,
+    isFetching,
     error,
   } = useQuery({
     queryKey: ["agendamentos", user?.userId],
@@ -46,17 +47,21 @@ export default function useHome() {
     mutationFn: async (agendamentoId: number) => {
       await api.delete(ENDPOINTS.scheduling.deleteById(agendamentoId));
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["agendamentos"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["agendamentos", user?.userId],
+      });
     },
   });
 
   return {
     agendamentos,
-    loading,
+    loading: isLoading || isFetching,
     error: error?.message ?? null,
     fetchAgendamentos: () =>
-      queryClient.invalidateQueries({ queryKey: ["agendamentos"] }),
+      queryClient.invalidateQueries({
+        queryKey: ["agendamentos", user?.userId],
+      }),
     deleteAgendamento: (agendamentoId: number) =>
       deleteAgendamentoMutation.mutateAsync(agendamentoId),
     isDeleting: deleteAgendamentoMutation.isPending,

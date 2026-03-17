@@ -55,10 +55,7 @@ export default function useAdminPage() {
   });
 
   // Buscar dias ativos
-  const {
-    data: activeDaysData,
-    isLoading: isLoadingActiveDays,
-  } = useQuery({
+  const { data: activeDaysData, isLoading: isLoadingActiveDays } = useQuery({
     queryKey: ["activeDays"],
     queryFn: async () => {
       const res = await api.get(ENDPOINTS.scheduling.activeDays);
@@ -127,7 +124,6 @@ export default function useAdminPage() {
       return res.data;
     },
     onSuccess: () => {
-      toast.success("Agendamento criado com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["admin-agendamentos"] });
       // Resetar formulário
       setNomeCliente("");
