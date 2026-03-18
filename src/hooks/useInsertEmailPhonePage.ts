@@ -43,6 +43,7 @@ export default function useInsertEmailPhonePage() {
     try {
       try {
         await updateInfo(name, telefone);
+        localStorage.setItem("showInstallPrompt", "1");
         navigate("/home");
       } catch (err) {
         setError("Erro ao atualizar informações");

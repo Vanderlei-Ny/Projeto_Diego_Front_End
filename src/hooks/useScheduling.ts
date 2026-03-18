@@ -25,17 +25,15 @@ export default function useScheduling() {
   });
 
   // Busca dias bloqueados (folgas, feriados, etc)
-  const {
-    data: diasBloqueadosData,
-    isLoading: isLoadingDiasBloqueados,
-  } = useQuery({
-    queryKey: ["diasBloqueadosDatas"],
-    queryFn: async () => {
-      const res = await api.get(ENDPOINTS.blockedDay.dates);
-      return res.data.diasBloqueados as string[];
-    },
-    retry: 2,
-  });
+  const { data: diasBloqueadosData, isLoading: isLoadingDiasBloqueados } =
+    useQuery({
+      queryKey: ["diasBloqueadosDatas"],
+      queryFn: async () => {
+        const res = await api.get(ENDPOINTS.blockedDay.dates);
+        return res.data.diasBloqueados as string[];
+      },
+      retry: 2,
+    });
 
   const diasBloqueados = diasBloqueadosData || [];
 

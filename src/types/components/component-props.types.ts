@@ -17,6 +17,7 @@ export interface ConfirmModalProps {
   onCancel: () => void;
   isOpen: boolean;
   date?: string;
+  isProcessing?: boolean;
 }
 
 export interface EditProfileModalProps {
@@ -28,6 +29,12 @@ export interface EditProfileModalProps {
   onNameChange: (value: string) => void;
   onTelefoneChange: (value: string) => void;
   onSave: () => void;
+}
+
+export interface InstallAppModalProps {
+  isOpen: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
 }
 
 export interface SocialIconsProps {

@@ -5,6 +5,7 @@ export default function ConfirmModal({
   onConfirm,
   onCancel,
   isOpen,
+  isProcessing = false,
 }: ConfirmModalProps) {
   if (!isOpen) return null;
 
@@ -23,15 +24,17 @@ export default function ConfirmModal({
         <div className="flex gap-3 sm:gap-4 justify-center">
           <button
             onClick={onCancel}
+            disabled={isProcessing}
             className="flex-1 sm:flex-auto px-4 sm:px-6 py-2 sm:py-2.5 bg-white text-black rounded hover:bg-gray-200 transition cursor-pointer text-sm sm:text-base font-medium"
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
+            disabled={isProcessing}
             className="flex-1 sm:flex-auto px-4 sm:px-6 py-2 sm:py-2.5 bg-[#B8952E] text-white rounded hover:bg-yellow-400 transition cursor-pointer text-sm sm:text-base font-medium"
           >
-            Confirmar
+            {isProcessing ? "Excluindo..." : "Confirmar"}
           </button>
         </div>
       </div>
