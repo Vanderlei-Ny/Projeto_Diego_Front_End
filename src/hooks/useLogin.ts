@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../http/api";
+import { signInWithGoogleCredential } from "../http/googleSignIn";
 import useAuth from "./useAuth";
 import { ENDPOINTS } from "@/endpoints";
 
@@ -46,14 +47,8 @@ export default function useLogin() {
 
   const loginWithGoogleMutation = useMutation({
     mutationFn: async ({ credential }: { credential: string }) => {
-      const payload = { credential };
 
-      const res = await api.post(ENDPOINTS.auth.loginWithGoogle, payload);
-      const raw = res.data;
-
-      if (!raw?.user?.id) {
-        throw new Error("Erro ao autenticar com Google.");
-      }
+      const raw = await signInWithGoogleCredential(credential);
 
       const normalized = {
         id: raw.user.id,
@@ -61,7 +56,7 @@ export default function useLogin() {
         telefone: raw.user.telefone ?? null,
         avatarUrl: raw.user.avatarUrl ?? null,
         token: raw.token ?? null,
-        roles: Array.isArray(raw.user.hierarchy) ? raw.user.hierarchy : null,
+        roles: null,
         hierarchy: raw.user.hierarchy ?? null,
         existingUser: raw.existingUser ?? false,
       };

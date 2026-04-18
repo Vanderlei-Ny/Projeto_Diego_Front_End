@@ -6,8 +6,19 @@ import axios, {
 import { toast } from "sonner";
 import { ENDPOINTS } from "@/endpoints";
 
-// Usa variável de ambiente ou localhost como fallback
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+function resolveApiBaseUrl(): string {
+  const raw = import.meta.env.VITE_API_URL as string | undefined;
+  if (typeof raw === "string") {
+    const trimmed = raw.trim().replace(/^["']|["']$/g, "");
+    if (trimmed.length > 0) return trimmed.replace(/\/$/, "");
+  }
+  if (import.meta.env.DEV) {
+    return "/api";
+  }
+  return "http://localhost:3001/api";
+}
+
+const API_URL = resolveApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_URL,

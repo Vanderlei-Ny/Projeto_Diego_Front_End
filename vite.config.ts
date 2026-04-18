@@ -4,6 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
+// Proxy: em dev, use baseURL `/api` no axios para o front sempre falar com o mesmo host:porta
+// (evita 404/CORS ao misturar localhost com IP da LAN).
+// Não definir COOP/COEP aqui: o padrão (sem header) é o mais compatível com Google Sign-In / postMessage.
 export default defineConfig({
   resolve: {
     alias: {
@@ -38,9 +41,11 @@ export default defineConfig({
     host: true,
     port: 5173,
     strictPort: true,
-    headers: {
-      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
-      "Cross-Origin-Embedder-Policy": "unsafe-none",
+    proxy: {
+      "/api": {
+        target: process.env.VITE_DEV_API_PROXY ?? "http://127.0.0.1:3001",
+        changeOrigin: true,
+      },
     },
   },
 });
