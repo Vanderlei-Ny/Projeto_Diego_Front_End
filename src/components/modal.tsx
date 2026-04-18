@@ -1,4 +1,5 @@
 import type { ConfirmModalProps } from "@/types/components/component-props.types";
+import { createPortal } from "react-dom";
 
 export default function ConfirmModal({
   message,
@@ -9,35 +10,47 @@ export default function ConfirmModal({
 }: ConfirmModalProps) {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+      role="presentation"
       onClick={onCancel}
     >
       <div
-        className="bg-black/80 rounded-2xl p-4 sm:p-6 w-full sm:w-80 max-w-sm shadow-lg border border-neutral-700"
+        data-app-modal-backdrop
+        className="absolute inset-0"
+        aria-hidden
+      />
+      <div
+        data-app-modal-panel
+        className="relative z-10 w-full max-w-sm animate-in fade-in zoom-in-95 rounded-2xl p-4 shadow-lg duration-200 sm:w-80 sm:p-6"
+        role="dialog"
+        aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
-        <p className="mb-4 sm:mb-6 text-center text-white text-sm sm:text-base">
+        <p className="mb-4 text-center text-sm text-white sm:mb-6 sm:text-base">
           {message}
         </p>
-        <div className="flex gap-3 sm:gap-4 justify-center">
+        <div className="flex justify-center gap-3 sm:gap-4">
           <button
+            type="button"
             onClick={onCancel}
             disabled={isProcessing}
-            className="flex-1 sm:flex-auto px-4 sm:px-6 py-2 sm:py-2.5 bg-white text-black rounded hover:bg-gray-200 transition cursor-pointer text-sm sm:text-base font-medium"
+            className="flex-1 cursor-pointer rounded px-4 py-2 text-sm font-medium transition hover:bg-gray-200 disabled:opacity-60 sm:flex-auto sm:px-6 sm:py-2.5 sm:text-base bg-white text-black"
           >
             Cancelar
           </button>
           <button
+            type="button"
             onClick={onConfirm}
             disabled={isProcessing}
-            className="flex-1 sm:flex-auto px-4 sm:px-6 py-2 sm:py-2.5 bg-[#B8952E] text-white rounded hover:bg-yellow-400 transition cursor-pointer text-sm sm:text-base font-medium"
+            className="flex-1 cursor-pointer rounded bg-[#B8952E] px-4 py-2 text-sm font-medium text-white transition hover:bg-yellow-400 disabled:opacity-60 sm:flex-auto sm:px-6 sm:py-2.5 sm:text-base"
           >
             {isProcessing ? "Excluindo..." : "Confirmar"}
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

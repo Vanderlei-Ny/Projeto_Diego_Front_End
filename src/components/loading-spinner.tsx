@@ -1,4 +1,5 @@
 import type { LoadingSpinnerProps } from "@/types/components/component-props.types";
+import { createPortal } from "react-dom";
 
 export function LoadingSpinner({
   message = "Carregando...",
@@ -18,15 +19,21 @@ export function LoadingSpinner({
   };
 
   if (fullScreen) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-        <div className="flex flex-col items-center gap-4">
+    return createPortal(
+      <div className="fixed inset-0 z-[200] flex items-center justify-center">
+        <div
+          data-app-modal-backdrop
+          className="absolute inset-0"
+          aria-hidden
+        />
+        <div className="relative z-10 flex animate-in fade-in zoom-in-95 flex-col items-center gap-4 duration-200">
           <div
             className={`${spinnerSizes[size]} animate-spin rounded-full border-3 border-[#B8952E]/30 border-t-[#B8952E]`}
           />
           <p className={`text-white ${textSizes[size]}`}>{message}</p>
         </div>
-      </div>
+      </div>,
+      document.body,
     );
   }
 
