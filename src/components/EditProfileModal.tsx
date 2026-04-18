@@ -1,7 +1,8 @@
 import type { EditProfileModalProps } from "@/types/components/component-props.types";
 import { getInitialName } from "@/utils/getInitialNames";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createPortal } from "react-dom";
+import useAuth from "@/hooks/useAuth";
 
 export default function EditProfileModal({
   isOpen,
@@ -14,6 +15,10 @@ export default function EditProfileModal({
   onSave,
 }: EditProfileModalProps) {
   if (!isOpen) return null;
+
+  const { user: authUser } = useAuth();
+
+  const avatarSrc = authUser?.avatarUrl ?? undefined;
 
   return createPortal(
     <div
@@ -35,9 +40,10 @@ export default function EditProfileModal({
       >
         <div className="flex gap-2">
           <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarFallback className="rounded-lg bg-[#B8952E]">
-              {getInitialName(name)}
-            </AvatarFallback>
+          <AvatarImage src={avatarSrc} alt={authUser?.name ?? ""} />
+                <AvatarFallback className="rounded-lg bg-[#B8952E]">
+                  {getInitialName(authUser?.name ?? "")}
+                </AvatarFallback>
           </Avatar>
           <h2 className="mb-4 text-lg font-semibold text-white">
             Editar perfil
