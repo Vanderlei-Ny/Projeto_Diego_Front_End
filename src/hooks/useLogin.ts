@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../http/api";
+import { signInWithGoogleCredential } from "../http/googleSignIn";
 import useAuth from "./useAuth";
 import { ENDPOINTS } from "@/endpoints";
 
@@ -44,22 +45,15 @@ export default function useLogin() {
   });
 
   const loginWithGoogleMutation = useMutation({
-    mutationFn: async ({ token }: { token: string }) => {
-      const payload = { token };
-
-      const res = await api.post(ENDPOINTS.auth.loginWithGoogle, payload);
-      const raw = res.data;
-
-      if (!raw?.user?.id) {
-        throw new Error("Erro ao autenticar com Google.");
-      }
+    mutationFn: async ({ credential }: { credential: string }) => {
+      const raw = await signInWithGoogleCredential(credential);
 
       const normalized = {
         id: raw.user.id,
         name: raw.user.name ?? null,
         telefone: raw.user.telefone ?? null,
         token: raw.token ?? null,
-        roles: Array.isArray(raw.user.hierarchy) ? raw.user.hierarchy : null,
+        roles: null,
         hierarchy: raw.user.hierarchy ?? null,
         existingUser: raw.existingUser ?? false,
       };
@@ -81,8 +75,8 @@ export default function useLogin() {
   return {
     loginWithEmail: (email: string, password: string) =>
       loginWithEmailMutation.mutateAsync({ email, password }),
-    loginWithGoogle: (token: string) =>
-      loginWithGoogleMutation.mutateAsync({ token }),
+    loginWithGoogle: (credential: string) =>
+      loginWithGoogleMutation.mutateAsync({ credential }),
     isLoadingEmail: loginWithEmailMutation.isPending,
     isLoadingGoogle: loginWithGoogleMutation.isPending,
     errorEmail: loginWithEmailMutation.error,

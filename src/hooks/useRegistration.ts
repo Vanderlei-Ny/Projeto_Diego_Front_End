@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../http/api";
+import { signInWithGoogleCredential } from "../http/googleSignIn";
 import useAuth from "./useAuth";
 import { ENDPOINTS } from "@/endpoints";
 
@@ -54,26 +55,17 @@ export default function useRegistration() {
   });
 
   const googleAuthMutation = useMutation({
-    mutationFn: async ({ token }: { token: string }) => {
-      const payload = { token };
+    mutationFn: async ({ credential }: { credential: string }) => {
+      const raw = await signInWithGoogleCredential(credential);
 
-      const res = await api.post(ENDPOINTS.auth.loginWithGoogle, payload);
-      const raw = res.data;
-
-      if (!raw?.user?.id) {
-        throw new Error("Erro ao autenticar com Google.");
-      }
-
-      const normalized = {
+      return {
         id: raw.user.id,
         name: raw.user.name ?? null,
         telefone: raw.user.telefone ?? null,
         token: raw.token ?? null,
-        roles: Array.isArray(raw.user.Hierarchy) ? raw.user.Hierarchy : null,
+        hierarchy: raw.user.hierarchy ?? null,
         existingUser: raw.existingUser ?? false,
       };
-
-      return normalized;
     },
     onSuccess: (data) => {
       login({
@@ -81,7 +73,8 @@ export default function useRegistration() {
         name: data.name ?? null,
         telefone: data.telefone ?? null,
         token: data.token ?? null,
-        roles: data.roles ?? null,
+        roles: null,
+        hierarchy: data.hierarchy ?? null,
       });
     },
   });
@@ -89,7 +82,8 @@ export default function useRegistration() {
   return {
     createUser: (email: string, password: string) =>
       createUserMutation.mutateAsync({ email, password }),
-    googleAuth: (token: string) => googleAuthMutation.mutateAsync({ token }),
+    googleAuth: (credential: string) =>
+      googleAuthMutation.mutateAsync({ credential }),
     isLoadingCreate: createUserMutation.isPending,
     isLoadingGoogle: googleAuthMutation.isPending,
     errorCreate: createUserMutation.error,

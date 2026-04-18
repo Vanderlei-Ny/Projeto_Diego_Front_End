@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import type { CredentialResponse } from "@react-oauth/google";
 import useRegistration from "./useRegistration";
 
 export default function useRegisterPage() {
@@ -28,18 +27,9 @@ export default function useRegisterPage() {
     }
   };
 
-  const handleGoogleLoginSuccess = async (
-    credentialResponse: CredentialResponse,
-  ) => {
-    const token = credentialResponse.credential;
-
-    if (!token) {
-      toast.error("Token do Google inválido.");
-      return;
-    }
-
+  const handleGoogleCredential = async (credential: string) => {
     try {
-      const data = await googleAuth(token as string);
+      const data = await googleAuth(credential);
 
       if (data.name && data.telefone) {
         toast.success("Autenticado com sucesso!");
@@ -48,7 +38,7 @@ export default function useRegisterPage() {
         toast.success("Autenticado! Complete seu perfil.");
         navigate("/insertEmailAndPhoneNumber");
       }
-    } catch (err) {
+    } catch {
       toast.error("Erro ao autenticar com Google.");
     }
   };
@@ -64,7 +54,7 @@ export default function useRegisterPage() {
     isLoadingCreate,
     isLoadingGoogle,
     handleSubmit,
-    handleGoogleLoginSuccess,
+    handleGoogleCredential,
     goToLogin,
   };
 }

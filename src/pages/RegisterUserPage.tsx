@@ -1,7 +1,6 @@
-import { GoogleLogin } from "@react-oauth/google";
 import useRegisterPage from "../hooks/useRegisterPage";
 import LoadingSpinner from "../components/loading-spinner";
-import { toast } from "sonner";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 function RegisterUser() {
   const {
@@ -11,7 +10,7 @@ function RegisterUser() {
     setPassword,
     isBusy,
     handleSubmit,
-    handleGoogleLoginSuccess,
+    handleGoogleCredential,
     goToLogin,
   } = useRegisterPage();
 
@@ -91,15 +90,9 @@ function RegisterUser() {
           </div>
 
           <div className="w-full max-w-md flex justify-center">
-            <GoogleLogin
-              onSuccess={handleGoogleLoginSuccess}
-              onError={() => toast.error("Erro ao autenticar com Google.")}
-              useOneTap={false}
-              theme="filled_black"
-              text="continue_with"
-              shape="rectangular"
-              locale="pt-BR"
-              width={320}
+            <GoogleSignInButton
+              disabled={isBusy}
+              onCredential={handleGoogleCredential}
             />
           </div>
         </form>
