@@ -1,5 +1,5 @@
 import { ChevronsUpDown, LogOut, Pencil } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -27,13 +27,14 @@ import api from "@/http/api";
 import { ENDPOINTS } from "@/endpoints";
 
 export function NavUser({ user }: { user: NavUserData }) {
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const { user: authUser } = useAuth();
   const { updateInfo, isLoading: isSavingProfile } =
     useInsertEmailAndPhoneNumber();
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editTelefone, setEditTelefone] = useState("");
+  const openEditProfileAfterSheetMsRef = useRef<number | null>(null);
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -61,10 +62,38 @@ export function NavUser({ user }: { user: NavUserData }) {
     return formatted;
   };
 
+  useEffect(() => {
+    return () => {
+      if (openEditProfileAfterSheetMsRef.current != null) {
+        window.clearTimeout(openEditProfileAfterSheetMsRef.current);
+      }
+    };
+  }, []);
+
   function openEditProfileModal() {
     setEditName(authUser?.name ?? "");
     setEditTelefone(authUser?.telefone ?? "");
-    setIsEditProfileOpen(true);
+
+    if (openEditProfileAfterSheetMsRef.current != null) {
+      window.clearTimeout(openEditProfileAfterSheetMsRef.current);
+      openEditProfileAfterSheetMsRef.current = null;
+    }
+
+    /*
+      Mobile sidebar is a Radix Sheet (modal dialog). A portal to document.body
+      sits outside the sheet content in the DOM tree, so Radix marks it inert
+      and touches never reach the inputs. Close the sheet first, then open the
+      modal after the sheet close transition (see sheet.tsx duration-300).
+    */
+    if (isMobile) {
+      setOpenMobile(false);
+      openEditProfileAfterSheetMsRef.current = window.setTimeout(() => {
+        openEditProfileAfterSheetMsRef.current = null;
+        setIsEditProfileOpen(true);
+      }, 320);
+    } else {
+      setIsEditProfileOpen(true);
+    }
   }
 
   function closeEditProfileModal() {
