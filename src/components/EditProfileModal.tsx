@@ -22,18 +22,18 @@ export default function EditProfileModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+      className="pointer-events-none fixed inset-0 z-[200] flex isolate items-center justify-center p-4 sm:p-6"
       role="presentation"
-      onClick={onClose}
     >
       <div
         data-app-modal-backdrop
-        className="absolute inset-0"
+        className="pointer-events-auto absolute inset-0 z-0 cursor-default"
         aria-hidden
+        onClick={onClose}
       />
       <div
         data-app-modal-panel
-        className="relative z-10 w-full max-w-md animate-in fade-in zoom-in-95 rounded-2xl p-5 shadow-lg duration-200 sm:p-6"
+        className="pointer-events-auto relative z-10 w-full max-w-md animate-in fade-in zoom-in-95 rounded-2xl p-5 shadow-lg duration-200 sm:p-6"
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
