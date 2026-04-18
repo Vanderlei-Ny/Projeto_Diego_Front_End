@@ -11,6 +11,7 @@ import App from "./App";
 import AppErrorBoundary from "./components/AppErrorBoundary";
 
 import { GOOGLE_WEB_CLIENT_ID } from "./config/google";
+import { registerSW } from "virtual:pwa-register";
 
 const queryClient = new QueryClient();
 
