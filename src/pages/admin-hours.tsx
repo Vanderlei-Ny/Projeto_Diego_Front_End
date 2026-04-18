@@ -10,6 +10,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import useHoursPage from "@/pages/admin/schedules/useSchedulesPage";
 import type {
   DayWithHours,
@@ -112,20 +119,23 @@ function AdminHoursPage() {
                   <label className="block text-white/80 text-sm mb-2">
                     Dia da Semana
                   </label>
-                  <select
-                    value={newDayName}
-                    onChange={(e) =>
-                      setNewDayName(e.target.value as DiaDaSemana | "")
+                  <Select
+                    value={newDayName || undefined}
+                    onValueChange={(value) =>
+                      setNewDayName(value as DiaDaSemana)
                     }
-                    className="w-full px-4 py-3 bg-black border border-white/10 rounded-lg text-white focus:outline-none focus:border-[#B8952E]"
                   >
-                    <option value="">Selecione o dia...</option>
-                    {availableDaysToAdd.map((day: DiaDaSemana) => (
-                      <option key={day} value={day}>
-                        {dayNameMap[day]}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="w-full px-4 py-3 h-auto min-h-11">
+                      <SelectValue placeholder="Selecione o dia..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableDaysToAdd.map((day: DiaDaSemana) => (
+                        <SelectItem key={day} value={day}>
+                          {dayNameMap[day]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="flex items-end gap-2">
