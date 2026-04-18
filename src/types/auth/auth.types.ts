@@ -2,6 +2,14 @@ import type { ReactNode } from "react";
 
 export type Hierarchy = "CLIENT" | "ADMIN";
 
+/** Converte valor da API (string) para o union tipado. */
+export function toHierarchy(value: unknown): Hierarchy | null {
+  if (value === "CLIENT" || value === "ADMIN") {
+    return value;
+  }
+  return null;
+}
+
 export interface AuthUser {
   userId: number | null;
   name?: string | null;
