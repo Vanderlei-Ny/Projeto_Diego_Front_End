@@ -67,6 +67,21 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+/**
+ * 401 em login/senha ou Google não deve disparar refresh (credenciais inválidas).
+ * validateToken e demais rotas: access JWT expirado → uma tentativa de POST /login/refresh
+ * (cookie httpOnly) e repetição da requisição.
+ */
+function shouldSkipRefreshForUrl(url: string | undefined): boolean {
+  if (!url) return false;
+  return (
+    url.includes(ENDPOINTS.auth.loginWithEmail) ||
+    url.includes(ENDPOINTS.auth.loginWithGoogle) ||
+    url.includes(ENDPOINTS.auth.logout) ||
+    url.includes(ENDPOINTS.auth.refreshSession)
+  );
+}
+
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
@@ -74,13 +89,21 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const originalRequest = error.config as RetryRequestConfig | undefined;
 
-    const isAuthEndpoint = originalRequest?.url?.includes("/login/");
-    const isRefreshCall = originalRequest?.url?.includes(
-      ENDPOINTS.auth.refreshSession,
-    );
+    if (originalRequest?.__isRetryRequest) {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Sessão expirada. Faça login novamente.";
+      toast.error(message);
+      setAuthToken(null);
+      persistAuthToken(null);
+      return Promise.reject(error);
+    }
 
-    // Tenta renovar apenas quando 401 e não é a própria rota de refresh
-    if (status === 401 && !isAuthEndpoint && !isRefreshCall) {
+    const requestUrl = originalRequest?.url;
+    const skipRefresh = shouldSkipRefreshForUrl(requestUrl);
+
+    if (status === 401 && !skipRefresh) {
       if (!refreshPromise) {
         refreshPromise = refreshAccessToken();
       }

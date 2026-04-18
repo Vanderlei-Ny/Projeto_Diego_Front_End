@@ -118,12 +118,12 @@ export const AppSidebar = React.memo(function AppSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="flex items-center relative p-3">
-        <div className="flex w-full items-center gap-3 px-3 py-2.5 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-1.5">
-          <div className="flex h-20 w-full items-center justify-center rounded-md bg-[#B8952E]/20 text-[#B8952E]">
+        <div className="flex w-full items-center gap-3 px-3 py-2 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-1.5">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#B8952E]/15 p-1 text-[#B8952E] ring-1 ring-[#B8952E]/20 group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:p-0.5">
             <img
               src="/logo.png"
               alt="Logo"
-              className="w-15 h-1 object-contain"
+              className="h-full w-full object-contain object-center"
               loading="eager"
             />
           </div>

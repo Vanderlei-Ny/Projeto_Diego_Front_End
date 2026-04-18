@@ -61,6 +61,18 @@ export default function useAdminDashboardPage() {
   });
 
   const totals = data?.totals;
+  const kpis = data?.kpis ?? {
+    clientsTotal: 0,
+    servicesTotal: 0,
+    appointmentsToday: 0,
+    appointmentsTomorrow: 0,
+    blockedDaysAhead: 0,
+  };
+  const revenue = data?.revenue ?? {
+    estimatedInRange: 0,
+    currency: "BRL",
+  };
+  const topServicesInRange = data?.topServicesInRange ?? [];
   const chartData = data?.appointmentsPerDay ?? [];
   const appointmentsTable = data?.appointmentsTable ?? [];
 
@@ -112,6 +124,9 @@ export default function useAdminDashboardPage() {
     setStartDate,
     setEndDate,
     totals,
+    kpis,
+    revenue,
+    topServicesInRange,
     chartData,
     appointmentsTable,
     quickRanges,

@@ -18,6 +18,18 @@ export interface DashboardSummaryResponse {
     month: number;
     range: number;
   };
+  kpis: {
+    clientsTotal: number;
+    servicesTotal: number;
+    appointmentsToday: number;
+    appointmentsTomorrow: number;
+    blockedDaysAhead: number;
+  };
+  revenue: {
+    estimatedInRange: number;
+    currency: string;
+  };
+  topServicesInRange: { name: string; count: number }[];
   filters: {
     startDate: string | null;
     endDate: string | null;
