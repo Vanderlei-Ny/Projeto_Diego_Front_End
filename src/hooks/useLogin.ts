@@ -33,6 +33,7 @@ export default function useLogin() {
         token: data.token,
         name: data.user.name ?? null,
         telefone: data.user.telefone ?? null,
+        avatarUrl: data.user.avatarUrl ?? null,
         hierarchy: data.user.hierarchy ?? null,
         roles:
           data.user.hierarchy ??
@@ -46,12 +47,14 @@ export default function useLogin() {
 
   const loginWithGoogleMutation = useMutation({
     mutationFn: async ({ credential }: { credential: string }) => {
+
       const raw = await signInWithGoogleCredential(credential);
 
       const normalized = {
         id: raw.user.id,
         name: raw.user.name ?? null,
         telefone: raw.user.telefone ?? null,
+        avatarUrl: raw.user.avatarUrl ?? null,
         token: raw.token ?? null,
         roles: null,
         hierarchy: raw.user.hierarchy ?? null,
@@ -65,6 +68,7 @@ export default function useLogin() {
         userId: data.id,
         name: data.name ?? null,
         telefone: data.telefone ?? null,
+        avatarUrl: data.avatarUrl ?? null,
         token: data.token ?? null,
         roles: data.roles ?? null,
         hierarchy: data.hierarchy ?? null,

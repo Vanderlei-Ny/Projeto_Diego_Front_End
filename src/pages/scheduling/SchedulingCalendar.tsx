@@ -15,6 +15,7 @@ export default function AgendamentoCalendar({
   activeWeekdays = [],
   diasBloqueados = [],
   disablePastDates = true,
+  isCalendarDataReady = true,
   showContainer = true,
   showSelectedSummary = true,
   title = "Data",
@@ -70,6 +71,10 @@ export default function AgendamentoCalendar({
             selected={selectedDate}
             onSelect={handleSelectDate}
             disabled={(date) => {
+              // Enquanto os dados do calendário não estiverem prontos, todos os dias ficam desabilitados
+              // para evitar que todos fiquem clicáveis por um instante durante o carregamento
+              if (!isCalendarDataReady) return true;
+
               const today = new Date(new Date().setHours(0, 0, 0, 0));
               const isPast = date < today;
 

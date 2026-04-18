@@ -38,6 +38,7 @@ export default function useRegisterPage() {
         toast.success("Autenticado! Complete seu perfil.");
         navigate("/insertEmailAndPhoneNumber");
       }
+
     } catch {
       toast.error("Erro ao autenticar com Google.");
     }

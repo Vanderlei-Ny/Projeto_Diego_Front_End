@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import ImageCarousel from "../components/components";
 import MobileCarousel from "../components/MobileCarousel";
 import SocialIcons from "../components/SocialIcons";
@@ -5,9 +6,12 @@ import BarbershopLogo from "../components/BarbershopLogo";
 import ConfirmModal from "../components/modal";
 import useHomePage from "../hooks/useHomePage";
 import LoadingSpinner from "../components/loading-spinner";
+import InstallAppModal from "../components/InstallAppModal";
+import useInstallPrompt from "../hooks/useInstallPrompt";
 import {
   ArrowRight,
   CalendarDays,
+  Download,
   Scissors,
   Shield,
   Trash2,
@@ -20,12 +24,24 @@ function HomeInterface() {
     user,
     agendamentos,
     loading,
+    isDeleting,
     isAdmin,
     modalOpen,
     openDeleteModal,
     confirmDelete,
     closeModal,
   } = useHomePage();
+  const { canInstall, promptInstall } = useInstallPrompt();
+  const [isInstallDialogOpen, setIsInstallDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const shouldShowInstall = localStorage.getItem("showInstallPrompt") === "1";
+
+    if (shouldShowInstall && canInstall) {
+      setIsInstallDialogOpen(true);
+      localStorage.removeItem("showInstallPrompt");
+    }
+  }, [canInstall]);
 
   // Ensure user exists (já validado pelo RequireAuth)
   if (!user) {
@@ -36,11 +52,31 @@ function HomeInterface() {
 
   const firstName = user.name?.split(" ")[0] ?? "Cliente";
 
+  const handleInstallClick = async () => {
+    const result = await promptInstall();
+
+    if (result?.outcome === "accepted") {
+      setIsInstallDialogOpen(false);
+    } else {
+      setIsInstallDialogOpen(false);
+    }
+  };
+
   return (
     <>
       <div className="app-page-bg w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-10">
         <div className="flex w-full h-full flex-col items-center p-3 sm:p-6 md:p-10 gap-3 sm:gap-4 min-h-0 lg:h-[calc(100vh-5rem)]">
-          <div className="flex flex-col justify-between lg:flex-row w-full bg-neutral-800 rounded-[15px] p-4 md:p-6 gap-4 border border-white/10">
+          <div className="relative flex flex-col justify-between lg:flex-row w-full bg-neutral-800 rounded-[15px] p-4 md:p-6 gap-4 border border-white/10">
+            {canInstall && (
+              <button
+                type="button"
+                onClick={() => setIsInstallDialogOpen(true)}
+                title="Instalar aplicativo"
+                className="absolute top-3 right-3 inline-flex items-center justify-center h-9 w-9 rounded-full border border-white/10 bg-black/50 text-white/80 hover:text-white hover:border-[#B8952E]/60 hover:bg-black/70 transition"
+              >
+                <Download className="h-4 w-4" />
+              </button>
+            )}
             <div className="flex h-full flex-col justify-between gap-4 sm:gap-5 px-3 sm:px-4 py-3 sm:py-4 md:py-0 md:px-0 lg:max-w-[520px]">
               <BarbershopLogo variant="mobile" className="lg:hidden" />
               <BarbershopLogo
@@ -194,7 +230,8 @@ function HomeInterface() {
 
                         <button
                           onClick={() => openDeleteModal(item.id)}
-                          className="flex-shrink-0 cursor-pointer hover:text-yellow-400 transition-colors"
+                          disabled={isDeleting || loading}
+                          className="flex-shrink-0 cursor-pointer hover:text-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           title="Deletar agendamento"
                         >
                           <Trash2 className="text-[#B8952E] w-5 h-5 sm:w-5 sm:h-5" />
@@ -216,6 +253,13 @@ function HomeInterface() {
         onConfirm={confirmDelete}
         onCancel={closeModal}
         message="Tem certeza que deseja deletar este agendamento?"
+        isProcessing={isDeleting || loading}
+      />
+
+      <InstallAppModal
+        isOpen={isInstallDialogOpen && canInstall}
+        onConfirm={handleInstallClick}
+        onCancel={() => setIsInstallDialogOpen(false)}
       />
     </>
   );

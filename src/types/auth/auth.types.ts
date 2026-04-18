@@ -6,6 +6,7 @@ export interface AuthUser {
   userId: number | null;
   name?: string | null;
   telefone?: string | null;
+  avatarUrl?: string | null;
   token?: string | null;
   roles?: string[] | null;
   hierarchy?: Hierarchy | null;

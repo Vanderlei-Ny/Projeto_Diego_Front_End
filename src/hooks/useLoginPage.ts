@@ -47,6 +47,7 @@ export default function useLoginPage() {
         navigate("/insertEmailAndPhoneNumber");
       }
     } catch {
+
       toast.error("Erro ao fazer login com Google.");
     }
   };

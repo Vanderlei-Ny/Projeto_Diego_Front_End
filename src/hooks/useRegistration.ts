@@ -39,6 +39,7 @@ export default function useRegistration() {
           userId: loginData.user.id,
           name: loginData.user.name ?? null,
           telefone: loginData.user.telefone ?? null,
+          avatarUrl: loginData.user.avatarUrl ?? null,
           token: loginData.token ?? null,
           roles:
             loginData.user.Hierarchy ??
@@ -56,12 +57,14 @@ export default function useRegistration() {
 
   const googleAuthMutation = useMutation({
     mutationFn: async ({ credential }: { credential: string }) => {
+
       const raw = await signInWithGoogleCredential(credential);
 
       return {
         id: raw.user.id,
         name: raw.user.name ?? null,
         telefone: raw.user.telefone ?? null,
+        avatarUrl: raw.user.avatarUrl ?? null,
         token: raw.token ?? null,
         hierarchy: raw.user.hierarchy ?? null,
         existingUser: raw.existingUser ?? false,
@@ -72,6 +75,7 @@ export default function useRegistration() {
         userId: data.id,
         name: data.name ?? null,
         telefone: data.telefone ?? null,
+        avatarUrl: data.avatarUrl ?? null,
         token: data.token ?? null,
         roles: null,
         hierarchy: data.hierarchy ?? null,

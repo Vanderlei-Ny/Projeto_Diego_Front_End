@@ -19,6 +19,7 @@ export interface NavMainItem {
 
 export interface NavUserData {
   name: string;
+  avatarUrl?: string | null;
 }
 
 export interface NavProjectItem {

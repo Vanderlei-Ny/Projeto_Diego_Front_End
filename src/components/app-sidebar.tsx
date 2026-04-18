@@ -95,8 +95,9 @@ export const AppSidebar = React.memo(function AppSidebar({
   const userApplication = React.useMemo(
     () => ({
       name: user?.name ?? "Usuário",
+      avatarUrl: user?.avatarUrl ?? null,
     }),
-    [user?.name],
+    [user?.name, user?.avatarUrl],
   );
 
   // Combinar roles do array + hierarchy para garantir que admin seja reconhecido
@@ -118,11 +119,11 @@ export const AppSidebar = React.memo(function AppSidebar({
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="flex items-center relative p-3">
         <div className="flex w-full items-center gap-3 px-3 py-2.5 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-1.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#B8952E]/20 text-[#B8952E]">
+          <div className="flex h-20 w-full items-center justify-center rounded-md bg-[#B8952E]/20 text-[#B8952E]">
             <img
               src="/logo.png"
               alt="Logo"
-              className="w-12 h-12 object-contain"
+              className="w-15 h-1 object-contain"
               loading="eager"
             />
           </div>
