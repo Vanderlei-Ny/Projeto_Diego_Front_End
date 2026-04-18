@@ -3,6 +3,7 @@ import api from "../http/api";
 import { signInWithGoogleCredential } from "../http/googleSignIn";
 import useAuth from "./useAuth";
 import { ENDPOINTS } from "@/endpoints";
+import { toHierarchy } from "@/types/auth/auth.types";
 
 export default function useLogin() {
   const { login } = useAuth();
@@ -34,7 +35,7 @@ export default function useLogin() {
         name: data.user.name ?? null,
         telefone: data.user.telefone ?? null,
         avatarUrl: data.user.avatarUrl ?? null,
-        hierarchy: data.user.hierarchy ?? null,
+        hierarchy: toHierarchy(data.user.hierarchy),
         roles:
           data.user.hierarchy ??
           data.user.roles ??
@@ -57,7 +58,7 @@ export default function useLogin() {
         avatarUrl: raw.user.avatarUrl ?? null,
         token: raw.token ?? null,
         roles: null,
-        hierarchy: raw.user.hierarchy ?? null,
+        hierarchy: toHierarchy(raw.user.hierarchy),
         existingUser: raw.existingUser ?? false,
       };
 
@@ -71,7 +72,7 @@ export default function useLogin() {
         avatarUrl: data.avatarUrl ?? null,
         token: data.token ?? null,
         roles: data.roles ?? null,
-        hierarchy: data.hierarchy ?? null,
+        hierarchy: toHierarchy(data.hierarchy),
       });
     },
   });

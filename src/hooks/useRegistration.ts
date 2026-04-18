@@ -3,6 +3,7 @@ import api from "../http/api";
 import { signInWithGoogleCredential } from "../http/googleSignIn";
 import useAuth from "./useAuth";
 import { ENDPOINTS } from "@/endpoints";
+import { toHierarchy } from "@/types/auth/auth.types";
 
 export default function useRegistration() {
   const { login } = useAuth();
@@ -78,7 +79,7 @@ export default function useRegistration() {
         avatarUrl: data.avatarUrl ?? null,
         token: data.token ?? null,
         roles: null,
-        hierarchy: data.hierarchy ?? null,
+        hierarchy: toHierarchy(data.hierarchy),
       });
     },
   });
