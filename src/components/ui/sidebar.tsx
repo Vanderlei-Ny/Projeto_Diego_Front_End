@@ -3,8 +3,12 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 
+import EditProfileModal from "@/components/EditProfileModal";
+import useAuth from "@/hooks/useAuth";
+import useInsertEmailAndPhoneNumber from "@/hooks/useInsertEmailAndPhoneNumber";
 import { useSidebarSheetLayout } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -30,6 +34,28 @@ const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
+function formatPhoneProfileInput(value: string) {
+  let input = value.replace(/\D/g, "");
+
+  if (input.length > 11) input = input.slice(0, 11);
+
+  let formatted = input;
+
+  if (input.length > 0) {
+    formatted = `(${input.slice(0, 2)}`;
+  }
+
+  if (input.length >= 3) {
+    formatted += `) ${input.slice(2, 7)}`;
+  }
+
+  if (input.length >= 8) {
+    formatted += `-${input.slice(7)}`;
+  }
+
+  return formatted;
+}
+
 type SidebarContextProps = {
   state: "expanded" | "collapsed";
   open: boolean;
@@ -38,6 +64,7 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
+  openEditProfile: () => void;
 };
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
@@ -66,6 +93,14 @@ function SidebarProvider({
 }) {
   const isMobile = useSidebarSheetLayout();
   const [openMobile, setOpenMobile] = React.useState(false);
+  const openingEditProfileAfterSheetRef = React.useRef(false);
+  const openEditProfileTimeoutRef = React.useRef<number | null>(null);
+  const [isEditProfileOpen, setIsEditProfileOpen] = React.useState(false);
+  const [editName, setEditName] = React.useState("");
+  const [editTelefone, setEditTelefone] = React.useState("");
+  const { user: authUser } = useAuth();
+  const { updateInfo, isLoading: isSavingProfile } =
+    useInsertEmailAndPhoneNumber();
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -111,6 +146,71 @@ function SidebarProvider({
   // This makes it easier to style the sidebar with Tailwind classes.
   const state = open ? "expanded" : "collapsed";
 
+  const closeEditProfileModal = React.useCallback(() => {
+    setIsEditProfileOpen(false);
+  }, []);
+
+  const handleEditTelefoneChange = React.useCallback((value: string) => {
+    setEditTelefone(formatPhoneProfileInput(value));
+  }, []);
+
+  const saveProfile = React.useCallback(async () => {
+    const cleanName = editName.trim();
+    const cleanPhone = editTelefone.trim();
+
+    if (!cleanName || !cleanPhone) {
+      toast.error("Preencha nome e telefone para continuar.");
+      return;
+    }
+
+    try {
+      await updateInfo(cleanName, cleanPhone);
+      toast.success("Perfil atualizado com sucesso!");
+      setIsEditProfileOpen(false);
+    } catch (_error) {
+      toast.error("Erro ao atualizar seu perfil.");
+    }
+  }, [editName, editTelefone, updateInfo]);
+
+  const openEditProfile = React.useCallback(() => {
+    setEditName(authUser?.name ?? "");
+    setEditTelefone(authUser?.telefone ?? "");
+    if (isMobile) {
+      openingEditProfileAfterSheetRef.current = true;
+      setOpenMobile(false);
+    } else {
+      setIsEditProfileOpen(true);
+    }
+  }, [isMobile, authUser?.name, authUser?.telefone]);
+
+  React.useEffect(() => {
+    if (!isMobile) return;
+    if (openMobile && openingEditProfileAfterSheetRef.current) {
+      openingEditProfileAfterSheetRef.current = false;
+      if (openEditProfileTimeoutRef.current != null) {
+        window.clearTimeout(openEditProfileTimeoutRef.current);
+        openEditProfileTimeoutRef.current = null;
+      }
+      return;
+    }
+    if (!openMobile && openingEditProfileAfterSheetRef.current) {
+      if (openEditProfileTimeoutRef.current != null) {
+        window.clearTimeout(openEditProfileTimeoutRef.current);
+      }
+      openEditProfileTimeoutRef.current = window.setTimeout(() => {
+        openEditProfileTimeoutRef.current = null;
+        openingEditProfileAfterSheetRef.current = false;
+        setIsEditProfileOpen(true);
+      }, 0);
+      return () => {
+        if (openEditProfileTimeoutRef.current != null) {
+          window.clearTimeout(openEditProfileTimeoutRef.current);
+          openEditProfileTimeoutRef.current = null;
+        }
+      };
+    }
+  }, [isMobile, openMobile]);
+
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
       state,
@@ -120,8 +220,18 @@ function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      openEditProfile,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    [
+      state,
+      open,
+      setOpen,
+      isMobile,
+      openMobile,
+      setOpenMobile,
+      toggleSidebar,
+      openEditProfile,
+    ],
   );
 
   return (
@@ -144,6 +254,16 @@ function SidebarProvider({
         >
           {children}
         </div>
+        <EditProfileModal
+          isOpen={isEditProfileOpen}
+          name={editName}
+          telefone={editTelefone}
+          isSaving={isSavingProfile}
+          onClose={closeEditProfileModal}
+          onNameChange={setEditName}
+          onTelefoneChange={handleEditTelefoneChange}
+          onSave={saveProfile}
+        />
       </TooltipProvider>
     </SidebarContext.Provider>
   );
