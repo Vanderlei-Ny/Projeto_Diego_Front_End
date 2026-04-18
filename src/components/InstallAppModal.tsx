@@ -1,4 +1,5 @@
 import type { InstallAppModalProps } from "@/types/components/component-props.types";
+import { createPortal } from "react-dom";
 
 export default function InstallAppModal({
   isOpen,
@@ -7,36 +8,48 @@ export default function InstallAppModal({
 }: InstallAppModalProps) {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+      role="presentation"
       onClick={onCancel}
     >
       <div
-        className="bg-black/90 rounded-2xl p-5 sm:p-6 w-full max-w-md shadow-lg border border-white/10"
+        data-app-modal-backdrop
+        className="absolute inset-0"
+        aria-hidden
+      />
+      <div
+        data-app-modal-panel
+        className="relative z-10 w-full max-w-md animate-in fade-in zoom-in-95 rounded-2xl p-5 shadow-lg duration-200 sm:p-6"
+        role="dialog"
+        aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-white text-lg font-semibold mb-2">
+        <h2 className="mb-2 text-lg font-semibold text-white">
           Instalar como aplicativo
         </h2>
-        <p className="text-white/80 text-sm sm:text-base mb-5">
+        <p className="mb-5 text-sm text-white/80 sm:text-base">
           Deseja adicionar este site como aplicativo na sua area de trabalho?
         </p>
-        <div className="flex gap-3 justify-end">
+        <div className="flex justify-end gap-3">
           <button
+            type="button"
             onClick={onCancel}
-            className="px-4 py-2 bg-white text-black rounded hover:bg-gray-200 transition cursor-pointer text-sm font-medium"
+            className="cursor-pointer rounded bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200"
           >
             Agora nao
           </button>
           <button
+            type="button"
             onClick={onConfirm}
-            className="px-4 py-2 bg-[#B8952E] text-black rounded hover:bg-yellow-400 transition cursor-pointer text-sm font-medium"
+            className="cursor-pointer rounded bg-[#B8952E] px-4 py-2 text-sm font-medium text-black transition hover:bg-yellow-400"
           >
             Instalar
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

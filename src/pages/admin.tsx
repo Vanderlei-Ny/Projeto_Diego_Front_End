@@ -94,21 +94,21 @@ function AdminPage() {
   );
 
   return (
-    <div className="app-page-bg flex w-full min-h-screen px-2 sm:px-4 md:px-8 py-4 sm:py-6 md:py-8 flex-col">
+    <div className="app-page-bg flex min-h-screen w-full flex-col px-2 py-4 sm:px-4 sm:py-6 md:px-6 md:py-7 lg:px-8 lg:py-8">
       {isProcessing && <LoadingSpinner fullScreen message="Processando..." />}
 
       <div className="flex w-full max-w-7xl mx-auto flex-col gap-4 sm:gap-6">
         {/* Header */}
-        <div className="flex w-full items-center justify-between bg-neutral-800 rounded-[15px] p-4 md:p-6">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-[#B8952E]">
+        <div className="flex w-full flex-col gap-4 rounded-[15px] bg-neutral-800 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-3 md:p-6">
+          <div className="min-w-0">
+            <h1 className="text-xl font-bold text-[#B8952E] sm:text-2xl">
               Painel do Administrador
             </h1>
-            <p className="text-white/60 text-sm mt-1">
+            <p className="mt-1 text-sm text-white/60">
               Gerencie os agendamentos dos clientes
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 flex-wrap items-center gap-2 self-stretch sm:self-auto">
             <button
               onClick={() => setShowForm(!showForm)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -158,7 +158,7 @@ function AdminPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 items-start">
+                <div className="mt-6 grid grid-cols-1 items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {/* Data */}
                   <div>
                     <h3 className="text-white font-medium mb-3 flex items-center gap-2">
@@ -195,7 +195,7 @@ function AdminPage() {
                           Selecione uma data primeiro.
                         </p>
                       ) : (
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3">
                           {hoursDisponible.length === 0 &&
                             hoursAgendados.length > 0 && (
                               <p className="col-span-full rounded-md border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
@@ -319,8 +319,8 @@ function AdminPage() {
                           key={data}
                           className="bg-black rounded-xl p-4 border border-white/10"
                         >
-                          <div className="flex items-center justify-between gap-3 mb-3">
-                            <div className="flex items-center gap-2">
+                          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                            <div className="flex min-w-0 items-center gap-2">
                               <Calendar className="w-4 h-4 text-[#B8952E]" />
                               <span className="text-white font-semibold">
                                 {data}
@@ -336,9 +336,9 @@ function AdminPage() {
                             {listaAgendamentos.map((agendamento) => (
                               <div
                                 key={agendamento.id}
-                                className="flex items-center justify-between bg-neutral-900 rounded-lg p-3 border border-white/5"
+                                className="flex flex-col gap-3 rounded-lg border border-white/5 bg-neutral-900 p-3 sm:flex-row sm:items-center sm:justify-between"
                               >
-                                <div className="flex flex-col text-sm text-white gap-1">
+                                <div className="flex min-w-0 flex-col gap-1 text-sm text-white">
                                   <span className="font-semibold">
                                     {agendamento.nomeCliente}
                                   </span>
@@ -354,10 +354,11 @@ function AdminPage() {
                                   </span>
                                 </div>
                                 <button
+                                  type="button"
                                   onClick={() =>
                                     handleDeleteAgendamento(agendamento.id)
                                   }
-                                  className="p-2 rounded-lg hover:bg-red-900/30 transition-colors"
+                                  className="self-end rounded-lg p-2 transition-colors hover:bg-red-900/30 sm:self-auto"
                                   title="Cancelar agendamento"
                                 >
                                   <Trash2 className="w-5 h-5 text-red-400" />

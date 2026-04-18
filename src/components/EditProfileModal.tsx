@@ -1,6 +1,7 @@
 import type { EditProfileModalProps } from "@/types/components/component-props.types";
 import { getInitialName } from "@/utils/getInitialNames";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { createPortal } from "react-dom";
 
 export default function EditProfileModal({
   isOpen,
@@ -14,13 +15,22 @@ export default function EditProfileModal({
 }: EditProfileModalProps) {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+      role="presentation"
       onClick={onClose}
     >
       <div
-        className="bg-black/90 rounded-2xl p-5 sm:p-6 w-full max-w-md shadow-lg border border-white/10"
+        data-app-modal-backdrop
+        className="absolute inset-0"
+        aria-hidden
+      />
+      <div
+        data-app-modal-panel
+        className="relative z-10 w-full max-w-md animate-in fade-in zoom-in-95 rounded-2xl p-5 shadow-lg duration-200 sm:p-6"
+        role="dialog"
+        aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex gap-2">
@@ -29,52 +39,55 @@ export default function EditProfileModal({
               {getInitialName(name)}
             </AvatarFallback>
           </Avatar>
-          <h2 className="text-white text-lg font-semibold mb-4">
+          <h2 className="mb-4 text-lg font-semibold text-white">
             Editar perfil
           </h2>
         </div>
 
-        <div className="flex flex-col gap-2 mb-3">
+        <div className="mb-3 flex flex-col gap-2">
           <label className="text-sm text-white/80">Nome completo</label>
           <input
             type="text"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             disabled={isSaving}
-            className="border border-white/10 rounded-md w-full h-11 bg-black/70 placeholder-white/60 text-white text-base px-3 focus:border-[#B8952E] focus:outline-none"
+            className="h-11 w-full rounded-md border border-white/10 bg-black/70 px-3 text-base text-white placeholder-white/60 focus:border-[#B8952E] focus:outline-none"
             placeholder="Seu nome completo"
           />
         </div>
 
-        <div className="flex flex-col gap-2 mb-5">
+        <div className="mb-5 flex flex-col gap-2">
           <label className="text-sm text-white/80">Telefone</label>
           <input
             type="tel"
             value={telefone}
             onChange={(e) => onTelefoneChange(e.target.value)}
             disabled={isSaving}
-            className="border border-white/10 rounded-md w-full h-11 bg-black/70 placeholder-white/60 text-white text-base px-3 focus:border-[#B8952E] focus:outline-none"
+            className="h-11 w-full rounded-md border border-white/10 bg-black/70 px-3 text-base text-white placeholder-white/60 focus:border-[#B8952E] focus:outline-none"
             placeholder="(00) 00000-0000"
           />
         </div>
 
-        <div className="flex gap-3 justify-end">
+        <div className="flex justify-end gap-3">
           <button
+            type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="px-4 py-2 bg-white text-black rounded hover:bg-gray-200 transition cursor-pointer text-sm font-medium disabled:opacity-60"
+            className="cursor-pointer rounded bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200 disabled:opacity-60"
           >
             Cancelar
           </button>
           <button
+            type="button"
             onClick={onSave}
             disabled={isSaving}
-            className="px-4 py-2 bg-[#B8952E] text-black rounded hover:bg-yellow-400 transition cursor-pointer text-sm font-medium disabled:opacity-60"
+            className="cursor-pointer rounded bg-[#B8952E] px-4 py-2 text-sm font-medium text-black transition hover:bg-yellow-400 disabled:opacity-60"
           >
             {isSaving ? "Salvando..." : "Salvar"}
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
