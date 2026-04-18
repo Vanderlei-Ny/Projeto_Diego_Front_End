@@ -3,9 +3,11 @@ import api from "../http/api";
 import { ENDPOINTS } from "@/endpoints";
 import type { CarouselImage } from "@/types/carousel/carousel.types";
 import ImageWithLoader from "@/components/ImageWithLoader";
+import LoadingSpinner from "@/components/loading-spinner";
 
 export default function MobileCarousel() {
   const [images, setImages] = useState<CarouselImage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -25,6 +27,8 @@ export default function MobileCarousel() {
       );
     } catch (error) {
       setImages([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -32,7 +36,15 @@ export default function MobileCarousel() {
   const slides =
     images.length > 0 ? [images[images.length - 1], ...images, images[0]] : [];
 
-  const [slideIndex, setSlideIndex] = useState(images.length > 0 ? 1 : 0);
+  const [slideIndex, setSlideIndex] = useState(0);
+
+  useEffect(() => {
+    if (images.length === 0) {
+      setSlideIndex(0);
+      return;
+    }
+    setSlideIndex(1);
+  }, [images.length]);
 
   // Auto-play
   useEffect(() => {
@@ -108,9 +120,17 @@ export default function MobileCarousel() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex h-64 w-full items-center justify-center rounded-xl bg-neutral-700 py-4">
+        <LoadingSpinner message="Carregando imagens..." size="lg" />
+      </div>
+    );
+  }
+
   if (slides.length === 0) {
     return (
-      <div className="w-full py-4 bg-neutral-700 rounded-xl flex items-center justify-center h-64">
+      <div className="flex h-64 w-full items-center justify-center rounded-xl bg-neutral-700 py-4">
         <p className="text-gray-400">Nenhuma imagem no carousel</p>
       </div>
     );
