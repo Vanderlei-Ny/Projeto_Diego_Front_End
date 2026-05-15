@@ -37,6 +37,14 @@ export interface InstallAppModalProps {
   onCancel: () => void;
 }
 
+export interface AppointmentServicesModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dateLabel: string;
+  timeLabel: string;
+  services: string[];
+}
+
 export interface SocialIconsProps {
   variant: "mobile" | "desktop";
 }
@@ -65,4 +73,6 @@ export interface AgendamentoCalendarProps {
   showSelectedSummary?: boolean;
   title?: string;
   className?: string;
+  /** Botão do calendário só com ícone (layout agendamento em carrossel de datas). */
+  monthPickerVariant?: "default" | "icon";
 }

@@ -6,8 +6,8 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useCallback, useState } from "react";
-import dayjs from "dayjs";
 import type { AgendamentoCalendarProps } from "@/types/components/component-props.types";
+import { isBookingDateDisabled } from "./booking-date-rules";
 
 export default function AgendamentoCalendar({
   selectedDate,
@@ -20,6 +20,7 @@ export default function AgendamentoCalendar({
   showSelectedSummary = true,
   title = "Data",
   className = "",
+  monthPickerVariant = "default",
 }: AgendamentoCalendarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,52 +59,37 @@ export default function AgendamentoCalendar({
 
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <button className="flex items-center gap-3 w-full px-4 py-3 bg-black border border-white/10 rounded-lg text-white hover:border-white/20 transition-colors">
-            <CalendarIcon className="w-5 h-5 text-[#B8952E]" />
-            {selectedDate
-              ? selectedDate.toLocaleDateString("pt-BR")
-              : "Selecione uma data"}
-          </button>
+          {monthPickerVariant === "icon" ? (
+            <button
+              type="button"
+              title="Abrir calendário"
+              aria-label="Abrir calendário para escolher a data"
+              className="inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl border border-white/12 bg-black text-white outline-none transition hover:border-[#B8952E]/55 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-[#B8952E]"
+            >
+              <CalendarIcon className="h-5 w-5 text-[#B8952E]" />
+            </button>
+          ) : (
+            <button className="flex items-center gap-3 w-full px-4 py-3 bg-black border border-white/10 rounded-lg text-white hover:border-white/20 transition-colors">
+              <CalendarIcon className="w-5 h-5 text-[#B8952E]" />
+              {selectedDate
+                ? selectedDate.toLocaleDateString("pt-BR")
+                : "Selecione uma data"}
+            </button>
+          )}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 bg-neutral-900 border-neutral-700">
           <Calendar
             mode="single"
             selected={selectedDate}
             onSelect={handleSelectDate}
-            disabled={(date) => {
-              // Enquanto os dados do calendário não estiverem prontos, todos os dias ficam desabilitados
-              // para evitar que todos fiquem clicáveis por um instante durante o carregamento
-              if (!isCalendarDataReady) return true;
-
-              const today = new Date(new Date().setHours(0, 0, 0, 0));
-              const isPast = date < today;
-
-              if (disablePastDates && isPast) return true;
-
-              // Verificar se o dia está bloqueado
-              const dateStr = dayjs(date).format("YYYY-MM-DD");
-              if (diasBloqueados.includes(dateStr)) {
-                return true;
-              }
-
-              if (activeWeekdays && activeWeekdays.length > 0) {
-                const weekdayIndex = date.getDay();
-                const weekdayMap = [
-                  "DOMINGO",
-                  "SEGUNDA",
-                  "TERCA",
-                  "QUARTA",
-                  "QUINTA",
-                  "SEXTA",
-                  "SABADO",
-                ];
-                const weekday = weekdayMap[weekdayIndex];
-                const isAllowed = weekday && activeWeekdays.includes(weekday);
-                return !isAllowed;
-              }
-
-              return false;
-            }}
+            disabled={(date) =>
+              isBookingDateDisabled(date, {
+                isCalendarDataReady,
+                disablePastDates,
+                diasBloqueados,
+                activeWeekdays,
+              })
+            }
             showOutsideDays
             classNames={{
               day_selected:

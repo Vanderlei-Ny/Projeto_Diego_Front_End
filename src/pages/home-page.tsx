@@ -7,11 +7,13 @@ import ConfirmModal from "../components/modal";
 import useHomePage from "../hooks/useHomePage";
 import LoadingSpinner from "../components/loading-spinner";
 import InstallAppModal from "../components/InstallAppModal";
+import AppointmentServicesModal from "../components/AppointmentServicesModal";
 import useInstallPrompt from "../hooks/useInstallPrompt";
 import {
   ArrowRight,
   CalendarDays,
   Download,
+  Eye,
   Scissors,
   Shield,
   Trash2,
@@ -33,6 +35,11 @@ function HomeInterface() {
   } = useHomePage();
   const { canInstall, promptInstall } = useInstallPrompt();
   const [isInstallDialogOpen, setIsInstallDialogOpen] = useState(false);
+  const [servicesModalItem, setServicesModalItem] = useState<{
+    dataAgendamento: string;
+    hour: string;
+    nameServices: string[];
+  } | null>(null);
 
   useEffect(() => {
     const shouldShowInstall = localStorage.getItem("showInstallPrompt") === "1";
@@ -208,34 +215,34 @@ function HomeInterface() {
                               {item.hour}
                             </span>
                           </div>
-
-                          {item.nameServices && item.nameServices.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {item.nameServices.slice(0, 2).map((service) => (
-                                <span
-                                  key={service}
-                                  className="px-2 py-0.5 rounded border border-white/10 bg-black/60 text-[10px] text-white/80"
-                                >
-                                  {service}
-                                </span>
-                              ))}
-                              {item.nameServices.length > 2 ? (
-                                <span className="px-2 py-0.5 rounded border border-white/10 bg-black/60 text-[10px] text-white/60">
-                                  +{item.nameServices.length - 2}
-                                </span>
-                              ) : null}
-                            </div>
-                          ) : null}
                         </div>
 
-                        <button
-                          onClick={() => openDeleteModal(item.id)}
-                          disabled={isDeleting || loading}
-                          className="flex-shrink-0 cursor-pointer hover:text-yellow-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          title="Deletar agendamento"
-                        >
-                          <Trash2 className="text-[#B8952E] w-5 h-5 sm:w-5 sm:h-5" />
-                        </button>
+                        <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setServicesModalItem({
+                                dataAgendamento: item.dataAgendamento,
+                                hour: item.hour,
+                                nameServices: item.nameServices ?? [],
+                              })
+                            }
+                            disabled={loading}
+                            className="cursor-pointer p-1 text-[#B8952E] transition-colors hover:text-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
+                            title="Ver serviços"
+                          >
+                            <Eye className="h-5 w-5 sm:h-5 sm:w-5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => openDeleteModal(item.id)}
+                            disabled={isDeleting || loading}
+                            className="cursor-pointer p-1 text-[#B8952E] transition-colors hover:text-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
+                            title="Deletar agendamento"
+                          >
+                            <Trash2 className="h-5 w-5 sm:h-5 sm:w-5" />
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}
@@ -260,6 +267,14 @@ function HomeInterface() {
         isOpen={isInstallDialogOpen && canInstall}
         onConfirm={handleInstallClick}
         onCancel={() => setIsInstallDialogOpen(false)}
+      />
+
+      <AppointmentServicesModal
+        isOpen={servicesModalItem !== null}
+        onClose={() => setServicesModalItem(null)}
+        dateLabel={servicesModalItem?.dataAgendamento ?? ""}
+        timeLabel={servicesModalItem?.hour ?? ""}
+        services={servicesModalItem?.nameServices ?? []}
       />
     </>
   );
