@@ -66,13 +66,15 @@ export default function SchedulingDateStrip({
             onClick={() => onSelect(day)}
             className={`flex min-h-[4.5rem] min-w-[3.35rem] shrink-0 snap-start flex-col items-center justify-center gap-1 rounded-2xl border px-3 py-3 text-center text-xs font-semibold transition-all ${
               disabled
-                ? "cursor-not-allowed border-white/[0.06] bg-black/30 text-white/25"
+                ? "cursor-not-allowed border-[var(--app-border-soft)] bg-[var(--app-surface-2)] text-[var(--app-text-muted)] opacity-55"
                 : selected
-                  ? "border-[#B8952E]/80 bg-[#B8952E]/20 text-[#F2D37A] shadow-md shadow-black/25"
-                  : "border-white/10 bg-black/50 text-white/90 hover:border-[#B8952E]/35 hover:bg-black/70"
+                  ? "border-[#B8952E]/80 bg-[#B8952E]/25 text-neutral-900 shadow-md shadow-neutral-900/10"
+                  : "border-[var(--app-border)] bg-[var(--app-card)] text-[var(--app-text)] hover:border-[#B8952E]/55 hover:bg-[var(--app-surface-2)]"
             }`}
           >
-            <span className="text-[0.65rem] font-bold tracking-wide text-white/60">
+            <span
+              className={`text-[0.65rem] font-bold tracking-wide ${selected ? "text-neutral-800/85" : "text-[var(--app-text-muted)]"}`}
+            >
               {weekdayShort(day)}
             </span>
             <span className="font-mono text-base font-bold">{day.getDate()}</span>

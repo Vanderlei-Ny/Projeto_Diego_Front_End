@@ -4,6 +4,8 @@ export interface LoadingSpinnerProps {
   message?: string;
   size?: "sm" | "md" | "lg";
   fullScreen?: boolean;
+  /** Texto do rótulo: use `light` em fundos claros. */
+  tone?: "dark" | "light";
 }
 
 export interface BarbershopLogoProps {
@@ -75,4 +77,8 @@ export interface AgendamentoCalendarProps {
   className?: string;
   /** Botão do calendário só com ícone (layout agendamento em carrossel de datas). */
   monthPickerVariant?: "default" | "icon";
+  /** Em telas < sm, abre o calendário centralizado em overlay (melhor em celular). */
+  mobileCalendarCentered?: boolean;
+  /** Paleta do painel/calendário (popover ou overlay). */
+  calendarTone?: "dark" | "light";
 }
