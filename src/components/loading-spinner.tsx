@@ -5,6 +5,7 @@ export function LoadingSpinner({
   message = "Carregando...",
   size = "md",
   fullScreen = false,
+  tone = "dark",
 }: LoadingSpinnerProps) {
   const spinnerSizes = {
     sm: "h-6 w-6",
@@ -18,6 +19,9 @@ export function LoadingSpinner({
     lg: "text-base",
   };
 
+  const messageColor =
+    tone === "light" ? "text-neutral-700" : "text-white";
+
   if (fullScreen) {
     return createPortal(
       <div className="fixed inset-0 z-[200] flex items-center justify-center">
@@ -30,7 +34,7 @@ export function LoadingSpinner({
           <div
             className={`${spinnerSizes[size]} animate-spin rounded-full border-3 border-[#B8952E]/30 border-t-[#B8952E]`}
           />
-          <p className={`text-white ${textSizes[size]}`}>{message}</p>
+          <p className={`${messageColor} ${textSizes[size]}`}>{message}</p>
         </div>
       </div>,
       document.body,
@@ -42,7 +46,7 @@ export function LoadingSpinner({
       <div
         className={`${spinnerSizes[size]} animate-spin rounded-full border-3 border-[#B8952E]/30 border-t-[#B8952E]`}
       />
-      <p className={`text-white ${textSizes[size]}`}>{message}</p>
+      <p className={`${messageColor} ${textSizes[size]}`}>{message}</p>
     </div>
   );
 }
