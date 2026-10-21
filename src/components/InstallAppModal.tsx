@@ -5,6 +5,7 @@ export default function InstallAppModal({
   isOpen,
   onConfirm,
   onCancel,
+  iosInstructions = false,
 }: InstallAppModalProps) {
   if (!isOpen) return null;
 
@@ -29,24 +30,34 @@ export default function InstallAppModal({
         <h2 className="mb-2 text-lg font-semibold text-white">
           Instalar como aplicativo
         </h2>
-        <p className="mb-5 text-sm text-white/80 sm:text-base">
-          Deseja adicionar este site como aplicativo na sua area de trabalho?
-        </p>
+        {iosInstructions ? (
+          <ol className="mb-5 list-decimal space-y-2 pl-5 text-sm text-white/80 sm:text-base">
+            <li>Toque no botão Compartilhar do Safari.</li>
+            <li>Escolha “Adicionar à Tela de Início”.</li>
+            <li>Confirme em Adicionar.</li>
+          </ol>
+        ) : (
+          <p className="mb-5 text-sm text-white/80 sm:text-base">
+            Deseja adicionar a barbearia como aplicativo na tela inicial?
+          </p>
+        )}
         <div className="flex justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}
             className="cursor-pointer rounded bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-gray-200"
           >
-            Agora nao
+            {iosInstructions ? "Entendi" : "Agora não"}
           </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="cursor-pointer rounded bg-[#B8952E] px-4 py-2 text-sm font-medium text-black transition hover:bg-yellow-400"
-          >
-            Instalar
-          </button>
+          {!iosInstructions && (
+            <button
+              type="button"
+              onClick={onConfirm}
+              className="cursor-pointer rounded bg-[#B8952E] px-4 py-2 text-sm font-medium text-black transition hover:bg-yellow-400"
+            >
+              Instalar
+            </button>
+          )}
         </div>
       </div>
     </div>,

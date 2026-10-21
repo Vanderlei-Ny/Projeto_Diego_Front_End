@@ -1,4 +1,12 @@
-import { ChevronLeft, Plus, Calendar, Clock, User, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  Plus,
+  Calendar,
+  Clock,
+  User,
+  Trash2,
+  MessageCircle,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/loading-spinner";
 import ConfirmModal from "../components/modal";
@@ -333,7 +341,11 @@ function AdminPage() {
                             </span>
                           </div>
                           <div className="space-y-2">
-                            {listaAgendamentos.map((agendamento) => (
+                            {listaAgendamentos.map((agendamento) => {
+                              const whatsappUrl =
+                                buildAppointmentWhatsAppUrl(agendamento);
+
+                              return (
                               <div
                                 key={agendamento.id}
                                 className="flex flex-col gap-3 rounded-lg border border-white/5 bg-neutral-900 p-3 sm:flex-row sm:items-center sm:justify-between"
@@ -353,18 +365,32 @@ function AdminPage() {
                                       .join(", ")}
                                   </span>
                                 </div>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleDeleteAgendamento(agendamento.id)
-                                  }
-                                  className="self-end rounded-lg p-2 transition-colors hover:bg-red-900/30 sm:self-auto"
-                                  title="Cancelar agendamento"
-                                >
-                                  <Trash2 className="w-5 h-5 text-red-400" />
-                                </button>
+                                <div className="flex items-center gap-1 self-end sm:self-auto">
+                                  {whatsappUrl && (
+                                    <a
+                                      href={whatsappUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="rounded-lg p-2 text-[#25D366] transition-colors hover:bg-[#25D366]/15"
+                                      title="Enviar mensagem no WhatsApp"
+                                    >
+                                      <MessageCircle className="h-5 w-5" />
+                                    </a>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleDeleteAgendamento(agendamento.id)
+                                    }
+                                    className="rounded-lg p-2 transition-colors hover:bg-red-900/30"
+                                    title="Cancelar agendamento"
+                                  >
+                                    <Trash2 className="w-5 h-5 text-red-400" />
+                                  </button>
+                                </div>
                               </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       );
@@ -386,6 +412,40 @@ function AdminPage() {
       />
     </div>
   );
+}
+
+function toWhatsAppDigits(phone: string) {
+  let digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  digits = digits.replace(/^0+/, "");
+
+  if (digits.length === 10 || digits.length === 11) {
+    digits = `55${digits}`;
+  }
+
+  if (digits.length < 12 || digits.length > 15) return null;
+  return digits;
+}
+
+function buildAppointmentWhatsAppUrl(agendamento: AdminAgendamento) {
+  if (!agendamento.telefone) return null;
+
+  const phone = toWhatsAppDigits(agendamento.telefone);
+  if (!phone) return null;
+
+  const servicos =
+    agendamento.services.map((service) => service.nome).join(", ") ||
+    "não informados";
+
+  const message = [
+    `Olá, ${agendamento.nomeCliente}!`,
+    "Você tem um agendamento na Barbearia Diego Bueno.",
+    `Data: ${agendamento.dataAgendamento}`,
+    `Horário: ${agendamento.horario}`,
+    `Serviços: ${servicos}`,
+  ].join("\n");
+
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
 
 function CheckIcon() {
