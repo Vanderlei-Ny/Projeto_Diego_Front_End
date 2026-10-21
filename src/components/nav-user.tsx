@@ -1,4 +1,5 @@
 import { ChevronsUpDown, LogOut, Pencil } from "lucide-react";
+import InstallAppButton from "@/components/InstallAppButton";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -128,7 +129,9 @@ export function MobileHeaderNavUser() {
   }
 
   return (
-    <DropdownMenu>
+    <div className="flex items-center gap-1">
+      <InstallAppButton />
+      <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           type="button"
@@ -154,5 +157,6 @@ export function MobileHeaderNavUser() {
         <UserAccountDropdownBody user={user} avatarSrc={avatarSrc} />
       </DropdownMenuContent>
     </DropdownMenu>
+    </div>
   );
 }

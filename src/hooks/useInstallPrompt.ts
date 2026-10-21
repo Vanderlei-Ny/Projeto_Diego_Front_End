@@ -18,10 +18,25 @@ const isStandaloneDisplay = () => {
   return isStandalone || Boolean(isIosStandalone);
 };
 
+const isIosBrowser = () => {
+  if (typeof window === "undefined") return false;
+
+  const ua = window.navigator.userAgent;
+  const iPhoneOrIpad = /iPad|iPhone|iPod/.test(ua);
+  const iPadOs =
+    window.navigator.platform === "MacIntel" &&
+    window.navigator.maxTouchPoints > 1;
+
+  return iPhoneOrIpad || iPadOs;
+};
+
 export default function useInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(isStandaloneDisplay());
+  const [isIosInstall, setIsIosInstall] = useState(
+    () => isIosBrowser() && !isStandaloneDisplay(),
+  );
 
   useEffect(() => {
     const handleBeforeInstall = (event: Event) => {
@@ -31,6 +46,7 @@ export default function useInstallPrompt() {
 
     const handleInstalled = () => {
       setIsInstalled(true);
+      setIsIosInstall(false);
       setDeferredPrompt(null);
     };
 
@@ -56,7 +72,8 @@ export default function useInstallPrompt() {
   }, [deferredPrompt]);
 
   return {
-    canInstall: Boolean(deferredPrompt) && !isInstalled,
+    canInstall: (Boolean(deferredPrompt) || isIosInstall) && !isInstalled,
+    isIosInstall: isIosInstall && !isInstalled,
     promptInstall,
     isInstalled,
   };

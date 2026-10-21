@@ -37,6 +37,7 @@ export interface InstallAppModalProps {
   isOpen: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  iosInstructions?: boolean;
 }
 
 export interface AppointmentServicesModalProps {
